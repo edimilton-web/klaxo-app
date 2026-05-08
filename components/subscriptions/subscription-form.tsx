@@ -85,6 +85,14 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
     const data = await res.json()
     setLoading(false)
     if (!res.ok) {
+      if (data.code === "PLAN_LIMIT") {
+        toast.error("Limite do plano gratuito atingido. Faz upgrade para Pro.", {
+          action: { label: "Upgrade", onClick: () => router.push("/billing") },
+          duration: 6000,
+        })
+        router.push("/billing")
+        return
+      }
       toast.error(data.error ?? "Failed to save subscription")
       return
     }

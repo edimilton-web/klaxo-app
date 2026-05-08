@@ -1,6 +1,7 @@
 import { Resend } from "resend"
 import { RenewalAlertEmail } from "@/emails/renewal-alert"
 import { MonthlySummaryEmail } from "@/emails/monthly-summary"
+import { VerifyEmail } from "@/emails/verify-email"
 import { createElement } from "react"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
@@ -36,6 +37,23 @@ export async function sendRenewalAlert({
       daysUntil,
       nextBillingDate,
     }),
+  })
+}
+
+export async function sendVerificationEmail({
+  to,
+  userName,
+  verifyUrl,
+}: {
+  to: string
+  userName: string
+  verifyUrl: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Confirma o teu email — Klaxo",
+    react: createElement(VerifyEmail, { userName, verifyUrl }),
   })
 }
 

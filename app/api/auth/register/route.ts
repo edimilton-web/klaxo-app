@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
+import { randomBytes } from "crypto"
 import { prisma } from "@/lib/prisma"
+import { sendVerificationEmail } from "@/lib/resend"
 
 const schema = z.object({
   name: z.string().min(1).max(100),
@@ -22,5 +24,16 @@ export async function POST(req: Request) {
   }
   const hashed = await bcrypt.hash(password, 12)
   await prisma.user.create({ data: { name, email, password: hashed } })
+
+  const token = randomBytes(32).toString("hex")
+  const expires = new Date(Date.now() + 24 * 60 * 60 * 1000)
+  await prisma.verificationToken.create({
+    data: { identifier: email, token, expires },
+  })
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"
+  const verifyUrl = `${appUrl}/api/auth/verify-email?token=${token}&email=${encodeURIComponent(email)}`
+  await sendVerificationEmail({ to: email, userName: name, verifyUrl })
+
   return NextResponse.json({ ok: true }, { status: 201 })
 }
