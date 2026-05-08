@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -7,13 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 
-export default function LoginPage() {
-  const router = useRouter()
+function LoginNotifications() {
   const searchParams = useSearchParams()
-  const [loading, setLoading] = useState(false)
-  const [googleLoading, setGoogleLoading] = useState(false)
-  const [form, setForm] = useState({ email: "", password: "" })
-
   useEffect(() => {
     if (searchParams.get("verified") === "1") {
       toast.success("Email verificado com sucesso! Podes fazer login.")
@@ -23,6 +18,14 @@ export default function LoginPage() {
       toast.error("Link de verificação inválido.")
     }
   }, [searchParams])
+  return null
+}
+
+export default function LoginPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
+  const [form, setForm] = useState({ email: "", password: "" })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -47,6 +50,9 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-violet-50 px-4">
+      <Suspense fallback={null}>
+        <LoginNotifications />
+      </Suspense>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">
