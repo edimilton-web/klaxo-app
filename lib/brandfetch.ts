@@ -5,7 +5,7 @@ export async function fetchBrandLogo(domain: string): Promise<string | null> {
   try {
     const res = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
       headers: { Authorization: `Bearer ${BRANDFETCH_API_KEY}` },
-      next: { revalidate: 86400 },
+      cache: 'no-store',
     })
     if (!res.ok) return null
     const data = await res.json()
