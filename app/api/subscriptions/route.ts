@@ -3,7 +3,7 @@ import { z } from "zod"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { convertToEur } from "@/lib/exchange-rate"
-import { fetchBrandLogo } from "@/lib/brandfetch"
+import { fetchBrandLogo, KNOWN_SERVICES } from "@/lib/brandfetch"
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
@@ -56,8 +56,12 @@ export async function POST(req: Request) {
   const { name, amount, currency, billingCycle, nextBillingDate, category, notes, domain } = parsed.data
   let { logoUrl } = parsed.data
 
-  if (!logoUrl && domain) {
-    logoUrl = (await fetchBrandLogo(domain)) ?? undefined
+  const resolvedDomain = domain || KNOWN_SERVICES.find(
+    (s) => s.name.toLowerCase() === name.toLowerCase()
+  )?.domain
+
+  if (!logoUrl && resolvedDomain) {
+    logoUrl = (await fetchBrandLogo(resolvedDomain)) ?? undefined
   }
 
   const amountEur = await convertToEur(amount, currency)
