@@ -53,9 +53,9 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   return (
     <>
       <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:border-violet-200 transition-colors">
-        <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base font-bold text-slate-600 overflow-hidden">
+        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-slate-100 text-base font-bold text-slate-600"}`}>
           {sub.logoUrl
-            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { e.currentTarget.style.display = "none"; e.currentTarget.parentElement!.textContent = sub.name[0].toUpperCase() }} />
+            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base font-bold text-slate-600 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
             : sub.name[0].toUpperCase()}
         </div>
 
