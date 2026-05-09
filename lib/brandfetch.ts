@@ -1,5 +1,5 @@
 export function fetchBrandLogo(domain: string): string {
-  return `https://logo.clearbit.com/${domain}`
+  return `/api/logo/${domain}`
 }
 
 export const KNOWN_SERVICES: Array<{ name: string; domain: string; category: string; logoUrl?: string }> = [
