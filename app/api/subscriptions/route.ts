@@ -60,8 +60,11 @@ export async function POST(req: Request) {
     (s) => s.name.toLowerCase() === name.toLowerCase()
   )?.domain
 
+  console.log("[logo-debug] name:", name, "domain:", domain, "resolvedDomain:", resolvedDomain, "logoUrl:", logoUrl)
+
   if (!logoUrl && resolvedDomain) {
     logoUrl = (await fetchBrandLogo(resolvedDomain)) ?? undefined
+    console.log("[logo-debug] fetchBrandLogo result:", logoUrl)
   }
 
   const amountEur = await convertToEur(amount, currency)
