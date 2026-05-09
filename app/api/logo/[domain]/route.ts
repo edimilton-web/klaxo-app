@@ -13,9 +13,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
     if (!brandRes.ok) return new NextResponse(null, { status: 404 })
 
     const data = await brandRes.json()
-    const formats = data?.logos?.[0]?.formats ?? []
-    const png = formats.find((f: { format: string }) => f.format === "png")
-    const svg = formats.find((f: { format: string }) => f.format === "svg")
+    const logos: Array<{ theme: string; formats: Array<{ format: string; src: string }> }> = data?.logos ?? []
+    const logo = logos.find((l) => l.theme === "light") ?? logos[0]
+    const formats = logo?.formats ?? []
+    const png = formats.find((f) => f.format === "png")
+    const svg = formats.find((f) => f.format === "svg")
     const src: string | undefined = png?.src ?? svg?.src
 
     if (!src) return new NextResponse(null, { status: 404 })
