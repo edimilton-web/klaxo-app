@@ -1,6 +1,5 @@
-const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY
-
 export async function fetchBrandLogo(domain: string): Promise<string | null> {
+  const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY
   if (!BRANDFETCH_API_KEY) return null
   try {
     const res = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
