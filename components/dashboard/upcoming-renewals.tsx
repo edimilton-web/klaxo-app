@@ -18,7 +18,7 @@ interface UpcomingRenewalsProps {
 export function UpcomingRenewals({ items }: UpcomingRenewalsProps) {
   if (!items.length) {
     return (
-      <div className="rounded-2xl border border-white/[0.07] bg-[#111118] p-5">
+      <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5">
         <h3 className="mb-4 font-semibold text-white">Upcoming renewals</h3>
         <p className="py-6 text-center text-sm text-white/30">No renewals in the next 7 days.</p>
       </div>
@@ -26,7 +26,7 @@ export function UpcomingRenewals({ items }: UpcomingRenewalsProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#111118] p-5">
+    <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5">
       <h3 className="mb-4 font-semibold text-white">Upcoming renewals</h3>
       <div className="space-y-3">
         {items.map((item) => {

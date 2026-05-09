@@ -11,7 +11,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
   if (!data.length) return null
 
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-[#111118] p-5">
+    <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5">
       <h3 className="mb-4 font-semibold text-white">By category</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>

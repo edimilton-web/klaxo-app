@@ -19,7 +19,7 @@ export function StatCard({ title, value, subtitle, isCurrency, currency = "EUR",
       "rounded-2xl border p-5",
       accent
         ? "border-violet-500/30 bg-gradient-to-br from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-900/20"
-        : "border-white/[0.07] bg-[#111118]"
+        : "border-white/[0.12] bg-[#16161F]"
     )}>
       <div className="flex items-start justify-between">
         <p className={cn("text-xs font-semibold uppercase tracking-wider", accent ? "text-violet-200" : "text-white/40")}>

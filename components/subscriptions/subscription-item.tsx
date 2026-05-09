@@ -52,7 +52,7 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
 
   return (
     <>
-      <div className="flex items-center gap-4 rounded-xl border border-white/[0.07] bg-[#111118] p-4 hover:border-violet-500/25 transition-colors">
+      <div className="flex items-center gap-4 rounded-xl border border-white/[0.12] bg-[#16161F] p-4 hover:border-violet-500/40 transition-colors">
         <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-white/8 text-base font-bold text-white/50"}`}>
           {sub.logoUrl
             ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/8 text-base font-bold text-white/50 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />

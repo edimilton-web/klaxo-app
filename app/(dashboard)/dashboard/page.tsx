@@ -77,7 +77,7 @@ export default async function DashboardPage() {
       </Suspense>
 
       {data.activeCount === 0 && (
-        <div className="mt-8 rounded-2xl border border-dashed border-white/10 bg-[#111118] p-12 text-center">
+        <div className="mt-8 rounded-2xl border border-dashed border-white/20 bg-[#16161F] p-12 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600/15">
             <svg className="h-7 w-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           </div>

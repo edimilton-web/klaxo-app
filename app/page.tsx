@@ -54,11 +54,11 @@ function MiniDashboard() {
               <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-200/70">Mensal</p>
               <p className="mt-1 text-lg font-bold text-white">€84.64</p>
             </div>
-            <div className="rounded-xl border border-white/[0.07] bg-[#111118] p-3">
+            <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Anual</p>
               <p className="mt-1 text-lg font-bold text-white">€1 015</p>
             </div>
-            <div className="rounded-xl border border-white/[0.07] bg-[#111118] p-3">
+            <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Ativas</p>
               <p className="mt-1 text-lg font-bold text-white">4</p>
             </div>
@@ -67,7 +67,7 @@ function MiniDashboard() {
           {/* Subscription list */}
           <div className="space-y-2">
             {SUBS.map((sub) => (
-              <div key={sub.name} className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-[#111118] px-3 py-2.5">
+              <div key={sub.name} className="flex items-center gap-3 rounded-xl border border-white/[0.12] bg-[#16161F] px-3 py-2.5">
                 <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{ background: sub.color + "22" }}>
                   <span className="text-xs font-bold" style={{ color: sub.color }}>{sub.name[0]}</span>
                 </div>
@@ -156,7 +156,7 @@ export default function LandingPage() {
           <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Tudo o que precisas</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-white/[0.07] bg-[#111118] p-5 hover:border-violet-500/25 transition-colors">
+              <div key={f.title} className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 hover:border-violet-500/25 transition-colors">
                 <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600/15">
                   <svg className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={f.icon} />
@@ -176,7 +176,7 @@ export default function LandingPage() {
           <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Preços simples</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             {/* Free */}
-            <div className="rounded-2xl border border-white/[0.07] bg-[#111118] p-6">
+            <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-6">
               <p className="font-semibold text-white">Free</p>
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-4xl font-bold text-white">€0</span>
