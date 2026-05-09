@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react"
 import { Toaster } from "sonner"
 import Script from "next/script"
 import { PwaRegister } from "@/components/pwa-register"
+import { PwaInstallBanner } from "@/components/pwa-install-banner"
 import "./globals.css"
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" })
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <Toaster richColors position="top-right" />
           <PwaRegister />
+          <PwaInstallBanner />
         </SessionProvider>
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
           <Script
