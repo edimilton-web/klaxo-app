@@ -10,9 +10,9 @@ export async function fetchBrandLogo(domain: string): Promise<string | null> {
     const data = await res.json()
     const logos = data?.logos
     if (!logos?.length) return null
-    const svg = logos[0]?.formats?.find((f: { format: string }) => f.format === "svg")
     const png = logos[0]?.formats?.find((f: { format: string }) => f.format === "png")
-    return svg?.src ?? png?.src ?? null
+    const svg = logos[0]?.formats?.find((f: { format: string }) => f.format === "svg")
+    return png?.src ?? svg?.src ?? null
   } catch {
     return null
   }
