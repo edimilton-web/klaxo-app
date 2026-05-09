@@ -11,11 +11,11 @@ function LoginNotifications() {
   const searchParams = useSearchParams()
   useEffect(() => {
     if (searchParams.get("verified") === "1") {
-      toast.success("Email verificado com sucesso! Podes fazer login.")
+      toast.success("Email verified! You can now sign in.")
     } else if (searchParams.get("error") === "expired_token") {
-      toast.error("O link de verificação expirou. Faz login e solicita um novo.")
+      toast.error("Verification link expired. Please sign in and request a new one.")
     } else if (searchParams.get("error") === "invalid_token") {
-      toast.error("Link de verificação inválido.")
+      toast.error("Invalid verification link.")
     }
   }, [searchParams])
   return null
@@ -49,22 +49,22 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-violet-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#0A0A0F] px-4">
       <Suspense fallback={null}>
         <LoginNotifications />
       </Suspense>
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-600 shadow-lg">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-600 shadow-lg shadow-violet-600/20">
               <span className="text-xl font-black text-white">K</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
-          <p className="mt-1 text-sm text-slate-500">Sign in to your Klaxo account</p>
+          <h1 className="text-2xl font-bold text-white">Welcome back</h1>
+          <p className="mt-1 text-sm text-white/40">Sign in to your Klaxo account</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-white/[0.10] bg-[#16161F] p-6">
           <Button variant="outline" className="w-full" onClick={handleGoogle} loading={googleLoading}>
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -76,9 +76,9 @@ export default function LoginPage() {
           </Button>
 
           <div className="my-5 flex items-center gap-3">
-            <div className="h-px flex-1 bg-slate-100" />
-            <span className="text-xs text-slate-400">or</span>
-            <div className="h-px flex-1 bg-slate-100" />
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <span className="text-xs text-white/25">or</span>
+            <div className="h-px flex-1 bg-white/[0.06]" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,16 +86,16 @@ export default function LoginPage() {
             <div>
               <Input label="Password" type="password" placeholder="••••••••" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
               <div className="mt-1 text-right">
-                <Link href="/reset-password" className="text-xs text-violet-600 hover:underline">Forgot password?</Link>
+                <Link href="/reset-password" className="text-xs text-violet-400 hover:text-violet-300">Forgot password?</Link>
               </div>
             </div>
             <Button type="submit" className="w-full" loading={loading}>Sign in</Button>
           </form>
         </div>
 
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-white/40">
           Don&apos;t have an account?{" "}
-          <Link href="/register" className="font-medium text-violet-600 hover:underline">Sign up</Link>
+          <Link href="/register" className="font-medium text-violet-400 hover:text-violet-300">Sign up</Link>
         </p>
       </div>
     </div>
