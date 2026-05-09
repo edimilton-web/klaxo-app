@@ -2,146 +2,247 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 const FEATURES = [
-  { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", title: "Simple manual tracking", desc: "Add any subscription in seconds with autocomplete for 50+ popular services." },
-  { icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9", title: "Email alerts", desc: "Get notified before each renewal so you're never surprised by an unexpected charge." },
-  { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", title: "Consolidated view", desc: "Dashboard showing total monthly and annual cost in EUR, by category chart, and upcoming renewals." },
-  { icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z", title: "Automatic EUR conversion", desc: "Subscriptions in USD, GBP, CHF and other currencies converted to EUR automatically." },
-  { icon: "M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4", title: "CSV export (Pro)", desc: "Download all your subscriptions as a CSV file for use in Excel or Google Sheets." },
-  { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", title: "Privacy first", desc: "No Google Analytics, no tracking cookies. Only Plausible — ethical, GDPR-compliant analytics." },
+  {
+    icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+    title: "Custo real em EUR",
+    desc: "Vê quanto gastas por mês em todas as moedas, convertido automaticamente.",
+  },
+  {
+    icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
+    title: "Alertas por email",
+    desc: "Notificação 5 dias antes de cada renovação — nunca mais cobranças inesperadas.",
+  },
+  {
+    icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
+    title: "Privacidade primeiro",
+    desc: "Sem Google Analytics, sem cookies de rastreio. Apenas Plausible — GDPR compliant.",
+  },
 ]
 
-const TESTIMONIALS = [
-  { name: "Ana S.", role: "Freelance Designer", text: "I finally know how much I spend on subscriptions. I cancelled 3 services I hadn't used in months!" },
-  { name: "João M.", role: "Software Engineer", text: "Clean interface, alerts working perfectly. Exactly what I needed without the complexity." },
-  { name: "Katrin R.", role: "Teacher", text: "The 5-day alert has already saved me from two unexpected renewals. Worth every cent." },
+const SUBS = [
+  { name: "Netflix", amount: "€15.99", cycle: "Mensal", daysUntil: 3, color: "#E50914" },
+  { name: "Spotify", amount: "€9.99", cycle: "Mensal", daysUntil: 12, color: "#1DB954" },
+  { name: "Adobe CC", amount: "€54.99", cycle: "Mensal", daysUntil: 21, color: "#FF0000" },
+  { name: "GitHub", amount: "€3.67", cycle: "Mensal", daysUntil: 28, color: "#6e40c9" },
 ]
+
+function MiniDashboard() {
+  return (
+    <div className="relative mx-auto mt-14 max-w-2xl">
+      {/* Glow */}
+      <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-violet-600/10 blur-3xl" />
+
+      {/* Browser chrome */}
+      <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0D0D14] shadow-2xl shadow-black/60">
+        {/* Top bar */}
+        <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
+          <div className="flex gap-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
+            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
+            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
+          </div>
+          <div className="mx-auto flex h-6 w-48 items-center justify-center rounded-md bg-white/5 text-xs text-white/20">
+            app.klaxo.app/dashboard
+          </div>
+        </div>
+
+        {/* Dashboard content */}
+        <div className="p-5">
+          {/* Stats row */}
+          <div className="mb-5 grid grid-cols-3 gap-3">
+            <div className="rounded-xl border border-white/[0.07] bg-gradient-to-br from-violet-600 to-indigo-600 p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-200/70">Mensal</p>
+              <p className="mt-1 text-lg font-bold text-white">€84.64</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.07] bg-[#111118] p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Anual</p>
+              <p className="mt-1 text-lg font-bold text-white">€1 015</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.07] bg-[#111118] p-3">
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Ativas</p>
+              <p className="mt-1 text-lg font-bold text-white">4</p>
+            </div>
+          </div>
+
+          {/* Subscription list */}
+          <div className="space-y-2">
+            {SUBS.map((sub) => (
+              <div key={sub.name} className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-[#111118] px-3 py-2.5">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{ background: sub.color + "22" }}>
+                  <span className="text-xs font-bold" style={{ color: sub.color }}>{sub.name[0]}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-white">{sub.name}</p>
+                  <p className="text-xs text-white/35">{sub.cycle} · renova em {sub.daysUntil}d</p>
+                </div>
+                <span className="text-sm font-semibold text-white">{sub.amount}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+    <div className="min-h-screen bg-[#0A0A0F] text-white overflow-x-hidden">
+      {/* Nav */}
+      <nav className="sticky top-0 z-50 border-b border-white/[0.05] bg-[#0A0A0F]/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 md:px-6">
           <div className="flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600">
               <span className="text-sm font-black text-white">K</span>
             </div>
-            <span className="text-lg font-bold text-slate-900">Klaxo</span>
+            <span className="text-lg font-bold text-white">Klaxo</span>
           </div>
           <div className="flex items-center gap-3">
-            <Link href="/login"><Button variant="ghost" size="sm">Sign in</Button></Link>
-            <Link href="/register"><Button size="sm">Get started free</Button></Link>
+            <Link href="/login">
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Entrar</Button>
+            </Link>
+            <Link href="/register">
+              <Button size="sm">Começar grátis</Button>
+            </Link>
           </div>
         </div>
       </nav>
 
-      <section className="relative overflow-hidden px-6 py-20 text-center">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-violet-50 via-white to-white" />
-        <div className="absolute -top-40 left-1/2 -z-10 h-80 w-80 -translate-x-1/2 rounded-full bg-violet-200 opacity-30 blur-3xl" />
-        <div className="mx-auto max-w-3xl">
-          <div className="mb-4 inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-            🇪🇺 Built for the European market · GDPR compliant
+      {/* Hero */}
+      <section className="relative px-4 pt-20 pb-10 text-center md:px-6 md:pt-28">
+        {/* Grid background */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(124,92,252,0.12)_0%,_transparent_60%)]" />
+
+        <div className="relative mx-auto max-w-3xl">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/8 px-3 py-1 text-xs font-medium text-violet-300">
+            🇪🇺 Feito para o mercado europeu · GDPR compliant
           </div>
-          <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
-            Stop paying for
-            <span className="bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent"> subscriptions</span>
-            <br />you forgot about
+
+          <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-6xl" style={{ letterSpacing: "-0.03em" }}>
+            Estás a pagar por coisas
+            <br />
+            <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+              que esqueceste que existem.
+            </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-lg text-slate-600">
-            Klaxo consolidates all your subscriptions in one dashboard, shows your total cost in EUR, and sends email alerts before each renewal.
+
+          <p className="mx-auto mt-5 max-w-lg text-base text-white/45 md:text-lg">
+            O europeu médio gasta €180/mês em subscrições. A maioria não consegue nombrar metade delas.
           </p>
+
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-            <Link href="/register"><Button size="lg" className="shadow-lg shadow-violet-200">Get started free — no credit card</Button></Link>
-            <Link href="/login"><Button variant="outline" size="lg">Sign in</Button></Link>
+            <Link href="/register">
+              <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-violet-900/40">
+                Criar conta grátis
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                Já tenho conta →
+              </Button>
+            </Link>
           </div>
-          <p className="mt-4 text-sm text-slate-400">Free plan · Up to 5 subscriptions · Forever free</p>
+
+          <p className="mt-4 text-sm text-white/25">Plano grátis · Até 5 subscrições · Para sempre</p>
         </div>
+
+        {/* Mini dashboard */}
+        <MiniDashboard />
       </section>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="mb-12 text-center text-3xl font-bold text-slate-900">Everything you need</h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Features */}
+      <section className="px-4 py-20 md:px-6">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Tudo o que precisas</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
             {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm hover:border-violet-200 hover:shadow-md transition-all">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-50">
-                  <svg className="h-5 w-5 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={f.icon} /></svg>
+              <div key={f.title} className="rounded-2xl border border-white/[0.07] bg-[#111118] p-5 hover:border-violet-500/25 transition-colors">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600/15">
+                  <svg className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={f.icon} />
+                  </svg>
                 </div>
-                <h3 className="font-semibold text-slate-900">{f.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-slate-500">{f.desc}</p>
+                <h3 className="font-semibold text-white">{f.title}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-white/40">{f.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-slate-50 px-6 py-16">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-12 text-3xl font-bold text-slate-900">Simple pricing</h2>
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm">
-              <p className="font-semibold text-slate-900">Free</p>
+      {/* Pricing */}
+      <section className="px-4 py-16 md:px-6">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Preços simples</h2>
+          <div className="grid gap-5 sm:grid-cols-2">
+            {/* Free */}
+            <div className="rounded-2xl border border-white/[0.07] bg-[#111118] p-6">
+              <p className="font-semibold text-white">Free</p>
               <div className="mt-2 flex items-end gap-1">
-                <span className="text-4xl font-bold text-slate-900">€0</span>
-                <span className="mb-1 text-slate-500">/forever</span>
+                <span className="text-4xl font-bold text-white">€0</span>
+                <span className="mb-1 text-white/40">/sempre</span>
               </div>
-              <ul className="mt-4 space-y-2 text-sm text-slate-600">
-                {["Up to 5 subscriptions", "Renewal alerts", "Consolidated dashboard"].map((f) => (
-                  <li key={f} className="flex items-center gap-2"><svg className="h-4 w-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>{f}</li>
+              <ul className="mt-4 space-y-2 text-sm text-white/50">
+                {["Até 5 subscrições", "Alertas de renovação", "Dashboard consolidado"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <svg className="h-4 w-4 flex-shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {f}
+                  </li>
                 ))}
               </ul>
-              <Link href="/register" className="mt-6 block"><Button variant="outline" className="w-full">Get started free</Button></Link>
+              <Link href="/register" className="mt-6 block">
+                <Button variant="outline" className="w-full">Começar grátis</Button>
+              </Link>
             </div>
-            <div className="relative rounded-2xl border-2 border-violet-500 bg-gradient-to-b from-violet-600 to-indigo-600 p-7 text-left shadow-lg">
-              <div className="absolute -top-3 left-5 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-amber-900">Most popular</div>
-              <p className="font-semibold text-violet-100">Pro</p>
+
+            {/* Pro */}
+            <div className="relative rounded-2xl border border-violet-500/40 bg-gradient-to-b from-violet-600/20 to-indigo-600/10 p-6 shadow-lg shadow-violet-900/20">
+              <div className="absolute -top-3 left-5 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-amber-900">Mais popular</div>
+              <p className="font-semibold text-white">Pro</p>
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-4xl font-bold text-white">€3.99</span>
-                <span className="mb-1 text-violet-200">/month</span>
+                <span className="mb-1 text-violet-300">/mês</span>
               </div>
-              <p className="text-sm text-violet-200">or €29/year (save €18.88)</p>
-              <ul className="mt-4 space-y-2 text-sm text-violet-100">
-                {["Unlimited subscriptions", "Custom alerts", "Monthly email digest", "Export CSV"].map((f) => (
-                  <li key={f} className="flex items-center gap-2"><svg className="h-4 w-4 text-violet-200 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>{f}</li>
+              <p className="text-sm text-white/40">ou €29/ano (poupa €18.88)</p>
+              <ul className="mt-4 space-y-2 text-sm text-violet-200/70">
+                {["Subscrições ilimitadas", "Alertas personalizados", "Digest mensal por email", "Export CSV"].map((f) => (
+                  <li key={f} className="flex items-center gap-2">
+                    <svg className="h-4 w-4 flex-shrink-0 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    {f}
+                  </li>
                 ))}
               </ul>
-              <Link href="/register" className="mt-6 block"><Button className="w-full bg-white text-violet-700 hover:bg-violet-50">Start Pro</Button></Link>
+              <Link href="/register" className="mt-6 block">
+                <Button className="w-full">Começar Pro</Button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-10 text-center text-3xl font-bold text-slate-900">What users say</h2>
-          <div className="grid gap-5 sm:grid-cols-3">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                <p className="text-sm leading-relaxed text-slate-600">&ldquo;{t.text}&rdquo;</p>
-                <div className="mt-4">
-                  <p className="font-semibold text-slate-900">{t.name}</p>
-                  <p className="text-xs text-slate-400">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* CTA */}
+      <section className="px-4 py-16 text-center md:px-6">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-600/15 to-indigo-600/10 p-10 shadow-xl shadow-violet-900/20">
+          <h2 className="text-2xl font-bold text-white md:text-3xl">Começa hoje, de graça</h2>
+          <p className="mt-3 text-white/40">Sem cartão de crédito. Sem compromisso.</p>
+          <Link href="/register" className="mt-6 inline-block">
+            <Button size="lg" className="shadow-lg shadow-violet-900/40">Criar conta grátis</Button>
+          </Link>
         </div>
       </section>
 
-      <section className="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-16 text-center">
-        <h2 className="text-3xl font-bold text-white">Start today, for free</h2>
-        <p className="mt-3 text-violet-200">No credit card. No commitment.</p>
-        <Link href="/register" className="mt-6 inline-block">
-          <Button className="bg-white text-violet-700 hover:bg-violet-50 shadow-xl" size="lg">Create free account</Button>
-        </Link>
-      </section>
-
-      <footer className="border-t border-slate-100 px-6 py-10">
+      {/* Footer */}
+      <footer className="border-t border-white/[0.05] px-4 py-8 md:px-6">
         <div className="mx-auto max-w-5xl flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-          <p className="text-sm text-slate-400">© {new Date().getFullYear()} Klaxo · Personal subscription manager</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
-            <a href="mailto:support@klaxo.app" className="hover:text-violet-600 transition-colors">support@klaxo.app</a>
-            <Link href="/privacy" className="hover:text-violet-600 transition-colors">Privacy &amp; GDPR</Link>
-            <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-violet-600 transition-colors">klaxo.app</a>
+          <p className="text-sm text-white/25">© {new Date().getFullYear()} Klaxo · Personal subscription manager</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/25">
+            <a href="mailto:support@klaxo.app" className="hover:text-white/60 transition-colors">support@klaxo.app</a>
+            <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacidade &amp; GDPR</Link>
+            <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">klaxo.app</a>
           </div>
         </div>
       </footer>
