@@ -35,3 +35,15 @@ svg, canvas {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
+.recharts-wrapper,
+.recharts-wrapper *,
+.recharts-surface,
+.recharts-layer,
+.recharts-pie,
+.recharts-pie-sector,
+.recharts-sector {
+  -webkit-tap-highlight-color: transparent !important;
+  outline: none !important;
+  -webkit-focus-ring-color: transparent !important;
+}
