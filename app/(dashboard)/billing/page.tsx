@@ -24,7 +24,8 @@ const PLANS = [
   },
 ]
 
-const FEATURES = ["Unlimited subscriptions", "Custom alerts", "Monthly email digest", "CSV export"]
+const FREE_FEATURES = ["Up to 5 subscriptions", "Basic dashboard", "Renewal reminders"]
+const PRO_FEATURES = ["Unlimited subscriptions", "Custom alerts", "Monthly email digest", "CSV export"]
 
 export default function BillingPage() {
   const params = useSearchParams()
@@ -70,18 +71,32 @@ export default function BillingPage() {
       </div>
 
       {/* Current plan */}
-      <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/[0.12] bg-[#16161F] px-5 py-4">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Current plan</p>
-          <div className="mt-1 flex items-center gap-2">
-            <span className="text-lg font-bold text-white">{isPro ? "Pro" : "Free"}</span>
-            <Badge variant={isPro ? "pro" : "free"}>{isPro ? "Pro" : "Free"}</Badge>
+      <div className="mb-4 rounded-2xl border border-white/[0.12] bg-[#16161F] px-5 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Current plan</p>
+            <div className="mt-1 flex items-center gap-2">
+              <span className="text-lg font-bold text-white">{isPro ? "Pro" : "Free"}</span>
+              <Badge variant={isPro ? "pro" : "free"}>{isPro ? "Pro" : "Free"}</Badge>
+            </div>
           </div>
+          {isPro && (
+            <Button variant="outline" size="sm" onClick={handlePortal} loading={loading === "portal"}>
+              Manage
+            </Button>
+          )}
         </div>
-        {isPro && (
-          <Button variant="outline" size="sm" onClick={handlePortal} loading={loading === "portal"}>
-            Manage
-          </Button>
+        {!isPro && (
+          <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-white/[0.06] pt-3">
+            {FREE_FEATURES.map((f) => (
+              <div key={f} className="flex items-center gap-1.5 text-xs text-white/40">
+                <svg className="h-3 w-3 flex-shrink-0 text-white/25" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                {f}
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
@@ -92,7 +107,7 @@ export default function BillingPage() {
 
           {/* Features list — compact */}
           <div className="mb-4 grid grid-cols-2 gap-2">
-            {FEATURES.map((f) => (
+            {PRO_FEATURES.map((f) => (
               <div key={f} className="flex items-center gap-2 text-sm text-white/50">
                 <svg className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
