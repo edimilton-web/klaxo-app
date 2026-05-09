@@ -51,7 +51,7 @@ function MiniDashboard() {
             </div>
             <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Yearly</p>
-              <p className="mt-1 text-lg font-bold text-white">€1,015</p>
+              <p className="mt-1 text-lg font-bold text-white">€1,015.68</p>
             </div>
             <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
               <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Active</p>
