@@ -68,7 +68,24 @@ export default function SettingsPage() {
         </form>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/8 p-5">
+      {/* Sign out — visible on mobile, hidden on desktop (desktop has it in sidebar) */}
+      <div className="mt-4 md:hidden rounded-2xl border border-white/[0.08] bg-[#16161F] px-5 py-4 flex items-center justify-between">
+        <div>
+          <p className="text-sm font-medium text-white/70">Signed in as</p>
+          <p className="text-xs text-white/35 truncate">{session?.user?.email}</p>
+        </div>
+        <button
+          onClick={() => signOut({ callbackUrl: "/login" })}
+          className="flex items-center gap-2 rounded-xl border border-white/[0.10] px-3 py-2 text-sm text-white/50 hover:border-white/20 hover:text-white/80 transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          Sign out
+        </button>
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/8 p-5">
         <h3 className="font-semibold text-red-400">Danger zone</h3>
         <p className="mt-1 text-sm text-red-300/70">Deleting your account is irreversible. All your data will be permanently removed.</p>
         <Button variant="danger" size="sm" className="mt-3" onClick={() => setDeleteModal(true)}>
