@@ -5,11 +5,26 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Modal } from "@/components/ui/modal"
 import { toast } from "sonner"
+import Link from "next/link"
 
 const PLANS = [
-  { id: "monthly", label: "Pro Monthly", price: "€3.99", period: "/month", savings: null },
-  { id: "yearly", label: "Pro Yearly", price: "€29", period: "/year", savings: "Save €18.88" },
+  {
+    id: "monthly",
+    label: "Monthly",
+    price: "€3.99",
+    period: "/month",
+    savings: null,
+  },
+  {
+    id: "yearly",
+    label: "Yearly",
+    price: "€29",
+    period: "/year",
+    savings: "Save €18.88",
+  },
 ]
+
+const FEATURES = ["Unlimited subscriptions", "Custom alerts", "Monthly email digest", "CSV export"]
 
 export default function BillingPage() {
   const params = useSearchParams()
@@ -49,52 +64,72 @@ export default function BillingPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Billing</h1>
-        <p className="mt-0.5 text-sm text-slate-500">Manage your plan and payments</p>
+      <div className="mb-5">
+        <h1 className="text-2xl font-bold text-white tracking-tight">Billing</h1>
+        <p className="mt-0.5 text-sm text-white/40">Manage your plan and payments</p>
       </div>
 
-      <div className="mb-6 flex items-center gap-3 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+      {/* Current plan */}
+      <div className="mb-4 flex items-center justify-between rounded-2xl border border-white/[0.12] bg-[#16161F] px-5 py-4">
         <div>
-          <p className="text-sm text-slate-500">Current plan</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-white/40">Current plan</p>
           <div className="mt-1 flex items-center gap-2">
-            <span className="text-lg font-bold text-slate-900">{isPro ? "Pro" : "Free"}</span>
+            <span className="text-lg font-bold text-white">{isPro ? "Pro" : "Free"}</span>
             <Badge variant={isPro ? "pro" : "free"}>{isPro ? "Pro" : "Free"}</Badge>
           </div>
         </div>
         {isPro && (
-          <div className="ml-auto">
-            <Button variant="outline" size="sm" onClick={handlePortal} loading={loading === "portal"}>
-              Manage subscription
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={handlePortal} loading={loading === "portal"}>
+            Manage
+          </Button>
         )}
       </div>
 
+      {/* Pro upgrade */}
       {!isPro && (
         <div>
-          <h2 className="mb-4 text-base font-semibold text-slate-900">Upgrade to Pro</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <p className="mb-3 text-sm font-semibold text-white/50">Upgrade to Pro</p>
+
+          {/* Features list — compact */}
+          <div className="mb-4 grid grid-cols-2 gap-2">
+            {FEATURES.map((f) => (
+              <div key={f} className="flex items-center gap-2 text-sm text-white/50">
+                <svg className="h-3.5 w-3.5 flex-shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+                {f}
+              </div>
+            ))}
+          </div>
+
+          {/* Plan cards — side by side */}
+          <div className="grid grid-cols-2 gap-3">
             {PLANS.map((p) => (
-              <div key={p.id} className={`relative rounded-2xl border p-5 ${p.id === "yearly" ? "border-violet-300 bg-gradient-to-b from-violet-50 to-white" : "border-slate-200 bg-white"}`}>
+              <div
+                key={p.id}
+                className={`relative rounded-2xl border p-4 ${
+                  p.id === "yearly"
+                    ? "border-violet-500/40 bg-gradient-to-b from-violet-600/15 to-transparent"
+                    : "border-white/[0.12] bg-[#16161F]"
+                }`}
+              >
                 {p.savings && (
-                  <div className="absolute -top-2.5 left-4 rounded-full bg-violet-600 px-3 py-0.5 text-xs font-semibold text-white">{p.savings}</div>
+                  <div className="absolute -top-2.5 left-3 rounded-full bg-violet-600 px-2.5 py-0.5 text-[10px] font-semibold text-white">
+                    {p.savings}
+                  </div>
                 )}
-                <p className="font-semibold text-slate-900">{p.label}</p>
-                <div className="mt-2 flex items-end gap-1">
-                  <span className="text-3xl font-bold text-slate-900">{p.price}</span>
-                  <span className="mb-0.5 text-sm text-slate-500">{p.period}</span>
+                <p className="text-sm font-semibold text-white">Pro {p.label}</p>
+                <div className="mt-1 flex items-end gap-0.5">
+                  <span className="text-2xl font-bold text-white">{p.price}</span>
+                  <span className="mb-0.5 text-xs text-white/40">{p.period}</span>
                 </div>
-                <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
-                  {["Unlimited subscriptions", "Export CSV", "Custom alerts", "Monthly email digest"].map(f => (
-                    <li key={f} className="flex items-center gap-2">
-                      <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button className="mt-4 w-full" onClick={() => handleCheckout(p.id)} loading={loading === p.id}>
-                  Choose {p.label}
+                <Button
+                  className="mt-3 w-full"
+                  size="sm"
+                  onClick={() => handleCheckout(p.id)}
+                  loading={loading === p.id}
+                >
+                  Choose
                 </Button>
               </div>
             ))}
@@ -102,10 +137,13 @@ export default function BillingPage() {
         </div>
       )}
 
+      {/* Pro — manage / cancel */}
       {isPro && (
-        <div className="rounded-2xl border border-red-100 bg-red-50 p-5">
-          <h3 className="font-semibold text-red-900">Cancel Pro subscription</h3>
-          <p className="mt-1 text-sm text-red-700">You&apos;ll lose access to Pro features at the end of your current billing period.</p>
+        <div className="rounded-2xl border border-red-500/20 bg-red-500/8 p-4">
+          <h3 className="font-semibold text-red-400">Cancel Pro subscription</h3>
+          <p className="mt-1 text-sm text-red-300/70">
+            You&apos;ll lose access to Pro features at the end of your billing period.
+          </p>
           <Button variant="danger" size="sm" className="mt-3" onClick={() => setCancelModal(true)}>
             Cancel Pro plan
           </Button>
@@ -113,7 +151,9 @@ export default function BillingPage() {
       )}
 
       <Modal open={cancelModal} onClose={() => setCancelModal(false)} title="Cancel Pro plan">
-        <p className="text-sm text-slate-600">Are you sure? You&apos;ll be downgraded to Free at the end of your current period and lose access to Pro features.</p>
+        <p className="text-sm text-white/60">
+          Are you sure? You&apos;ll be downgraded to Free at the end of your current period and lose access to Pro features.
+        </p>
         <div className="mt-5 flex gap-3">
           <Button variant="outline" onClick={() => setCancelModal(false)} className="flex-1">Keep Pro</Button>
           <Button variant="danger" onClick={() => { setCancelModal(false); handlePortal() }} className="flex-1">Continue to cancel</Button>

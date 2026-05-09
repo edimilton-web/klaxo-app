@@ -86,7 +86,7 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
     setLoading(false)
     if (!res.ok) {
       if (data.code === "PLAN_LIMIT") {
-        toast.error("Limite do plano gratuito atingido. Faz upgrade para Pro.", {
+        toast.error("Free plan limit reached. Upgrade to Pro for unlimited subscriptions.", {
           action: { label: "Upgrade", onClick: () => router.push("/billing") },
           duration: 6000,
         })
@@ -115,13 +115,13 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
           autoComplete="off"
         />
         {suggestions.length > 0 && (
-          <ul className="absolute z-10 mt-1 w-full rounded-xl border border-slate-100 bg-white shadow-lg">
+          <ul className="absolute z-10 mt-1 w-full rounded-xl border border-white/[0.10] bg-[#1A1A26] shadow-2xl shadow-black/60 overflow-hidden">
             {suggestions.map((s) => (
               <li key={s.name}>
                 <button type="button" onClick={() => selectSuggestion(s)}
-                  className="flex w-full items-center gap-3 px-3 py-2 text-sm hover:bg-violet-50">
-                  <span className="font-medium text-slate-800">{s.name}</span>
-                  <span className="ml-auto text-xs text-slate-400">{s.category}</span>
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-sm hover:bg-white/5 transition-colors">
+                  <span className="font-medium text-white">{s.name}</span>
+                  <span className="ml-auto text-xs text-white/35">{s.category}</span>
                 </button>
               </li>
             ))}

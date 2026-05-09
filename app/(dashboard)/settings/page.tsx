@@ -46,11 +46,11 @@ export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-lg">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-        <p className="mt-0.5 text-sm text-slate-500">Manage your profile and preferences</p>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Settings</h1>
+        <p className="mt-0.5 text-sm text-white/40">Manage your profile and preferences</p>
       </div>
 
-      <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-6">
         <form onSubmit={handleSave} className="space-y-4">
           <Input label="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <Input label="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
@@ -68,16 +68,16 @@ export default function SettingsPage() {
         </form>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-red-100 bg-red-50 p-5">
-        <h3 className="font-semibold text-red-900">Danger zone</h3>
-        <p className="mt-1 text-sm text-red-700">Deleting your account is irreversible. All your data will be permanently removed.</p>
+      <div className="mt-6 rounded-2xl border border-red-500/20 bg-red-500/8 p-5">
+        <h3 className="font-semibold text-red-400">Danger zone</h3>
+        <p className="mt-1 text-sm text-red-300/70">Deleting your account is irreversible. All your data will be permanently removed.</p>
         <Button variant="danger" size="sm" className="mt-3" onClick={() => setDeleteModal(true)}>
           Delete account
         </Button>
       </div>
 
       <Modal open={deleteModal} onClose={() => setDeleteModal(false)} title="Delete account">
-        <p className="text-sm text-slate-600">This action is <strong>irreversible</strong>. All your data, subscriptions, and history will be permanently deleted.</p>
+        <p className="text-sm text-white/60">This action is <strong className="text-white">irreversible</strong>. All your data, subscriptions, and history will be permanently deleted.</p>
         <div className="mt-5 flex gap-3">
           <Button variant="outline" onClick={() => setDeleteModal(false)} className="flex-1">Cancel</Button>
           <Button variant="danger" onClick={handleDelete} className="flex-1">Confirm deletion</Button>

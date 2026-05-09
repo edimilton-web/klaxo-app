@@ -30,16 +30,16 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       />
       <div
         className={cn(
-          "relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl",
+          "relative z-10 w-full max-w-md rounded-2xl border border-white/[0.10] bg-[#16161F] p-6 shadow-2xl shadow-black/60",
           className
         )}
       >
         {title && (
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+            <h2 className="text-lg font-semibold text-white">{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              className="rounded-lg p-1 text-white/30 hover:bg-white/8 hover:text-white/60"
             >
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
