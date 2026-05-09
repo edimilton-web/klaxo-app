@@ -1,18 +1,9 @@
 export async function fetchBrandLogo(domain: string): Promise<string | null> {
-  const BRANDFETCH_API_KEY = process.env.BRANDFETCH_API_KEY
-  if (!BRANDFETCH_API_KEY) return null
   try {
-    const res = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
-      headers: { Authorization: `Bearer ${BRANDFETCH_API_KEY}` },
-      cache: 'no-store',
-    })
+    const url = `https://logo.clearbit.com/${domain}`
+    const res = await fetch(url, { cache: 'no-store' })
     if (!res.ok) return null
-    const data = await res.json()
-    const logos = data?.logos
-    if (!logos?.length) return null
-    const png = logos[0]?.formats?.find((f: { format: string }) => f.format === "png")
-    const svg = logos[0]?.formats?.find((f: { format: string }) => f.format === "svg")
-    return png?.src ?? svg?.src ?? null
+    return url
   } catch {
     return null
   }
