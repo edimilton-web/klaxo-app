@@ -64,17 +64,17 @@ export function PwaInstallBanner() {
           <span className="text-base font-black text-white">K</span>
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-white">Instalar Klaxo</p>
+          <p className="text-sm font-semibold text-white">Install Klaxo</p>
           {isIos ? (
             <p className="mt-0.5 text-xs text-white/45">
-              Toque em{" "}
+              Tap{" "}
               <svg className="inline h-3.5 w-3.5 align-middle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
               </svg>
-              {" "}e depois <strong className="text-white/70">Adicionar ao ecrã</strong>
+              {" "}then <strong className="text-white/70">Add to Home Screen</strong>
             </p>
           ) : (
-            <p className="mt-0.5 text-xs text-white/45">Acesso rápido sem abrir o browser</p>
+            <p className="mt-0.5 text-xs text-white/45">Quick access without opening a browser</p>
           )}
         </div>
         <button onClick={dismiss} className="flex-shrink-0 text-white/25 hover:text-white/60 transition-colors">
@@ -89,7 +89,7 @@ export function PwaInstallBanner() {
           onClick={install}
           className="mt-3 w-full rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-violet-500"
         >
-          Instalar
+          Install
         </button>
       )}
     </div>
