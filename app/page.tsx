@@ -4,37 +4,34 @@ import { Button } from "@/components/ui/button"
 const FEATURES = [
   {
     icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-    title: "Custo real em EUR",
-    desc: "Vê quanto gastas por mês em todas as moedas, convertido automaticamente.",
+    title: "Real cost in EUR",
+    desc: "See exactly how much you spend monthly across all currencies, automatically converted to EUR.",
   },
   {
     icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
-    title: "Alertas por email",
-    desc: "Notificação 5 dias antes de cada renovação — nunca mais cobranças inesperadas.",
+    title: "Email alerts",
+    desc: "Get notified 5 days before each renewal — no more surprise charges on your statement.",
   },
   {
     icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
-    title: "Privacidade primeiro",
-    desc: "Sem Google Analytics, sem cookies de rastreio. Apenas Plausible — GDPR compliant.",
+    title: "Privacy first",
+    desc: "No Google Analytics, no tracking cookies. Plausible analytics only — fully GDPR compliant.",
   },
 ]
 
 const SUBS = [
-  { name: "Netflix", amount: "€15.99", cycle: "Mensal", daysUntil: 3, color: "#E50914" },
-  { name: "Spotify", amount: "€9.99", cycle: "Mensal", daysUntil: 12, color: "#1DB954" },
-  { name: "Adobe CC", amount: "€54.99", cycle: "Mensal", daysUntil: 21, color: "#FF0000" },
-  { name: "GitHub", amount: "€3.67", cycle: "Mensal", daysUntil: 28, color: "#6e40c9" },
+  { name: "Netflix", amount: "€15.99", cycle: "Monthly", daysUntil: 3, color: "#E50914" },
+  { name: "Spotify", amount: "€9.99", cycle: "Monthly", daysUntil: 12, color: "#1DB954" },
+  { name: "Adobe CC", amount: "€54.99", cycle: "Monthly", daysUntil: 21, color: "#FF0000" },
+  { name: "GitHub", amount: "€3.67", cycle: "Monthly", daysUntil: 28, color: "#6e40c9" },
 ]
 
 function MiniDashboard() {
   return (
     <div className="relative mx-auto mt-14 max-w-2xl">
-      {/* Glow */}
       <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-violet-600/10 blur-3xl" />
 
-      {/* Browser chrome */}
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0D0D14] shadow-2xl shadow-black/60">
-        {/* Top bar */}
         <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
           <div className="flex gap-1.5">
             <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
@@ -46,25 +43,22 @@ function MiniDashboard() {
           </div>
         </div>
 
-        {/* Dashboard content */}
         <div className="p-5">
-          {/* Stats row */}
           <div className="mb-5 grid grid-cols-3 gap-3">
             <div className="rounded-xl border border-white/[0.07] bg-gradient-to-br from-violet-600 to-indigo-600 p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-200/70">Mensal</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-200/70">Monthly</p>
               <p className="mt-1 text-lg font-bold text-white">€84.64</p>
             </div>
             <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Anual</p>
-              <p className="mt-1 text-lg font-bold text-white">€1 015</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Annual</p>
+              <p className="mt-1 text-lg font-bold text-white">€1,015</p>
             </div>
             <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Ativas</p>
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Active</p>
               <p className="mt-1 text-lg font-bold text-white">4</p>
             </div>
           </div>
 
-          {/* Subscription list */}
           <div className="space-y-2">
             {SUBS.map((sub) => (
               <div key={sub.name} className="flex items-center gap-3 rounded-xl border border-white/[0.12] bg-[#16161F] px-3 py-2.5">
@@ -73,7 +67,7 @@ function MiniDashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-white">{sub.name}</p>
-                  <p className="text-xs text-white/35">{sub.cycle} · renova em {sub.daysUntil}d</p>
+                  <p className="text-xs text-white/35">{sub.cycle} · renews in {sub.daysUntil}d</p>
                 </div>
                 <span className="text-sm font-semibold text-white">{sub.amount}</span>
               </div>
@@ -99,10 +93,10 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link href="/login">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Entrar</Button>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign in</Button>
             </Link>
             <Link href="/register">
-              <Button size="sm">Começar grátis</Button>
+              <Button size="sm">Get started free</Button>
             </Link>
           </div>
         </div>
@@ -110,50 +104,48 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative px-4 pt-20 pb-10 text-center md:px-6 md:pt-28">
-        {/* Grid background */}
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(124,92,252,0.12)_0%,_transparent_60%)]" />
 
         <div className="relative mx-auto max-w-3xl">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/8 px-3 py-1 text-xs font-medium text-violet-300">
-            🇪🇺 Feito para o mercado europeu · GDPR compliant
+            🇪🇺 Built for the European market · GDPR compliant
           </div>
 
           <h1 className="text-4xl font-extrabold tracking-tight text-white md:text-6xl" style={{ letterSpacing: "-0.03em" }}>
-            Estás a pagar por coisas
+            You&apos;re paying for things
             <br />
             <span className="bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-              que esqueceste que existem.
+              you forgot exist.
             </span>
           </h1>
 
           <p className="mx-auto mt-5 max-w-lg text-base text-white/45 md:text-lg">
-            O europeu médio gasta €180/mês em subscrições. A maioria não consegue nombrar metade delas.
+            The average European spends <span className="font-semibold text-white/80">€180/month</span> on subscriptions. Most can&apos;t name half of them.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link href="/register">
               <Button size="lg" className="w-full sm:w-auto shadow-lg shadow-violet-900/40">
-                Criar conta grátis
+                Create free account
               </Button>
             </Link>
             <Link href="/login">
               <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                Já tenho conta →
+                Already have an account →
               </Button>
             </Link>
           </div>
 
-          <p className="mt-4 text-sm text-white/25">Plano grátis · Até 5 subscrições · Para sempre</p>
+          <p className="mt-4 text-sm text-white/25">Free plan · Up to 5 subscriptions · Forever free</p>
         </div>
 
-        {/* Mini dashboard */}
         <MiniDashboard />
       </section>
 
       {/* Features */}
       <section className="px-4 py-20 md:px-6">
         <div className="mx-auto max-w-4xl">
-          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Tudo o que precisas</h2>
+          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Everything you need</h2>
           <div className="grid gap-4 sm:grid-cols-3">
             {FEATURES.map((f) => (
               <div key={f.title} className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 hover:border-violet-500/25 transition-colors">
@@ -173,17 +165,17 @@ export default function LandingPage() {
       {/* Pricing */}
       <section className="px-4 py-16 md:px-6">
         <div className="mx-auto max-w-2xl">
-          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Preços simples</h2>
+          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Simple pricing</h2>
           <div className="grid gap-5 sm:grid-cols-2">
             {/* Free */}
             <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-6">
               <p className="font-semibold text-white">Free</p>
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-4xl font-bold text-white">€0</span>
-                <span className="mb-1 text-white/40">/sempre</span>
+                <span className="mb-1 text-white/40">/forever</span>
               </div>
               <ul className="mt-4 space-y-2 text-sm text-white/50">
-                {["Até 5 subscrições", "Alertas de renovação", "Dashboard consolidado"].map((f) => (
+                {["Up to 5 subscriptions", "Renewal alerts", "Consolidated dashboard"].map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <svg className="h-4 w-4 flex-shrink-0 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -193,21 +185,21 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link href="/register" className="mt-6 block">
-                <Button variant="outline" className="w-full">Começar grátis</Button>
+                <Button variant="outline" className="w-full">Get started free</Button>
               </Link>
             </div>
 
             {/* Pro */}
             <div className="relative rounded-2xl border border-violet-500/40 bg-gradient-to-b from-violet-600/20 to-indigo-600/10 p-6 shadow-lg shadow-violet-900/20">
-              <div className="absolute -top-3 left-5 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-amber-900">Mais popular</div>
+              <div className="absolute -top-3 left-5 rounded-full bg-amber-400 px-3 py-0.5 text-xs font-bold text-amber-900">Most popular</div>
               <p className="font-semibold text-white">Pro</p>
               <div className="mt-2 flex items-end gap-1">
                 <span className="text-4xl font-bold text-white">€3.99</span>
-                <span className="mb-1 text-violet-300">/mês</span>
+                <span className="mb-1 text-violet-300">/month</span>
               </div>
-              <p className="text-sm text-white/40">ou €29/ano (poupa €18.88)</p>
+              <p className="text-sm text-white/40">or €29/year (save €18.88)</p>
               <ul className="mt-4 space-y-2 text-sm text-violet-200/70">
-                {["Subscrições ilimitadas", "Alertas personalizados", "Digest mensal por email", "Export CSV"].map((f) => (
+                {["Unlimited subscriptions", "Custom alerts", "Monthly email digest", "CSV export"].map((f) => (
                   <li key={f} className="flex items-center gap-2">
                     <svg className="h-4 w-4 flex-shrink-0 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -217,7 +209,7 @@ export default function LandingPage() {
                 ))}
               </ul>
               <Link href="/register" className="mt-6 block">
-                <Button className="w-full">Começar Pro</Button>
+                <Button className="w-full">Start Pro</Button>
               </Link>
             </div>
           </div>
@@ -227,10 +219,10 @@ export default function LandingPage() {
       {/* CTA */}
       <section className="px-4 py-16 text-center md:px-6">
         <div className="mx-auto max-w-2xl rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-600/15 to-indigo-600/10 p-10 shadow-xl shadow-violet-900/20">
-          <h2 className="text-2xl font-bold text-white md:text-3xl">Começa hoje, de graça</h2>
-          <p className="mt-3 text-white/40">Sem cartão de crédito. Sem compromisso.</p>
+          <h2 className="text-2xl font-bold text-white md:text-3xl">Start today, for free</h2>
+          <p className="mt-3 text-white/40">No credit card required. No commitment.</p>
           <Link href="/register" className="mt-6 inline-block">
-            <Button size="lg" className="shadow-lg shadow-violet-900/40">Criar conta grátis</Button>
+            <Button size="lg" className="shadow-lg shadow-violet-900/40">Create free account</Button>
           </Link>
         </div>
       </section>
@@ -241,7 +233,7 @@ export default function LandingPage() {
           <p className="text-sm text-white/25">© {new Date().getFullYear()} Klaxo · Personal subscription manager</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/25">
             <a href="mailto:support@klaxo.app" className="hover:text-white/60 transition-colors">support@klaxo.app</a>
-            <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacidade &amp; GDPR</Link>
+            <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy &amp; GDPR</Link>
             <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">klaxo.app</a>
           </div>
         </div>
