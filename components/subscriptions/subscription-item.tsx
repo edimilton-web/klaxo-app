@@ -52,29 +52,29 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
 
   return (
     <>
-      <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:border-violet-200 transition-colors">
-        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-slate-100 text-base font-bold text-slate-600"}`}>
+      <div className="flex items-center gap-4 rounded-xl border border-white/[0.07] bg-[#111118] p-4 hover:border-violet-500/25 transition-colors">
+        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-white/8 text-base font-bold text-white/50"}`}>
           {sub.logoUrl
-            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base font-bold text-slate-600 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
+            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/8 text-base font-bold text-white/50 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
             : sub.name[0].toUpperCase()}
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-lg text-slate-900">{sub.name}</span>
+            <span className="font-semibold text-lg text-white">{sub.name}</span>
             {sub.status === "PAUSED" && <Badge variant="warning">Paused</Badge>}
             {sub.category && <Badge>{sub.category}</Badge>}
           </div>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <p className="mt-0.5 text-sm text-white/35">
             {BILLING_CYCLE_LABELS[sub.billingCycle] ?? sub.billingCycle} · Renews {days === 0 ? "today" : `in ${days}d`} · {formatDate(sub.nextBillingDate)}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="font-semibold text-slate-900">{formatCurrency(Number(sub.amount), sub.currency)}</p>
+            <p className="font-semibold text-white">{formatCurrency(Number(sub.amount), sub.currency)}</p>
             {sub.currency !== "EUR" && sub.amountEur && (
-              <p className="text-xs text-slate-400">≈ {formatCurrency(Number(sub.amountEur))}</p>
+              <p className="text-xs text-white/30">≈ {formatCurrency(Number(sub.amountEur))}</p>
             )}
           </div>
 
@@ -86,19 +86,19 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
             </Link>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={togglePause}>
               {sub.status === "PAUSED"
-                ? <svg className="h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                : <svg className="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                ? <svg className="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                : <svg className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               }
             </Button>
             <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setConfirmOpen(true)}>
-              <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <svg className="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </Button>
           </div>
         </div>
       </div>
 
       <Modal open={confirmOpen} onClose={() => setConfirmOpen(false)} title="Cancel subscription">
-        <p className="text-sm text-slate-600">Are you sure you want to cancel <strong>{sub.name}</strong>? The subscription will be marked as cancelled.</p>
+        <p className="text-sm text-white/60">Are you sure you want to cancel <strong className="text-white">{sub.name}</strong>? The subscription will be marked as cancelled.</p>
         <div className="mt-5 flex gap-3">
           <Button variant="outline" onClick={() => setConfirmOpen(false)} className="flex-1">Keep it</Button>
           <Button variant="danger" onClick={handleCancel} loading={loading} className="flex-1">Cancel subscription</Button>

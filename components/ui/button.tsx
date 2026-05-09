@@ -15,13 +15,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+          "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0F] disabled:pointer-events-none disabled:opacity-40",
           {
-            "bg-violet-600 text-white hover:bg-violet-700 active:scale-95 shadow-sm": variant === "primary",
-            "bg-white text-violet-700 border border-violet-200 hover:bg-violet-50": variant === "secondary",
-            "bg-transparent text-slate-600 hover:bg-slate-100": variant === "ghost",
-            "bg-red-600 text-white hover:bg-red-700 active:scale-95": variant === "danger",
-            "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50": variant === "outline",
+            "bg-violet-600 text-white hover:bg-violet-500 active:scale-95 shadow-sm shadow-violet-900/30": variant === "primary",
+            "bg-violet-600/15 text-violet-400 border border-violet-500/25 hover:bg-violet-600/25": variant === "secondary",
+            "bg-transparent text-white/50 hover:bg-white/5 hover:text-white/80": variant === "ghost",
+            "bg-red-600 text-white hover:bg-red-500 active:scale-95": variant === "danger",
+            "border border-white/10 bg-white/5 text-white/60 hover:bg-white/10 hover:text-white/80": variant === "outline",
             "px-3 py-1.5 text-sm": size === "sm",
             "px-4 py-2.5 text-sm": size === "md",
             "px-6 py-3 text-base": size === "lg",

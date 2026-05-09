@@ -34,8 +34,8 @@ export default async function SubscriptionsPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Subscriptions</h1>
-          <p className="mt-0.5 text-sm text-slate-500">
+          <h1 className="text-2xl font-bold text-white tracking-tight">Subscriptions</h1>
+          <p className="mt-0.5 text-sm text-white/40">
             {active.length} active · {formatCurrency(totalMonthlyEur)}/month
           </p>
         </div>
@@ -58,19 +58,19 @@ export default async function SubscriptionsPage() {
       </div>
 
       {atLimit && (
-        <div className="mb-4 flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <svg className="h-5 w-5 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
-          <p className="text-sm text-amber-800">You&apos;ve reached the Free plan limit (5 subscriptions). <Link href="/billing" className="font-semibold underline">Upgrade to Pro</Link> for unlimited subscriptions.</p>
+        <div className="mb-4 flex items-center gap-3 rounded-xl border border-amber-500/20 bg-amber-500/8 p-4">
+          <svg className="h-5 w-5 flex-shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          <p className="text-sm text-amber-300/80">You&apos;ve reached the Free plan limit (5 subscriptions). <Link href="/billing" className="font-semibold text-amber-300 underline">Upgrade to Pro</Link> for unlimited subscriptions.</p>
         </div>
       )}
 
       {subscriptions.length === 0 ? (
-        <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-12 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-50">
-            <svg className="h-7 w-7 text-violet-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+        <div className="rounded-2xl border border-dashed border-white/10 bg-[#111118] p-12 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600/15">
+            <svg className="h-7 w-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           </div>
-          <h3 className="font-semibold text-slate-900">No subscriptions yet</h3>
-          <p className="mt-1 text-sm text-slate-500">Add your first subscription to start tracking your spending.</p>
+          <h3 className="font-semibold text-white">No subscriptions yet</h3>
+          <p className="mt-1 text-sm text-white/40">Add your first subscription to start tracking your spending.</p>
           <Link href="/subscriptions/new" className="mt-4 inline-block">
             <Button>Add subscription</Button>
           </Link>
@@ -80,7 +80,7 @@ export default async function SubscriptionsPage() {
           {active.length > 0 && (
             <div>
               <div className="mb-2 flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-slate-700">Active</h2>
+                <h2 className="text-sm font-semibold text-white/50">Active</h2>
                 <Badge variant="success">{active.length}</Badge>
               </div>
               <div className="space-y-2">
@@ -93,7 +93,7 @@ export default async function SubscriptionsPage() {
           {paused.length > 0 && (
             <div className="mt-4">
               <div className="mb-2 flex items-center gap-2">
-                <h2 className="text-sm font-semibold text-slate-700">Paused</h2>
+                <h2 className="text-sm font-semibold text-white/50">Paused</h2>
                 <Badge variant="warning">{paused.length}</Badge>
               </div>
               <div className="space-y-2">
