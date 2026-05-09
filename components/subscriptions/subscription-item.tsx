@@ -53,15 +53,15 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   return (
     <>
       <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:border-violet-200 transition-colors">
-        <div className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-slate-100 text-lg font-bold text-slate-600"}`}>
+        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-slate-900" : "bg-slate-100 text-base font-bold text-slate-600"}`}>
           {sub.logoUrl
-            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-2" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg font-bold text-slate-600 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
+            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-base font-bold text-slate-600 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
             : sub.name[0].toUpperCase()}
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-900">{sub.name}</span>
+            <span className="font-semibold text-lg text-slate-900">{sub.name}</span>
             {sub.status === "PAUSED" && <Badge variant="warning">Paused</Badge>}
             {sub.category && <Badge>{sub.category}</Badge>}
           </div>
