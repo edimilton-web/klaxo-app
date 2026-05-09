@@ -1,12 +1,5 @@
-export async function fetchBrandLogo(domain: string): Promise<string | null> {
-  try {
-    const url = `https://logo.clearbit.com/${domain}`
-    const res = await fetch(url, { cache: 'no-store' })
-    if (!res.ok) return null
-    return url
-  } catch {
-    return null
-  }
+export function fetchBrandLogo(domain: string): string {
+  return `https://logo.clearbit.com/${domain}`
 }
 
 export const KNOWN_SERVICES: Array<{ name: string; domain: string; category: string; logoUrl?: string }> = [
