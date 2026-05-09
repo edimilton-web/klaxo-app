@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server"
 
-export async function GET(_req: Request, { params }: { params: { domain: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ domain: string }> }) {
+  const { domain } = await params
   const apiKey = process.env.BRANDFETCH_API_KEY
   if (!apiKey) return new NextResponse(null, { status: 404 })
 
   try {
-    const brandRes = await fetch(`https://api.brandfetch.io/v2/brands/${params.domain}`, {
+    const brandRes = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
       cache: "no-store",
     })
