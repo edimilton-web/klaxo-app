@@ -140,12 +140,35 @@ export const CHART_PALETTE = [
   "#34D399", // green
 ]
 
-export function getSubscriptionColor(name: string, index: number): string {
+function getBrandColor(name: string): string | null {
   const key = name.toLowerCase().trim()
   if (SERVICE_BRAND_COLORS[key]) return SERVICE_BRAND_COLORS[key]
-  // partial match for names like "Netflix (4K)", "Spotify Premium"
   for (const [brand, color] of Object.entries(SERVICE_BRAND_COLORS)) {
     if (key.startsWith(brand) || key.includes(brand)) return color
   }
-  return CHART_PALETTE[index % CHART_PALETTE.length]
+  return null
+}
+
+export function getSubscriptionColor(name: string, index: number): string {
+  return getBrandColor(name) ?? CHART_PALETTE[index % CHART_PALETTE.length]
+}
+
+// Resolves colors for a full list ensuring no two subscriptions share the same color.
+// Brand colors take priority; conflicts fall back to the next unused palette color.
+export function resolveSubscriptionColors(names: string[]): string[] {
+  const used = new Set<string>()
+  return names.map((name) => {
+    const brand = getBrandColor(name)
+    if (brand && !used.has(brand)) {
+      used.add(brand)
+      return brand
+    }
+    for (const color of CHART_PALETTE) {
+      if (!used.has(color)) {
+        used.add(color)
+        return color
+      }
+    }
+    return CHART_PALETTE[0]
+  })
 }
