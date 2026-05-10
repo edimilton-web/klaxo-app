@@ -5,15 +5,14 @@ import { CATEGORY_COLORS } from "@/lib/utils"
 
 interface CategoryChartProps {
   data: Array<{ name: string; totalEur: number }>
-  label?: string
 }
 
-export function CategoryChart({ data, label = "By category" }: CategoryChartProps) {
+export function CategoryChart({ data }: CategoryChartProps) {
   if (!data.length) return null
 
   return (
     <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 select-none" style={{ WebkitTapHighlightColor: "transparent" }}>
-      <h3 className="mb-4 font-semibold text-white">{label}</h3>
+      <h3 className="mb-4 font-semibold text-white">By subscription</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
