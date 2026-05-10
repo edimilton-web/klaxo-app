@@ -4,15 +4,16 @@ import { formatCurrency } from "@/lib/utils"
 import { CATEGORY_COLORS } from "@/lib/utils"
 
 interface CategoryChartProps {
-  data: Array<{ category: string; totalEur: number }>
+  data: Array<{ name: string; totalEur: number }>
+  label?: string
 }
 
-export function CategoryChart({ data }: CategoryChartProps) {
+export function CategoryChart({ data, label = "By category" }: CategoryChartProps) {
   if (!data.length) return null
 
   return (
     <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 select-none" style={{ WebkitTapHighlightColor: "transparent" }}>
-      <h3 className="mb-4 font-semibold text-white">By category</h3>
+      <h3 className="mb-4 font-semibold text-white">{label}</h3>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
           <Pie
@@ -23,10 +24,10 @@ export function CategoryChart({ data }: CategoryChartProps) {
             outerRadius={85}
             paddingAngle={3}
             dataKey="totalEur"
-            nameKey="category"
+            nameKey="name"
           >
             {data.map((entry) => (
-              <Cell key={entry.category} fill={CATEGORY_COLORS[entry.category] ?? "#7C5CFC"} />
+              <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name] ?? "#7C5CFC"} />
             ))}
           </Pie>
           <Tooltip

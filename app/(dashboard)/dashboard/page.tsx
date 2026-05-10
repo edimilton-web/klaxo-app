@@ -22,15 +22,24 @@ async function getDashboardData(userId: string) {
 
   let totalMonthlyEur = 0
   const categoryMap: Record<string, number> = {}
+  const bySubscription: Array<{ name: string; totalEur: number; category: string }> = []
+
   for (const sub of subscriptions) {
     const eur = Number(sub.amountEur ?? sub.amount)
     const monthly = toMonthlyEur(eur, sub.billingCycle)
     totalMonthlyEur += monthly
     const cat = sub.category ?? "Other"
     categoryMap[cat] = (categoryMap[cat] ?? 0) + monthly
+    bySubscription.push({ name: sub.name, totalEur: parseFloat(monthly.toFixed(2)), category: cat })
   }
 
-  const byCategory = Object.entries(categoryMap).map(([category, totalEur]) => ({ category, totalEur: parseFloat(totalEur.toFixed(2)) })).sort((a, b) => b.totalEur - a.totalEur)
+  const categories = Object.keys(categoryMap)
+  const hasMultipleCategories = categories.length > 1 || (categories.length === 1 && categories[0] !== "Other")
+
+  const byCategory = hasMultipleCategories
+    ? Object.entries(categoryMap).map(([category, totalEur]) => ({ name: category, totalEur: parseFloat(totalEur.toFixed(2)) })).sort((a, b) => b.totalEur - a.totalEur)
+    : bySubscription.sort((a, b) => b.totalEur - a.totalEur)
+
   const next = subscriptions.sort((a, b) => new Date(a.nextBillingDate).getTime() - new Date(b.nextBillingDate).getTime())[0]
 
   return {
@@ -38,6 +47,7 @@ async function getDashboardData(userId: string) {
     totalAnnualEur: totalMonthlyEur * 12,
     activeCount: subscriptions.length,
     byCategory,
+    chartLabel: hasMultipleCategories ? "By category" : "By subscription",
     upcoming,
     nextRenewal: next ? { name: next.name, daysUntil: getDaysUntil(next.nextBillingDate), amount: Number(next.amount), currency: next.currency } : null,
   }
@@ -91,7 +101,7 @@ export default async function DashboardPage() {
 
       {data.activeCount > 0 && (
         <div className="mt-6 grid gap-6 md:grid-cols-2">
-          <CategoryChart data={data.byCategory} />
+          <CategoryChart data={data.byCategory} label={data.chartLabel} />
           <UpcomingRenewals items={data.upcoming.map(s => ({ ...s, amount: Number(s.amount), amountEur: s.amountEur ? Number(s.amountEur) : null, nextBillingDate: s.nextBillingDate.toISOString() }))} />
         </div>
       )}
