@@ -31,7 +31,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
             ))}
           </Pie>
           <Tooltip
-            formatter={(value) => [formatCurrency(Number(value)), "Monthly"]}
+            formatter={(value, name) => [formatCurrency(Number(value)), name]}
             contentStyle={{
               borderRadius: "12px",
               border: "1px solid rgba(255,255,255,0.08)",
