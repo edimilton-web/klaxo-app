@@ -1,7 +1,6 @@
 "use client"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from "recharts"
-import { formatCurrency } from "@/lib/utils"
-import { CATEGORY_COLORS } from "@/lib/utils"
+import { formatCurrency, getSubscriptionColor } from "@/lib/utils"
 
 interface CategoryChartProps {
   data: Array<{ name: string; totalEur: number }>
@@ -25,8 +24,8 @@ export function CategoryChart({ data }: CategoryChartProps) {
             dataKey="totalEur"
             nameKey="name"
           >
-            {data.map((entry) => (
-              <Cell key={entry.name} fill={CATEGORY_COLORS[entry.name] ?? "#7C5CFC"} />
+            {data.map((entry, i) => (
+              <Cell key={entry.name} fill={getSubscriptionColor(entry.name, i)} />
             ))}
           </Pie>
           <Tooltip

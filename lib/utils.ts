@@ -72,3 +72,80 @@ export const CATEGORY_COLORS: Record<string, string> = {
   AI: "#E6E6FA",
   Other: "#C0C0C0",
 }
+
+// Brand colors for well-known services (case-insensitive lookup via getSubscriptionColor)
+const SERVICE_BRAND_COLORS: Record<string, string> = {
+  netflix:       "#E50914",
+  spotify:       "#1DB954",
+  "adobe cc":    "#FF0000",
+  adobe:         "#FF0000",
+  github:        "#7C5CFC",
+  "apple tv":    "#555F61",
+  "apple music": "#FA233B",
+  apple:         "#888888",
+  google:        "#4285F4",
+  "google one":  "#4285F4",
+  microsoft:     "#00A4EF",
+  "microsoft 365":"#00A4EF",
+  amazon:        "#FF9900",
+  "amazon prime":"#00A8E0",
+  notion:        "#9B9B9B",
+  discord:       "#5865F2",
+  slack:         "#E01E5A",
+  dropbox:       "#0061FF",
+  chatgpt:       "#10A37F",
+  openai:        "#10A37F",
+  youtube:       "#FF0000",
+  "youtube premium":"#FF0000",
+  "disney+":     "#113CCF",
+  disney:        "#113CCF",
+  hbo:           "#5822B4",
+  "hbo max":     "#5822B4",
+  max:           "#5822B4",
+  hulu:          "#1CE783",
+  twitch:        "#9146FF",
+  linkedin:      "#0A66C2",
+  twitter:       "#1DA1F2",
+  x:             "#1DA1F2",
+  figma:         "#F24E1E",
+  canva:         "#00C4CC",
+  "1password":   "#1A8CFF",
+  lastpass:      "#D32D27",
+  nordvpn:       "#4687FF",
+  expressvpn:    "#DA3940",
+  proton:        "#6D4AFF",
+  icloud:        "#3478F6",
+  "google drive":"#4285F4",
+  onedrive:      "#0078D4",
+  zoom:          "#2D8CFF",
+  "adobe creative cloud":"#FF0000",
+}
+
+// Distinct professional palette for unknown services
+export const CHART_PALETTE = [
+  "#7C3AED", // violet
+  "#06B6D4", // cyan
+  "#F59E0B", // amber
+  "#10B981", // emerald
+  "#F43F5E", // rose
+  "#F97316", // orange
+  "#8B5CF6", // purple
+  "#14B8A6", // teal
+  "#EC4899", // pink
+  "#0EA5E9", // sky
+  "#84CC16", // lime
+  "#6366F1", // indigo
+  "#EF4444", // red
+  "#A78BFA", // violet-light
+  "#34D399", // green
+]
+
+export function getSubscriptionColor(name: string, index: number): string {
+  const key = name.toLowerCase().trim()
+  if (SERVICE_BRAND_COLORS[key]) return SERVICE_BRAND_COLORS[key]
+  // partial match for names like "Netflix (4K)", "Spotify Premium"
+  for (const [brand, color] of Object.entries(SERVICE_BRAND_COLORS)) {
+    if (key.startsWith(brand) || key.includes(brand)) return color
+  }
+  return CHART_PALETTE[index % CHART_PALETTE.length]
+}
