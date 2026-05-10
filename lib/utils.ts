@@ -95,8 +95,8 @@ const SERVICE_BRAND_COLORS: Record<string, string> = {
   dropbox:       "#0061FF",
   chatgpt:       "#10A37F",
   openai:        "#10A37F",
-  youtube:       "#FF0000",
-  "youtube premium":"#FF0000",
+  youtube:       "#FF6B00",
+  "youtube premium":"#FF6B00",
   "disney+":     "#113CCF",
   disney:        "#113CCF",
   hbo:           "#5822B4",
@@ -153,22 +153,36 @@ export function getSubscriptionColor(name: string, index: number): string {
   return getBrandColor(name) ?? CHART_PALETTE[index % CHART_PALETTE.length]
 }
 
-// Resolves colors for a full list ensuring no two subscriptions share the same color.
+function hexToRgb(hex: string) {
+  const n = parseInt(hex.slice(1), 16)
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
+}
+
+function colorDistance(a: string, b: string): number {
+  const ca = hexToRgb(a), cb = hexToRgb(b)
+  return Math.sqrt((ca.r - cb.r) ** 2 + (ca.g - cb.g) ** 2 + (ca.b - cb.b) ** 2)
+}
+
+function isTooSimilar(color: string, usedColors: string[]): boolean {
+  return usedColors.some((c) => colorDistance(color, c) < 60)
+}
+
+// Resolves colors for a full list ensuring no two subscriptions share a visually similar color.
 // Brand colors take priority; conflicts fall back to the next unused palette color.
 export function resolveSubscriptionColors(names: string[]): string[] {
-  const used = new Set<string>()
+  const used: string[] = []
   return names.map((name) => {
     const brand = getBrandColor(name)
-    if (brand && !used.has(brand)) {
-      used.add(brand)
+    if (brand && !isTooSimilar(brand, used)) {
+      used.push(brand)
       return brand
     }
     for (const color of CHART_PALETTE) {
-      if (!used.has(color)) {
-        used.add(color)
+      if (!isTooSimilar(color, used)) {
+        used.push(color)
         return color
       }
     }
-    return CHART_PALETTE[0]
+    return CHART_PALETTE[used.length % CHART_PALETTE.length]
   })
 }
