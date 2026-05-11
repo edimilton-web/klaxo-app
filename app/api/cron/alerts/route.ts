@@ -2,6 +2,44 @@ import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { sendRenewalAlert } from "@/lib/resend"
 
+async function sendPushNotification({
+  playerId,
+  subscriptionName,
+  daysUntil,
+  amount,
+  currency,
+}: {
+  playerId: string
+  subscriptionName: string
+  daysUntil: number
+  amount: number
+  currency: string
+}) {
+  const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
+  const apiKey = process.env.ONESIGNAL_REST_API_KEY
+  if (!appId || !apiKey) return
+
+  const body =
+    daysUntil === 0
+      ? `${subscriptionName} renews today — ${currency} ${amount.toFixed(2)}`
+      : `${subscriptionName} renews in ${daysUntil} day${daysUntil > 1 ? "s" : ""} — ${currency} ${amount.toFixed(2)}`
+
+  await fetch("https://onesignal.com/api/v1/notifications", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Basic ${apiKey}`,
+    },
+    body: JSON.stringify({
+      app_id: appId,
+      include_subscription_ids: [playerId],
+      headings: { en: "Renewal reminder" },
+      contents: { en: body },
+      url: "https://app.klaxo.app/subscriptions",
+    }),
+  })
+}
+
 export async function POST(req: Request) {
   const auth = req.headers.get("Authorization")
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -35,7 +73,6 @@ export async function POST(req: Request) {
     })
 
     for (const sub of dueSubscriptions) {
-      // Skip if already sent in the last 24h
       const recentAlert = await prisma.alert.findFirst({
         where: {
           subscriptionId: sub.id,
@@ -66,6 +103,17 @@ export async function POST(req: Request) {
           daysUntil: alertDays,
           nextBillingDate: sub.nextBillingDate.toISOString(),
         })
+
+        if (user.oneSignalPlayerId) {
+          await sendPushNotification({
+            playerId: user.oneSignalPlayerId,
+            subscriptionName: sub.name,
+            daysUntil: alertDays,
+            amount: Number(sub.amount),
+            currency: sub.currency,
+          })
+        }
+
         await prisma.alert.update({ where: { id: alertRecord.id }, data: { status: "SENT", sentAt: new Date() } })
         sent++
       } catch {

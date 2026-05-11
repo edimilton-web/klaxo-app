@@ -2,6 +2,7 @@ import { auth } from "@/auth"
 import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Toaster } from "sonner"
+import { OneSignalInit } from "@/components/onesignal-init"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
@@ -16,6 +17,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
       </main>
       <Toaster richColors position="top-right" />
+      <OneSignalInit />
     </div>
   )
 }
