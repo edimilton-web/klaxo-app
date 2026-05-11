@@ -20,36 +20,31 @@ interface SubscriptionChangeEvent {
 
 export function OneSignalInit() {
   useEffect(() => {
-    const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
-    console.log("[OneSignal] appId:", appId)
     window.OneSignalDeferred = window.OneSignalDeferred || []
     window.OneSignalDeferred.push(async (OneSignal) => {
       try {
-      await OneSignal.init({
-        appId: appId!,
-        notifyButton: { enable: false },
-        welcomeNotification: { disable: true },
-      })
-
-      const savePlayerId = async (id: string) => {
-        await fetch("/api/onesignal/subscribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ playerId: id }),
+        await OneSignal.init({
+          appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
+          notifyButton: { enable: false },
         })
-      }
 
-      OneSignal.User.PushSubscription.addEventListener("change", (event) => {
-        if (event.current?.isSubscribed && event.current?.id) {
-          savePlayerId(event.current.id)
+        const savePlayerId = async (id: string) => {
+          await fetch("/api/onesignal/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ playerId: id }),
+          })
         }
-      })
 
-      if (!OneSignal.User.PushSubscription.optedIn) {
-        await OneSignal.Notifications.requestPermission()
-      } else if (OneSignal.User.PushSubscription.id) {
-        savePlayerId(OneSignal.User.PushSubscription.id)
-      }
+        OneSignal.User.PushSubscription.addEventListener("change", (event) => {
+          if (event.current?.isSubscribed && event.current?.id) {
+            savePlayerId(event.current.id)
+          }
+        })
+
+        if (OneSignal.User.PushSubscription.id) {
+          savePlayerId(OneSignal.User.PushSubscription.id)
+        }
       } catch (err) {
         console.error("[OneSignal] init error:", err)
       }
