@@ -23,8 +23,10 @@ export function OneSignalInit() {
     window.OneSignalDeferred = window.OneSignalDeferred || []
     window.OneSignalDeferred.push(async (OneSignal) => {
       try {
+        const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID ?? "9aa720e7-46d9-4a8a-99ef-9988ea667a27"
+        console.log("[OneSignal] appId a usar:", appId)
         await OneSignal.init({
-          appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
+          appId,
           notifyButton: { enable: false },
         })
 
