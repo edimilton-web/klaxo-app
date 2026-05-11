@@ -20,10 +20,13 @@ interface SubscriptionChangeEvent {
 
 export function OneSignalInit() {
   useEffect(() => {
+    const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID
+    console.log("[OneSignal] appId:", appId)
     window.OneSignalDeferred = window.OneSignalDeferred || []
     window.OneSignalDeferred.push(async (OneSignal) => {
+      try {
       await OneSignal.init({
-        appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID!,
+        appId: appId!,
         notifyButton: { enable: false },
         welcomeNotification: { disable: true },
       })
@@ -46,6 +49,9 @@ export function OneSignalInit() {
         await OneSignal.Notifications.requestPermission()
       } else if (OneSignal.User.PushSubscription.id) {
         savePlayerId(OneSignal.User.PushSubscription.id)
+      }
+      } catch (err) {
+        console.error("[OneSignal] init error:", err)
       }
     })
   }, [])
