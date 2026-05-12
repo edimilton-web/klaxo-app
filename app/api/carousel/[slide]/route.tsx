@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og"
 import { NextRequest } from "next/server"
+import React from "react"
 
 export const runtime = "edge"
 
@@ -144,7 +145,7 @@ function slide5() {
   )
 }
 
-const slides: Record<string, () => JSX.Element> = { "1": slide1, "2": slide2, "3": slide3, "4": slide4, "5": slide5 }
+const slides: Record<string, () => React.JSX.Element> = { "1": slide1, "2": slide2, "3": slide3, "4": slide4, "5": slide5 }
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slide: string }> }) {
   const { slide } = await params
