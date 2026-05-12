@@ -11,8 +11,8 @@ export function SplashScreen() {
       return
     }
     sessionStorage.setItem("klaxo-splash", "1")
-    const t1 = setTimeout(() => setPhase("fade"), 1900)
-    const t2 = setTimeout(() => setPhase("done"), 2450)
+    const t1 = setTimeout(() => setPhase("fade"), 3200)
+    const t2 = setTimeout(() => setPhase("done"), 3800)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
