@@ -17,7 +17,6 @@ export function KlaxoLogo({
   const gId  = `kg-${uid}`
   const shId = `ksh-${uid}`
   const glId = `kgl-${uid}`
-  const fId  = `kf-${uid}`
   const px = sizes[size]
 
   return (
@@ -48,15 +47,6 @@ export function KlaxoLogo({
               <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#6D28D9" floodOpacity="0.65" />
               <feDropShadow dx="0" dy="2"  stdDeviation="4"  floodColor="#A78BFA" floodOpacity="0.35" />
             </filter>
-            <filter id={fId} x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
-              <feFlood floodColor="white" floodOpacity="0.3" result="color" />
-              <feComposite in="color" in2="blur" operator="in" result="glow" />
-              <feMerge>
-                <feMergeNode in="glow" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </>
         )}
       </defs>
@@ -77,37 +67,18 @@ export function KlaxoLogo({
         />
       )}
 
-      {/* K — vertical stem */}
-      <path
-        d="M 32 23 L 32 77"
-        stroke="white" strokeWidth="17" strokeLinecap="round"
-        filter={animated ? `url(#${fId})` : undefined}
-        className={animated ? "klaxo-stroke-v" : undefined}
-      />
-
-      {/* K — junction fill (hides the notch) */}
-      <circle
-        cx="32" cy="48" r="8.5"
+      {/* K — letter */}
+      <text
+        x="50" y="70"
+        textAnchor="middle"
         fill="white"
-        filter={animated ? `url(#${fId})` : undefined}
-        className={animated ? "klaxo-junction" : undefined}
-      />
-
-      {/* K — upper arm */}
-      <path
-        d="M 32 48 L 69 23"
-        stroke="white" strokeWidth="17" strokeLinecap="round"
-        filter={animated ? `url(#${fId})` : undefined}
-        className={animated ? "klaxo-stroke-u" : undefined}
-      />
-
-      {/* K — lower arm */}
-      <path
-        d="M 32 48 L 69 77"
-        stroke="white" strokeWidth="17" strokeLinecap="round"
-        filter={animated ? `url(#${fId})` : undefined}
-        className={animated ? "klaxo-stroke-l" : undefined}
-      />
+        fontSize="62"
+        fontWeight="900"
+        fontFamily="'Arial Black', Arial, sans-serif"
+        className={animated ? "klaxo-letter" : undefined}
+      >
+        K
+      </text>
     </svg>
   )
 }
