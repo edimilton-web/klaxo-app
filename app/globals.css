@@ -57,14 +57,13 @@ svg, canvas {
 .klaxo-animate {
   animation: klaxo-scale-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
-.klaxo-animate .klaxo-letter {
-  opacity: 0;
-  transform: scale(0.75);
-  transform-origin: center;
-  animation: klaxo-letter-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.42s;
+.klaxo-animate .klaxo-clip-rect {
+  transform: scaleY(0);
+  transform-origin: 50px 4px;
+  animation: klaxo-draw-reveal 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards 0.42s;
 }
-@keyframes klaxo-letter-in {
-  to { opacity: 1; transform: scale(1); }
+@keyframes klaxo-draw-reveal {
+  to { transform: scaleY(1); }
 }
 .klaxo-k {
   font-family: var(--font-nunito), "Arial Rounded MT Bold", "Nunito", sans-serif;
