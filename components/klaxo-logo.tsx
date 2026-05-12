@@ -47,9 +47,6 @@ export function KlaxoLogo({
               <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#6D28D9" floodOpacity="0.65" />
               <feDropShadow dx="0" dy="2"  stdDeviation="4"  floodColor="#A78BFA" floodOpacity="0.35" />
             </filter>
-            <clipPath id={`${uid}-clip`}>
-              <rect x="0" y="0" width="100" height="100" className="klaxo-clip-rect" />
-            </clipPath>
           </>
         )}
       </defs>
@@ -77,7 +74,6 @@ export function KlaxoLogo({
         fill="white"
         fontSize="62"
         className="klaxo-k"
-        clipPath={animated ? `url(#${uid}-clip)` : undefined}
       >
         K
       </text>
