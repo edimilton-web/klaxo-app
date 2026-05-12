@@ -58,19 +58,19 @@ svg, canvas {
   animation: klaxo-scale-in 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 .klaxo-animate .klaxo-stroke-v {
-  stroke-dasharray: 66;
-  stroke-dashoffset: 66;
-  animation: klaxo-draw 0.38s ease-out forwards 0.42s;
+  stroke-dasharray: 54;
+  stroke-dashoffset: 54;
+  animation: klaxo-draw 0.35s ease-out forwards 0.42s;
 }
 .klaxo-animate .klaxo-stroke-u {
-  stroke-dasharray: 52;
-  stroke-dashoffset: 52;
-  animation: klaxo-draw 0.3s ease-out forwards 0.72s;
+  stroke-dasharray: 45;
+  stroke-dashoffset: 45;
+  animation: klaxo-draw 0.28s ease-out forwards 0.68s;
 }
 .klaxo-animate .klaxo-stroke-l {
-  stroke-dasharray: 57;
-  stroke-dashoffset: 57;
-  animation: klaxo-draw 0.3s ease-out forwards 0.9s;
+  stroke-dasharray: 47;
+  stroke-dashoffset: 47;
+  animation: klaxo-draw 0.28s ease-out forwards 0.84s;
 }
 .klaxo-animate .klaxo-junction {
   opacity: 0;
