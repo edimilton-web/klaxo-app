@@ -31,6 +31,19 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
+
+    const check = await fetch("/api/auth/check-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: form.email }),
+    }).then((r) => r.json()).catch(() => ({ exists: true }))
+
+    if (!check.exists) {
+      setLoading(false)
+      router.push(`/register?email=${encodeURIComponent(form.email)}`)
+      return
+    }
+
     const res = await signIn("credentials", {
       email: form.email,
       password: form.password,

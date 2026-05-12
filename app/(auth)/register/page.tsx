@@ -1,17 +1,23 @@
 "use client"
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { KlaxoLogo } from "@/components/klaxo-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
-  const [form, setForm] = useState({ name: "", email: "", password: "", confirmPassword: "" })
+  const [form, setForm] = useState({
+    name: "",
+    email: searchParams.get("email") ?? "",
+    password: "",
+    confirmPassword: "",
+  })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -92,5 +98,13 @@ export default function RegisterPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={null}>
+      <RegisterForm />
+    </Suspense>
   )
 }
