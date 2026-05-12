@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { DM_Sans } from "next/font/google"
+import { DM_Sans, Nunito } from "next/font/google"
 import { SessionProvider } from "next-auth/react"
 import { Toaster } from "sonner"
 import Script from "next/script"
@@ -8,6 +8,7 @@ import { PwaInstallBanner } from "@/components/pwa-install-banner"
 import "./globals.css"
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" })
+const nunito = Nunito({ subsets: ["latin"], weight: ["900"], variable: "--font-nunito" })
 
 export const metadata: Metadata = {
   title: "Klaxo — Personal subscription manager",
@@ -41,7 +42,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
+    <html lang="en" className={`${dmSans.variable} ${nunito.variable} h-full antialiased`}>
       <head />
       <body className="min-h-full flex flex-col bg-[#0A0A0F] font-sans">
         <SessionProvider>

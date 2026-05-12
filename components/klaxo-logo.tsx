@@ -73,9 +73,7 @@ export function KlaxoLogo({
         textAnchor="middle"
         fill="white"
         fontSize="62"
-        fontWeight="900"
-        fontFamily="'Arial Black', Arial, sans-serif"
-        className={animated ? "klaxo-letter" : undefined}
+        className={`klaxo-k${animated ? " klaxo-letter" : ""}`}
       >
         K
       </text>
