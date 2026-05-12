@@ -73,6 +73,8 @@ export function KlaxoLogo({
         textAnchor="middle"
         fill="white"
         fontSize="62"
+        fontFamily="Nunito, 'Arial Rounded MT Bold', sans-serif"
+        fontWeight="900"
         className="klaxo-k"
       >
         K
