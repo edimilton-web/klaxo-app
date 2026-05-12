@@ -31,52 +31,65 @@ export function KlaxoLogo({
       className={`${animated ? "klaxo-animate" : ""} ${className}`}
     >
       <defs>
-        <linearGradient id={gId} x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-          <stop offset="0%"   stopColor="#A78BFA" />
-          <stop offset="52%"  stopColor="#7C3AED" />
+        {/* Rich 4-stop gradient — deeper violet with warm top */}
+        <linearGradient id={gId} x1="10" y1="4" x2="90" y2="96" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor="#C4B5FD" />
+          <stop offset="30%"  stopColor="#8B5CF6" />
+          <stop offset="68%"  stopColor="#6D28D9" />
           <stop offset="100%" stopColor="#3B0764" />
         </linearGradient>
 
-        {animated && (
-          <>
-            <linearGradient id={shId} x1="50" y1="4" x2="50" y2="60" gradientUnits="userSpaceOnUse">
-              <stop offset="0%"   stopColor="white" stopOpacity="0.2" />
-              <stop offset="100%" stopColor="white" stopOpacity="0" />
-            </linearGradient>
-            <filter id={glId} x="-45%" y="-45%" width="190%" height="190%">
-              <feDropShadow dx="0" dy="10" stdDeviation="14" floodColor="#6D28D9" floodOpacity="0.65" />
-              <feDropShadow dx="0" dy="2"  stdDeviation="4"  floodColor="#A78BFA" floodOpacity="0.35" />
-            </filter>
-          </>
-        )}
+        {/* Shine gradient — always rendered for subtle top highlight */}
+        <linearGradient id={shId} x1="50" y1="4" x2="50" y2="58" gradientUnits="userSpaceOnUse">
+          <stop offset="0%"   stopColor="white" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="white" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Glow filter — richer for animated, subtle for static */}
+        <filter id={glId} x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="12" stdDeviation="16" floodColor="#5B21B6" floodOpacity={animated ? "0.7" : "0.25"} />
+          <feDropShadow dx="0" dy="3"  stdDeviation="5"  floodColor="#A78BFA" floodOpacity={animated ? "0.45" : "0.15"} />
+          <feDropShadow dx="0" dy="0"  stdDeviation="2"  floodColor="#DDD6FE" floodOpacity={animated ? "0.2" : "0"} />
+        </filter>
       </defs>
 
-      {/* Background */}
+      {/* Background rounded rect */}
       <rect
         x="4" y="4" width="92" height="92" rx="22"
         fill={`url(#${gId})`}
-        filter={animated ? `url(#${glId})` : undefined}
+        filter={`url(#${glId})`}
         className={animated ? "klaxo-glow" : undefined}
       />
 
-      {/* Glass shine — animated only */}
-      {animated && (
-        <rect x="4" y="4" width="92" height="52" rx="22"
-          fill={`url(#${shId})`}
-          style={{ pointerEvents: "none" }}
-        />
-      )}
+      {/* Subtle top-left glass shine — always present */}
+      <rect x="4" y="4" width="92" height="54" rx="22"
+        fill={`url(#${shId})`}
+        style={{ pointerEvents: "none" }}
+      />
 
-      {/* K — letter */}
-      <text
-        x="50" y="70"
-        textAnchor="middle"
-        fill="white"
-        fontSize="62"
+      {/* Inner border for depth */}
+      <rect
+        x="5.5" y="5.5" width="89" height="89" rx="21"
+        stroke="white" strokeOpacity="0.12" strokeWidth="1"
+        fill="none"
+        style={{ pointerEvents: "none" }}
+      />
+
+      {/* K — bold SVG paths, round caps */}
+      <g
+        stroke="white"
+        strokeWidth="13"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         className="klaxo-k"
       >
-        K
-      </text>
+        {/* Vertical bar */}
+        <line x1="30" y1="18" x2="30" y2="82" />
+        {/* Upper arm */}
+        <line x1="30" y1="50" x2="72" y2="18" />
+        {/* Lower arm */}
+        <line x1="30" y1="50" x2="72" y2="82" />
+      </g>
     </svg>
   )
 }
