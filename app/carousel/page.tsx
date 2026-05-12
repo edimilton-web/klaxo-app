@@ -290,7 +290,20 @@ export default function CarouselPreview() {
 function Slide({ n, children }: { n: number; children: React.ReactNode }) {
   return (
     <div style={{ width: 540 }}>
-      <p className="text-white/30 text-xs font-mono mb-2">Slide {n}/5</p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-white/30 text-xs font-mono">Slide {n}/5</p>
+        <a
+          href={`/api/carousel/${n}`}
+          download={`klaxo-slide-${n}.png`}
+          target="_blank"
+          className="flex items-center gap-1.5 rounded-lg bg-violet-600/20 border border-violet-500/30 px-3 py-1 text-xs font-medium text-violet-400 hover:bg-violet-600/30 transition-colors"
+        >
+          <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Download 1080×1080
+        </a>
+      </div>
       <div style={{ width: 540, height: 540, overflow: "hidden", borderRadius: 16, boxShadow: "0 25px 60px rgba(0,0,0,0.6)" }}>
         <div style={{ width: 1080, height: 1080, transform: "scale(0.5)", transformOrigin: "top left" }}>
           {children}
