@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 
 export const metadata = {
   title: "Privacy Policy & GDPR — Klaxo",
@@ -12,9 +13,7 @@ export default function PrivacyPage() {
       <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
           <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600">
-              <span className="text-sm font-black text-white">K</span>
-            </div>
+            <KlaxoLogo size="sm" />
             <span className="text-lg font-bold text-slate-900">Klaxo</span>
           </Link>
           <div className="flex items-center gap-3">

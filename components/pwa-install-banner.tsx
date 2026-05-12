@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -60,9 +61,7 @@ export function PwaInstallBanner() {
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm rounded-2xl border border-white/[0.08] bg-[#111118] p-4 shadow-2xl shadow-black/60 md:left-auto md:right-6 md:max-w-xs">
       <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-violet-600">
-          <span className="text-base font-black text-white">K</span>
-        </div>
+        <KlaxoLogo size="xs" />
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-white">Install Klaxo</p>
           {isIos ? (

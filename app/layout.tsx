@@ -12,11 +12,24 @@ const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" })
 export const metadata: Metadata = {
   title: "Klaxo — Personal subscription manager",
   description: "Track all your subscriptions in one place. Total cost in EUR, email alerts before each renewal. Built for the European market.",
+  metadataBase: new URL("https://klaxo.app"),
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Klaxo" },
   openGraph: {
     title: "Klaxo — Personal subscription manager",
     description: "Stop paying for subscriptions you forgot about.",
     type: "website",
+    url: "https://klaxo.app",
+    siteName: "Klaxo",
+    locale: "en_EU",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "Klaxo — Personal subscription manager" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Klaxo — Personal subscription manager",
+    description: "Stop paying for subscriptions you forgot about.",
+    images: ["/opengraph-image"],
   },
 }
 

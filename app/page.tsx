@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 
 const FEATURES = [
   {
@@ -79,16 +80,55 @@ function MiniDashboard() {
   )
 }
 
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://klaxo.app/#org",
+      name: "Klaxo",
+      url: "https://klaxo.app",
+      logo: "https://klaxo.app/icon",
+      contactPoint: { "@type": "ContactPoint", email: "support@klaxo.app", contactType: "customer support" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://klaxo.app/#app",
+      name: "Klaxo",
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web, iOS, Android",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "EUR",
+        description: "Free plan available. Pro plan for unlimited subscriptions.",
+      },
+      description: "Track all your subscriptions in one place. Get email alerts before renewals. Built for the European market.",
+      url: "https://klaxo.app",
+      publisher: { "@id": "https://klaxo.app/#org" },
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://klaxo.app/#website",
+      url: "https://klaxo.app",
+      name: "Klaxo",
+      publisher: { "@id": "https://klaxo.app/#org" },
+    },
+  ],
+}
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0F] text-white overflow-x-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Nav */}
       <nav className="sticky top-0 z-50 border-b border-white/[0.05] bg-[#0A0A0F]/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 md:px-6">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600">
-              <span className="text-sm font-black text-white">K</span>
-            </div>
+            <KlaxoLogo size="sm" />
             <span className="text-lg font-bold text-white">Klaxo</span>
           </div>
           <div className="flex items-center gap-3">

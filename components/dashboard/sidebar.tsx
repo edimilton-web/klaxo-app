@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" },
@@ -24,9 +25,7 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex h-screen w-64 flex-col border-r border-white/[0.06] bg-[#0D0D14] sticky top-0">
         <div className="flex h-16 items-center gap-3 border-b border-white/[0.06] px-5">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-violet-600">
-            <span className="text-sm font-black text-white">K</span>
-          </div>
+          <KlaxoLogo size="sm" />
           <span className="text-lg font-bold text-white tracking-tight">Klaxo</span>
         </div>
 

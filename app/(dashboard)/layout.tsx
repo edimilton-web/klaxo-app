@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Toaster } from "sonner"
 import { OneSignalInit } from "@/components/onesignal-init"
+import { SplashScreen } from "@/components/splash-screen"
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
@@ -10,6 +11,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="flex min-h-screen bg-[#0A0A0F]">
+      <SplashScreen />
       <Sidebar user={session.user} />
       <main className="flex-1 overflow-auto pb-20 md:pb-0">
         <div className="mx-auto max-w-5xl px-4 py-6 md:px-6 md:py-8">

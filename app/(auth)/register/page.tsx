@@ -3,6 +3,7 @@ import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
@@ -47,9 +48,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
           <div className="mb-4 flex justify-center">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-600 shadow-lg shadow-violet-600/20">
-              <span className="text-xl font-black text-white">K</span>
-            </div>
+            <KlaxoLogo size="md" animated />
           </div>
           <h1 className="text-2xl font-bold text-white">Create your account</h1>
           <p className="mt-1 text-sm text-white/40">Start for free — no credit card required</p>

@@ -1,6 +1,7 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+import { KlaxoLogo } from "@/components/klaxo-logo"
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -136,9 +137,7 @@ export default function WelcomePage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#0A0A0F] px-4 py-12">
       {/* Logo */}
       <div className="mb-8 flex flex-col items-center">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600 shadow-lg shadow-violet-900/40">
-          <span className="text-2xl font-black text-white">K</span>
-        </div>
+        <KlaxoLogo size="lg" animated />
         <p className="mt-3 text-sm font-medium text-white/40">Welcome to Klaxo</p>
       </div>
 
