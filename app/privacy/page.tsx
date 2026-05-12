@@ -152,6 +152,7 @@ export default function PrivacyPage() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-slate-400">
             <a href="mailto:support@klaxo.app" className="hover:text-violet-600 transition-colors">support@klaxo.app</a>
             <Link href="/privacy" className="hover:text-violet-600 transition-colors">Privacy &amp; GDPR</Link>
+            <Link href="/terms" className="hover:text-violet-600 transition-colors">Terms of Service</Link>
             <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-violet-600 transition-colors">klaxo.app</a>
           </div>
         </div>

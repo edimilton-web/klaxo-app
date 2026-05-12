@@ -78,6 +78,12 @@ export default function RegisterPage() {
             <Input label="Password" type="password" placeholder="At least 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
             <Input label="Confirm password" type="password" placeholder="Repeat your password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} required />
             <Button type="submit" className="w-full" loading={loading}>Create account</Button>
+            <p className="text-center text-xs text-white/30 leading-relaxed">
+              By creating an account you agree to our{" "}
+              <Link href="/terms" className="text-violet-400 hover:text-violet-300 underline underline-offset-2">Terms of Service</Link>
+              {" "}and{" "}
+              <Link href="/privacy" className="text-violet-400 hover:text-violet-300 underline underline-offset-2">Privacy Policy</Link>.
+            </p>
           </form>
         </div>
 

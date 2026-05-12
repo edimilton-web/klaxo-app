@@ -234,6 +234,7 @@ export default function LandingPage() {
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/25">
             <a href="mailto:support@klaxo.app" className="hover:text-white/60 transition-colors">support@klaxo.app</a>
             <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy &amp; GDPR</Link>
+            <Link href="/terms" className="hover:text-white/60 transition-colors">Terms of Service</Link>
             <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">klaxo.app</a>
           </div>
         </div>

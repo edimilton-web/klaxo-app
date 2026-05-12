@@ -84,6 +84,9 @@ export function Sidebar({ user }: SidebarProps) {
             <Link href="/privacy" className="block text-xs text-white/25 hover:text-violet-400 transition-colors">
               Privacy &amp; GDPR
             </Link>
+            <Link href="/terms" className="block text-xs text-white/25 hover:text-violet-400 transition-colors">
+              Terms of Service
+            </Link>
           </div>
         </div>
       </aside>
