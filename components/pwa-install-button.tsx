@@ -6,54 +6,62 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
+type Platform = "ready" | "ios" | "desktop" | "installed" | "unsupported"
+
 export function PwaInstallButton() {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [isIos, setIsIos] = useState(false)
-  const [show, setShow] = useState(false)
-  const [installed, setInstalled] = useState(false)
-  const [iosHint, setIosHint] = useState(false)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [platform, setPlatform] = useState<Platform>("unsupported")
+  const [hint, setHint] = useState(false)
 
   useEffect(() => {
     if (window.matchMedia("(display-mode: standalone)").matches) {
-      setInstalled(true)
+      setPlatform("installed")
       return
     }
 
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream
-    setIsIos(ios)
-
-    if (ios) {
-      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-      if (isSafari) setShow(true)
+    const ua = navigator.userAgent
+    const isIos = /iphone|ipad|ipod/i.test(ua) && !(window as any).MSStream
+    if (isIos) {
+      const isSafari = /^((?!chrome|android).)*safari/i.test(ua)
+      setPlatform(isSafari ? "ios" : "unsupported")
       return
     }
 
     const handler = (e: Event) => {
       e.preventDefault()
-      setPrompt(e as BeforeInstallPromptEvent)
-      setShow(true)
+      setDeferredPrompt(e as BeforeInstallPromptEvent)
+      setPlatform("ready")
     }
     window.addEventListener("beforeinstallprompt", handler)
-    return () => window.removeEventListener("beforeinstallprompt", handler)
+
+    // Fallback: if event didn't fire after 1.5s, show desktop instructions
+    const timer = setTimeout(() => {
+      setPlatform((prev) => (prev === "unsupported" ? "desktop" : prev))
+    }, 1500)
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler)
+      clearTimeout(timer)
+    }
   }, [])
 
-  async function handleInstall() {
-    if (isIos) {
-      setIosHint((h) => !h)
+  async function handleClick() {
+    if (platform === "ready" && deferredPrompt) {
+      await deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      if (outcome === "accepted") setPlatform("installed")
+      setDeferredPrompt(null)
       return
     }
-    if (!prompt) return
-    await prompt.prompt()
-    const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") setInstalled(true)
+    setHint((h) => !h)
   }
 
-  if (installed || !show) return null
+  if (platform === "installed" || platform === "unsupported") return null
 
   return (
     <div className="mt-2">
       <button
-        onClick={handleInstall}
+        onClick={handleClick}
         className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-violet-400 hover:bg-violet-600/10 transition-colors"
       >
         <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -62,10 +70,19 @@ export function PwaInstallButton() {
         Install app
       </button>
 
-      {iosHint && (
-        <p className="mt-1.5 px-3 text-xs text-white/40 leading-relaxed">
-          Tap <strong className="text-white/60">Share</strong> → <strong className="text-white/60">Add to Home Screen</strong>
-        </p>
+      {hint && platform === "ios" && (
+        <div className="mt-2 mx-3 rounded-xl bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white/50 leading-relaxed space-y-1">
+          <p>1. Toca em <strong className="text-white/70">Partilhar</strong> <span className="text-white/30">(ícone no fundo do Safari)</span></p>
+          <p>2. Escolhe <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
+          <p>3. Confirma com <strong className="text-white/70">Adicionar</strong></p>
+        </div>
+      )}
+
+      {hint && platform === "desktop" && (
+        <div className="mt-2 mx-3 rounded-xl bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white/50 leading-relaxed space-y-1">
+          <p>Clica no ícone <strong className="text-white/70">Instalar</strong> na barra de endereços do browser.</p>
+          <p className="text-white/30">Ou: menu do browser → Instalar Klaxo</p>
+        </div>
       )}
     </div>
   )
