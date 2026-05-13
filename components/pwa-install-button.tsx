@@ -8,10 +8,9 @@ interface BeforeInstallPromptEvent extends Event {
 
 type Platform = "ready" | "ios" | "desktop" | "installed" | "unsupported"
 
-export function PwaInstallButton() {
+function usePwaInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [platform, setPlatform] = useState<Platform>("unsupported")
-  const [hint, setHint] = useState(false)
 
   useEffect(() => {
     if (window.matchMedia("(display-mode: standalone)").matches) {
@@ -34,7 +33,6 @@ export function PwaInstallButton() {
     }
     window.addEventListener("beforeinstallprompt", handler)
 
-    // Fallback: if event didn't fire after 1.5s, show desktop instructions
     const timer = setTimeout(() => {
       setPlatform((prev) => (prev === "unsupported" ? "desktop" : prev))
     }, 1500)
@@ -44,6 +42,13 @@ export function PwaInstallButton() {
       clearTimeout(timer)
     }
   }, [])
+
+  return { deferredPrompt, setDeferredPrompt, platform, setPlatform }
+}
+
+export function PwaInstallButton() {
+  const { deferredPrompt, setDeferredPrompt, platform, setPlatform } = usePwaInstall()
+  const [hint, setHint] = useState(false)
 
   async function handleClick() {
     if (platform === "ready" && deferredPrompt) {
@@ -82,6 +87,55 @@ export function PwaInstallButton() {
         <div className="mt-2 mx-3 rounded-xl bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white/50 leading-relaxed space-y-1">
           <p>Clica no ícone <strong className="text-white/70">Instalar</strong> na barra de endereços do browser.</p>
           <p className="text-white/30">Ou: menu do browser → Instalar Klaxo</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function PwaInstallMobileButton() {
+  const { deferredPrompt, setDeferredPrompt, platform, setPlatform } = usePwaInstall()
+  const [hint, setHint] = useState(false)
+
+  async function handleClick() {
+    if (platform === "ready" && deferredPrompt) {
+      await deferredPrompt.prompt()
+      const { outcome } = await deferredPrompt.userChoice
+      if (outcome === "accepted") setPlatform("installed")
+      setDeferredPrompt(null)
+      return
+    }
+    setHint((h) => !h)
+  }
+
+  if (platform === "installed" || platform === "unsupported") return null
+
+  return (
+    <div className="relative">
+      <button
+        onClick={handleClick}
+        className="flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-medium text-white/35 transition-colors"
+      >
+        <svg className="h-5 w-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span>Install</span>
+      </button>
+
+      {hint && (
+        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-56 rounded-xl bg-[#1a1a2a] border border-white/[0.08] p-3 text-xs text-white/50 leading-relaxed space-y-1 shadow-2xl">
+          {platform === "ios" ? (
+            <>
+              <p>1. Toca em <strong className="text-white/70">Partilhar</strong></p>
+              <p>2. Escolhe <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
+              <p>3. Confirma com <strong className="text-white/70">Adicionar</strong></p>
+            </>
+          ) : (
+            <>
+              <p>Toca no ícone <strong className="text-white/70">Instalar</strong> na barra do browser.</p>
+              <p className="text-white/30">Ou: menu do browser → Instalar Klaxo</p>
+            </>
+          )}
         </div>
       )}
     </div>
