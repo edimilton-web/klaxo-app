@@ -47,6 +47,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
       <h3 className="mb-4 font-semibold text-white">By subscription</h3>
       <ResponsiveContainer width="100%" height={190}>
         <PieChart>
+          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           <Pie
             data={data}
             cx="50%"
@@ -56,11 +57,10 @@ export function CategoryChart({ data }: CategoryChartProps) {
             paddingAngle={3}
             dataKey="totalEur"
             nameKey="name"
-            activeIndex={activeIndex}
-            activeShape={<ActiveShape />}
-            onMouseEnter={(_, i) => setActiveIndex(i)}
+            {...({ activeIndex, activeShape: ActiveShape } as any)}
+            onMouseEnter={(_: any, i: number) => setActiveIndex(i)}
             onMouseLeave={() => setActiveIndex(undefined)}
-            onClick={(_, i) => setActiveIndex(activeIndex === i ? undefined : i)}
+            onClick={(_: any, i: number) => setActiveIndex(activeIndex === i ? undefined : i)}
           >
             {data.map((entry, i) => (
               <Cell
