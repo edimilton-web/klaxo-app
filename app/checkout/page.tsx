@@ -54,7 +54,7 @@ function CheckoutContent() {
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
-        setError("Something went wrong. Please try again.")
+        setError(data.error ?? "Something went wrong. Please try again.")
         setLoading(false)
         return
       }
