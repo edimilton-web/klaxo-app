@@ -67,7 +67,7 @@ export default async function DashboardPage() {
       <Suspense fallback={<div className="grid grid-cols-2 gap-4 md:grid-cols-4"><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /><StatCardSkeleton /></div>}>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard title="Monthly cost" value={data.totalMonthlyEur} isCurrency accent />
-          <StatCard title="Annual cost" value={data.totalAnnualEur} isCurrency subtitle="Projection" />
+          <StatCard title="Yearly cost" value={data.totalAnnualEur} isCurrency subtitle="Projection" />
           <StatCard title="Active" value={data.activeCount} subtitle={!isProUser ? `of 5 on Free plan` : "subscriptions"} />
           <StatCard
             title="Next renewal"

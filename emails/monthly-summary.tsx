@@ -48,7 +48,7 @@ export function MonthlySummaryEmail({
               </Column>
               <Column style={{ width: "16px" }} />
               <Column style={{ textAlign: "center", padding: "16px", backgroundColor: "#f1f5f9", borderRadius: "12px" }}>
-                <Text style={{ margin: 0, fontSize: "12px", color: "#475569", fontWeight: "600", textTransform: "uppercase" }}>Annual</Text>
+                <Text style={{ margin: 0, fontSize: "12px", color: "#475569", fontWeight: "600", textTransform: "uppercase" }}>Yearly</Text>
                 <Text style={{ margin: "4px 0 0 0", fontSize: "28px", fontWeight: "800", color: "#0f172a" }}>{fmt(totalAnnualEur)}</Text>
               </Column>
             </Row>
