@@ -2,6 +2,7 @@ import { Resend } from "resend"
 import { RenewalAlertEmail } from "@/emails/renewal-alert"
 import { MonthlySummaryEmail } from "@/emails/monthly-summary"
 import { VerifyEmail } from "@/emails/verify-email"
+import { ProSetupEmail } from "@/emails/pro-setup"
 import { createElement } from "react"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
@@ -54,6 +55,21 @@ export async function sendVerificationEmail({
     to,
     subject: "Confirma o teu email — Klaxo",
     react: createElement(VerifyEmail, { userName, verifyUrl }),
+  })
+}
+
+export async function sendProSetupEmail({
+  to,
+  setupUrl,
+}: {
+  to: string
+  setupUrl: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: "Set up your Klaxo Pro account",
+    react: createElement(ProSetupEmail, { setupUrl }),
   })
 }
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { stripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
+import crypto from "crypto"
 
 export async function POST(req: Request) {
   const body = await req.text()
@@ -45,11 +46,45 @@ export async function POST(req: Request) {
     case "checkout.session.completed": {
       const session = event.data.object as Stripe.Checkout.Session
       const userId = session.metadata?.userId
+
       if (userId && session.subscription) {
+        // Existing logged-in user upgrading from billing page
         await prisma.user.update({
           where: { id: userId },
           data: { plan: "PRO", stripeSubId: session.subscription as string },
         })
+        break
+      }
+
+      // Guest checkout (pay before register)
+      if (session.metadata?.guestCheckout === "true" && session.customer_details?.email) {
+        const email = session.customer_details.email
+        const stripeCustomerId = typeof session.customer === "string" ? session.customer : null
+        const stripeSubId = session.subscription as string | null
+
+        const existing = await prisma.user.findUnique({ where: { email } })
+        if (existing) {
+          await prisma.user.update({
+            where: { email },
+            data: {
+              plan: "PRO",
+              ...(stripeCustomerId && { stripeCustomerId }),
+              ...(stripeSubId && { stripeSubId }),
+            },
+          })
+        } else {
+          const setupToken = crypto.randomBytes(32).toString("hex")
+          await prisma.user.create({
+            data: {
+              email,
+              plan: "PRO",
+              stripeCustomerId: stripeCustomerId ?? undefined,
+              stripeSubId: stripeSubId ?? undefined,
+              setupToken,
+              setupTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            },
+          })
+        }
       }
       break
     }

@@ -46,10 +46,12 @@ model User {
   plan             Plan           @default(FREE)
   stripeCustomerId String?        @unique
   stripeSubId      String?        @unique
-  alertDaysBefore     Int            @default(5)
-  oneSignalPlayerId   String?
-  createdAt           DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+  alertDaysBefore      Int            @default(5)
+  oneSignalPlayerId    String?
+  setupToken           String?        @unique
+  setupTokenExpiry     DateTime?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
   subscriptions    Subscription[]
   alerts           Alert[]
   accounts         Account[]
