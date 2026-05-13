@@ -43,7 +43,9 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${dmSans.variable} ${nunito.variable} h-full antialiased`}>
-      <head />
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `window.__pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();window.__pwaPrompt=e;});` }} />
+      </head>
       <body className="min-h-full flex flex-col bg-[#0A0A0F] font-sans">
         <SessionProvider>
           {children}

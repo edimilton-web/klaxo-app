@@ -26,6 +26,14 @@ function usePwaInstall() {
       return
     }
 
+    // Recover prompt captured early in <head> before React hydrated
+    const early = (window as any).__pwaPrompt as BeforeInstallPromptEvent | null
+    if (early) {
+      setDeferredPrompt(early)
+      setPlatform("ready")
+      return
+    }
+
     const handler = (e: Event) => {
       e.preventDefault()
       setDeferredPrompt(e as BeforeInstallPromptEvent)
