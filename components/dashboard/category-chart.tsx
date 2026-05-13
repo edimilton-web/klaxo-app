@@ -10,28 +10,16 @@ interface CategoryChartProps {
 function ActiveShape(props: any) {
   const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props
   return (
-    <g>
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius - 3}
-        outerRadius={outerRadius + 8}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-        opacity={1}
-      />
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={outerRadius + 10}
-        outerRadius={outerRadius + 13}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-        opacity={0.4}
-      />
-    </g>
+    <Sector
+      cx={cx}
+      cy={cy}
+      innerRadius={innerRadius}
+      outerRadius={outerRadius + 5}
+      startAngle={startAngle}
+      endAngle={endAngle}
+      fill={fill}
+      opacity={1}
+    />
   )
 }
 
@@ -45,7 +33,7 @@ export function CategoryChart({ data }: CategoryChartProps) {
   return (
     <div className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 select-none" style={{ WebkitTapHighlightColor: "transparent" }}>
       <h3 className="mb-4 font-semibold text-white">By subscription</h3>
-      <ResponsiveContainer width="100%" height={190}>
+      <ResponsiveContainer width="100%" height={180}>
         <PieChart>
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           <Pie
