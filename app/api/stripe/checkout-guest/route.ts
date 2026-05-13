@@ -28,8 +28,14 @@ export async function POST(req: Request) {
   const parsed = schema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: "Invalid plan" }, { status: 400 })
 
-  const session = await createGuestSession(parsed.data.plan)
-  return NextResponse.json({ url: session.url })
+  try {
+    const session = await createGuestSession(parsed.data.plan)
+    return NextResponse.json({ url: session.url })
+  } catch (err) {
+    console.error("[checkout-guest] Stripe error:", err)
+    const message = err instanceof Error ? err.message : "Unknown error"
+    return NextResponse.json({ error: message }, { status: 500 })
+  }
 }
 
 export const dynamic = "force-dynamic"
