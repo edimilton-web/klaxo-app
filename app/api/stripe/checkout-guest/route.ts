@@ -12,7 +12,6 @@ async function createGuestSession(plan: "pro-monthly" | "pro-yearly") {
 
   return stripe.checkout.sessions.create({
     mode: "subscription",
-    customer_creation: "always",
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
     billing_address_collection: "auto",
