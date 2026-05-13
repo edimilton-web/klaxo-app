@@ -6,146 +6,84 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
-type Platform = "ready" | "ios" | "desktop" | "installed" | "unsupported"
-
-function usePwaInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [platform, setPlatform] = useState<Platform>("unsupported")
+export function PwaInstallButton() {
+  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [show, setShow] = useState(false)
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setPlatform("installed")
-      return
-    }
+    if (window.matchMedia("(display-mode: standalone)").matches) return
 
-    const ua = navigator.userAgent
-    const isIos = /iphone|ipad|ipod/i.test(ua) && !(window as any).MSStream
-    if (isIos) {
-      const isSafari = /^((?!chrome|android).)*safari/i.test(ua)
-      setPlatform(isSafari ? "ios" : "unsupported")
-      return
-    }
-
-    // Recover prompt captured early in <head> before React hydrated
     const early = (window as any).__pwaPrompt as BeforeInstallPromptEvent | null
-    if (early) {
-      setDeferredPrompt(early)
-      setPlatform("ready")
-      return
-    }
+    if (early) { setPrompt(early); setShow(true); return }
 
     const handler = (e: Event) => {
       e.preventDefault()
-      setDeferredPrompt(e as BeforeInstallPromptEvent)
-      setPlatform("ready")
+      setPrompt(e as BeforeInstallPromptEvent)
+      setShow(true)
     }
     window.addEventListener("beforeinstallprompt", handler)
-
-    const timer = setTimeout(() => {
-      setPlatform((prev) => (prev === "unsupported" ? "desktop" : prev))
-    }, 1500)
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handler)
-      clearTimeout(timer)
-    }
+    return () => window.removeEventListener("beforeinstallprompt", handler)
   }, [])
 
-  return { deferredPrompt, setDeferredPrompt, platform, setPlatform }
-}
-
-export function PwaInstallButton() {
-  const { deferredPrompt, setDeferredPrompt, platform, setPlatform } = usePwaInstall()
-  const [hint, setHint] = useState(false)
-
-  async function handleClick() {
-    if (platform === "ready" && deferredPrompt) {
-      await deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === "accepted") setPlatform("installed")
-      setDeferredPrompt(null)
-      return
-    }
-    setHint((h) => !h)
+  async function handleInstall() {
+    if (!prompt) return
+    await prompt.prompt()
+    const { outcome } = await prompt.userChoice
+    if (outcome === "accepted") setShow(false)
   }
 
-  if (platform === "installed" || platform === "unsupported") return null
+  if (!show) return null
 
   return (
-    <div className="mt-2">
-      <button
-        onClick={handleClick}
-        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-violet-400 hover:bg-violet-600/10 transition-colors"
-      >
-        <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Install app
-      </button>
-
-      {hint && platform === "ios" && (
-        <div className="mt-2 mx-3 rounded-xl bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white/50 leading-relaxed space-y-1">
-          <p>1. Toca em <strong className="text-white/70">Partilhar</strong> <span className="text-white/30">(ícone no fundo do Safari)</span></p>
-          <p>2. Escolhe <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
-          <p>3. Confirma com <strong className="text-white/70">Adicionar</strong></p>
-        </div>
-      )}
-
-      {hint && platform === "desktop" && (
-        <div className="mt-2 mx-3 rounded-xl bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white/50 leading-relaxed space-y-1">
-          <p>Clica no ícone <strong className="text-white/70">Instalar</strong> na barra de endereços do browser.</p>
-          <p className="text-white/30">Ou: menu do browser → Instalar Klaxo</p>
-        </div>
-      )}
-    </div>
+    <button
+      onClick={handleInstall}
+      className="mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-violet-400 hover:bg-violet-600/10 transition-colors"
+    >
+      <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      Install app
+    </button>
   )
 }
 
 export function PwaInstallMobileButton() {
-  const { deferredPrompt, setDeferredPrompt, platform, setPlatform } = usePwaInstall()
-  const [hint, setHint] = useState(false)
+  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
+  const [show, setShow] = useState(false)
 
-  async function handleClick() {
-    if (platform === "ready" && deferredPrompt) {
-      await deferredPrompt.prompt()
-      const { outcome } = await deferredPrompt.userChoice
-      if (outcome === "accepted") setPlatform("installed")
-      setDeferredPrompt(null)
-      return
+  useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) return
+
+    const early = (window as any).__pwaPrompt as BeforeInstallPromptEvent | null
+    if (early) { setPrompt(early); setShow(true); return }
+
+    const handler = (e: Event) => {
+      e.preventDefault()
+      setPrompt(e as BeforeInstallPromptEvent)
+      setShow(true)
     }
-    setHint((h) => !h)
+    window.addEventListener("beforeinstallprompt", handler)
+    return () => window.removeEventListener("beforeinstallprompt", handler)
+  }, [])
+
+  async function handleInstall() {
+    if (!prompt) return
+    await prompt.prompt()
+    const { outcome } = await prompt.userChoice
+    if (outcome === "accepted") setShow(false)
   }
 
-  if (platform === "installed" || platform === "unsupported") return null
+  if (!show) return null
 
   return (
-    <div className="relative">
-      <button
-        onClick={handleClick}
-        className="flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-medium text-white/35 transition-colors"
-      >
-        <svg className="h-5 w-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        <span>Install</span>
-      </button>
-
-      {hint && (
-        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-60 rounded-xl bg-[#1a1a2a] border border-white/[0.08] p-3 text-xs text-white/50 leading-relaxed space-y-1.5 shadow-2xl">
-          {platform === "ios" ? (
-            <>
-              <p>1. Toca em <strong className="text-white/70">Partilhar</strong> <span className="text-white/30">(ícone no fundo do Safari)</span></p>
-              <p>2. Escolhe <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
-              <p>3. Confirma com <strong className="text-white/70">Adicionar</strong></p>
-            </>
-          ) : (
-            <>
-              <p>1. Toca nos <strong className="text-white/70">três pontos ⋮</strong> no canto do browser</p>
-              <p>2. Escolhe <strong className="text-white/70">Instalar app</strong> ou <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
-            </>
-          )}
-        </div>
-      )}
-    </div>
+    <button
+      onClick={handleInstall}
+      className="flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-medium text-white/35 transition-colors"
+    >
+      <svg className="h-5 w-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+      </svg>
+      <span>Install</span>
+    </button>
   )
 }
