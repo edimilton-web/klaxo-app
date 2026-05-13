@@ -123,17 +123,17 @@ export function PwaInstallMobileButton() {
       </button>
 
       {hint && (
-        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-56 rounded-xl bg-[#1a1a2a] border border-white/[0.08] p-3 text-xs text-white/50 leading-relaxed space-y-1 shadow-2xl">
+        <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 w-60 rounded-xl bg-[#1a1a2a] border border-white/[0.08] p-3 text-xs text-white/50 leading-relaxed space-y-1.5 shadow-2xl">
           {platform === "ios" ? (
             <>
-              <p>1. Toca em <strong className="text-white/70">Partilhar</strong></p>
+              <p>1. Toca em <strong className="text-white/70">Partilhar</strong> <span className="text-white/30">(ícone no fundo do Safari)</span></p>
               <p>2. Escolhe <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
               <p>3. Confirma com <strong className="text-white/70">Adicionar</strong></p>
             </>
           ) : (
             <>
-              <p>Toca no ícone <strong className="text-white/70">Instalar</strong> na barra do browser.</p>
-              <p className="text-white/30">Ou: menu do browser → Instalar Klaxo</p>
+              <p>1. Toca nos <strong className="text-white/70">três pontos ⋮</strong> no canto do browser</p>
+              <p>2. Escolhe <strong className="text-white/70">Instalar app</strong> ou <strong className="text-white/70">Adicionar ao ecrã inicial</strong></p>
             </>
           )}
         </div>
