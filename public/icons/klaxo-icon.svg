@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240" role="img" aria-label="Klaxo">
+  <defs>
+    <linearGradient id="klaxoGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#A78BFA"></stop>
+      <stop offset="50%" stop-color="#7C3AED"></stop>
+      <stop offset="100%" stop-color="#3B0764"></stop>
+    </linearGradient>
+    
+  </defs>
+  <rect width="240" height="240" rx="53" ry="53" fill="url(#klaxoGrad)"></rect>
+  <text class="klaxo-k" x="120" y="124">K</text>
+</svg>

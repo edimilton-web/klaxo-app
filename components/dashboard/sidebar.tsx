@@ -27,7 +27,7 @@ export function Sidebar({ user }: SidebarProps) {
       <aside className="hidden md:flex h-screen w-64 flex-col border-r border-white/[0.06] bg-[#0D0D14] sticky top-0">
         <div className="flex h-16 items-center gap-3 border-b border-white/[0.06] px-5">
           <KlaxoLogo size="sm" />
-          <span className="text-lg font-bold text-white tracking-tight">Klaxo</span>
+          <span className="text-lg font-semibold text-white tracking-tight">Klaxo</span>
         </div>
 
         <nav className="flex-1 space-y-0.5 p-3">

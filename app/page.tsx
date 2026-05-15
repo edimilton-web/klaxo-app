@@ -129,7 +129,7 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4 md:px-6">
           <div className="flex items-center gap-2.5">
             <KlaxoLogo size="sm" />
-            <span className="text-lg font-bold text-white">Klaxo</span>
+            <span className="text-lg font-semibold text-white">Klaxo</span>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/login">
