@@ -113,12 +113,27 @@ export function PwaInstallModal({ open, onClose }: PwaInstallModalProps) {
             </button>
           ) : (
             <>
-              <p className="text-xs font-medium uppercase tracking-wider text-white/30">How to install on desktop</p>
-              <ol className="space-y-3">
+              <p className="text-xs font-medium uppercase tracking-wider text-white/30">Option A — address bar</p>
+              <ol className="space-y-2">
                 {[
-                  { step: "1", text: "Look for the install icon (⊕) in your browser address bar" },
-                  { step: "2", text: "Click it and select Install" },
-                  { step: "3", text: "Klaxo opens as a standalone app" },
+                  { step: "1", text: "Look for the install icon (⊕) at the right end of the address bar" },
+                  { step: "2", text: 'Click it, then click "Install"' },
+                ].map(({ step, text }) => (
+                  <li key={step} className="flex items-start gap-3">
+                    <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-600/20 text-xs font-semibold text-violet-400">
+                      {step}
+                    </span>
+                    <span className="text-sm text-white/60">{text}</span>
+                  </li>
+                ))}
+              </ol>
+
+              <p className="text-xs font-medium uppercase tracking-wider text-white/30 pt-2">Option B — Chrome menu</p>
+              <ol className="space-y-2">
+                {[
+                  { step: "1", text: 'Click the ⋮ menu (top-right of Chrome)' },
+                  { step: "2", text: 'Click "Save and share" → "Install page as app…"' },
+                  { step: "3", text: 'Click "Install" in the dialog' },
                 ].map(({ step, text }) => (
                   <li key={step} className="flex items-start gap-3">
                     <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-violet-600/20 text-xs font-semibold text-violet-400">
