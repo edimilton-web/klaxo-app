@@ -1,26 +1,9 @@
 import { ImageResponse } from "next/og"
 
-export const runtime = "edge"
 export const size = { width: 512, height: 512 }
 export const contentType = "image/png"
 
-async function getNunitoBlack(): Promise<ArrayBuffer | null> {
-  try {
-    const css = await fetch(
-      "https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap",
-      { headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" } }
-    ).then((r) => r.text())
-    const url = css.match(/src: url\(([^)]+\.woff2)\)/)?.[1]
-    if (!url) return null
-    return await fetch(url).then((r) => r.arrayBuffer())
-  } catch {
-    return null
-  }
-}
-
-export default async function Icon() {
-  const fontData = await getNunitoBlack()
-
+export default function Icon() {
   return new ImageResponse(
     (
       <div
@@ -39,7 +22,7 @@ export default async function Icon() {
             color: "white",
             fontSize: 300,
             fontWeight: 900,
-            fontFamily: fontData ? "Nunito" : "system-ui",
+            fontFamily: "'Arial Black', 'Helvetica Neue', Arial, sans-serif",
             lineHeight: 1,
             marginTop: "30px",
           }}
@@ -48,9 +31,6 @@ export default async function Icon() {
         </div>
       </div>
     ),
-    {
-      ...size,
-      ...(fontData ? { fonts: [{ name: "Nunito", data: fontData, weight: 900, style: "normal" }] } : {}),
-    }
+    { ...size }
   )
 }
