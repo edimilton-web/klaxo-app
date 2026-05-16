@@ -1,10 +1,10 @@
 {
   "name": "Klaxo",
   "short_name": "Klaxo",
-  "description": "Track all your subscriptions in one place.",
-  "start_url": "/dashboard",
+  "description": "The subscription tracker built for Europe",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#0A0A0F",
+  "background_color": "#0A0F1E",
   "theme_color": "#7C3AED",
   "orientation": "portrait-primary",
   "icons": [

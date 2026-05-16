@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://app.klaxo.app"),
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
+  manifest: "/manifest.json",
   appleWebApp: { capable: true, statusBarStyle: "black-translucent", title: "Klaxo" },
   icons: {
     icon: [
