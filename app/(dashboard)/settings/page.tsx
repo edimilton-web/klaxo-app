@@ -5,12 +5,14 @@ import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Modal } from "@/components/ui/modal"
+import { PwaInstallModal } from "@/components/pwa-install-modal"
 import { toast } from "sonner"
 
 export default function SettingsPage() {
   const { data: session, update } = useSession()
   const [loading, setLoading] = useState(false)
   const [deleteModal, setDeleteModal] = useState(false)
+  const [installModal, setInstallModal] = useState(false)
   const [form, setForm] = useState({ name: "", email: "", alertDaysBefore: 5 })
 
   useEffect(() => {
@@ -85,6 +87,22 @@ export default function SettingsPage() {
         </button>
       </div>
 
+      <div className="mt-4 rounded-2xl border border-white/[0.08] bg-[#16161F] p-5 flex items-center justify-between gap-4">
+        <div>
+          <p className="text-sm font-medium text-white">Install Klaxo app</p>
+          <p className="mt-0.5 text-xs text-white/40">Add to your home screen or desktop for quick access</p>
+        </div>
+        <button
+          onClick={() => setInstallModal(true)}
+          className="flex-shrink-0 flex items-center gap-2 rounded-xl bg-violet-600/15 px-3 py-2 text-sm font-medium text-violet-400 hover:bg-violet-600/25 transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+          </svg>
+          Install
+        </button>
+      </div>
+
       <div className="mt-4 rounded-2xl border border-red-500/20 bg-red-500/8 p-5">
         <h3 className="font-semibold text-red-400">Danger zone</h3>
         <p className="mt-1 text-sm text-red-300/70">Deleting your account is irreversible. All your data will be permanently removed.</p>
@@ -92,6 +110,8 @@ export default function SettingsPage() {
           Delete account
         </Button>
       </div>
+
+      <PwaInstallModal open={installModal} onClose={() => setInstallModal(false)} />
 
       <Modal open={deleteModal} onClose={() => setDeleteModal(false)} title="Delete account">
         <p className="text-sm text-white/60">This action is <strong className="text-white">irreversible</strong>. All your data, subscriptions, and history will be permanently deleted.</p>

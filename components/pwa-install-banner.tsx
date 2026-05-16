@@ -7,6 +7,8 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
+const DISMISSED_KEY = "pwa-install-dismissed-v1"
+
 export function PwaInstallBanner() {
   const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isIos, setIsIos] = useState(false)
@@ -14,7 +16,7 @@ export function PwaInstallBanner() {
 
   useEffect(() => {
     if (window.matchMedia("(display-mode: standalone)").matches) return
-    if (sessionStorage.getItem("pwa-banner-dismissed")) return
+    if (localStorage.getItem(DISMISSED_KEY)) return
 
     const ua = navigator.userAgent
     const ios = /iphone|ipad|ipod/i.test(ua) && !(window as any).MSStream
@@ -42,7 +44,7 @@ export function PwaInstallBanner() {
   }, [])
 
   function dismiss() {
-    sessionStorage.setItem("pwa-banner-dismissed", "1")
+    localStorage.setItem(DISMISSED_KEY, "1")
     setVisible(false)
   }
 
@@ -50,8 +52,11 @@ export function PwaInstallBanner() {
     if (!prompt) return
     await prompt.prompt()
     const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") setVisible(false)
-    else dismiss()
+    if (outcome === "accepted") {
+      setVisible(false)
+    } else {
+      dismiss()
+    }
   }
 
   if (!visible) return null
@@ -61,13 +66,13 @@ export function PwaInstallBanner() {
       <div className="flex items-start gap-3">
         <KlaxoLogo size="xs" />
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-white">Instala o Klaxo</p>
+          <p className="text-sm font-semibold text-white">Install Klaxo</p>
           {isIos ? (
             <p className="mt-0.5 text-xs text-white/45">
-              Toca em <strong className="text-white/70">Partilhar</strong> → <strong className="text-white/70">Adicionar ao ecrã inicial</strong>
+              Tap <strong className="text-white/70">Share</strong> → <strong className="text-white/70">Add to Home Screen</strong>
             </p>
           ) : (
-            <p className="mt-0.5 text-xs text-white/45">Acesso rápido sem abrir o browser</p>
+            <p className="mt-0.5 text-xs text-white/45">Quick access without opening a browser</p>
           )}
         </div>
         <button onClick={dismiss} className="flex-shrink-0 text-white/25 hover:text-white/60 transition-colors">
@@ -82,7 +87,7 @@ export function PwaInstallBanner() {
           onClick={install}
           className="mt-3 w-full rounded-xl bg-violet-600 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-violet-500"
         >
-          Instalar
+          Install
         </button>
       )}
     </div>
