@@ -12,33 +12,23 @@
   "lang": "en",
   "categories": ["finance", "productivity"],
   "icons": [
-    { "src": "/icons/klaxo-icon-192.png",         "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/klaxo-icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icons/klaxo-icon-512.png",         "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "/icons/klaxo-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "/icons/klaxo-icon-1024.png",        "sizes": "1024x1024","type": "image/png", "purpose": "any" }
+    { "src": "/pwa-icon?size=192",             "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-icon?size=192&maskable=1",  "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/pwa-icon?size=512",             "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/pwa-icon?size=512&maskable=1",  "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
     {
       "name": "Add subscription",
       "short_name": "Add",
       "url": "/subscriptions/new",
-      "icons": [{ "src": "/icons/klaxo-icon-192.png", "sizes": "192x192" }]
+      "icons": [{ "src": "/pwa-icon?size=192", "sizes": "192x192" }]
     },
     {
       "name": "Dashboard",
       "short_name": "Dashboard",
       "url": "/dashboard",
-      "icons": [{ "src": "/icons/klaxo-icon-192.png", "sizes": "192x192" }]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "/icons/klaxo-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Klaxo dashboard"
+      "icons": [{ "src": "/pwa-icon?size=192", "sizes": "192x192" }]
     }
   ]
 }
