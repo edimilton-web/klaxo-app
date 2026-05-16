@@ -16,6 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      allowDangerousEmailAccountLinking: true,
     }),
     Credentials({
       name: "credentials",
@@ -39,14 +40,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.plan = (user as { plan?: string }).plan ?? "FREE"
-      }
-      if (token.id) {
         const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
+          where: { id: user.id as string },
           select: { plan: true },
         })
-        if (dbUser) token.plan = dbUser.plan
+        token.plan = dbUser?.plan ?? "FREE"
       }
       return token
     },

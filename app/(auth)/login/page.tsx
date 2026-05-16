@@ -11,12 +11,19 @@ import { toast } from "sonner"
 function LoginNotifications() {
   const searchParams = useSearchParams()
   useEffect(() => {
+    const error = searchParams.get("error")
     if (searchParams.get("verified") === "1") {
       toast.success("Email verified! You can now sign in.")
-    } else if (searchParams.get("error") === "expired_token") {
+    } else if (error === "expired_token") {
       toast.error("Verification link expired. Please sign in and request a new one.")
-    } else if (searchParams.get("error") === "invalid_token") {
+    } else if (error === "invalid_token") {
       toast.error("Invalid verification link.")
+    } else if (error === "OAuthAccountNotLinked") {
+      toast.error("This email is already registered. Sign in with your password instead.")
+    } else if (error === "AccessDenied") {
+      toast.error("Access denied. Please try again.")
+    } else if (error) {
+      toast.error("Sign-in failed. Please try again.")
     }
   }, [searchParams])
   return null
