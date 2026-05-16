@@ -3,24 +3,36 @@ import { NextRequest } from "next/server"
 
 export const runtime = "edge"
 
-async function getNunitoBlack(): Promise<ArrayBuffer> {
-  const css = await fetch(
-    "https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap",
-    { headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" } }
-  ).then((r) => r.text())
-  const url = css.match(/src: url\(([^)]+\.woff2)\)/)?.[1]
-  if (!url) throw new Error("Nunito woff2 not found")
-  return fetch(url).then((r) => r.arrayBuffer())
+async function getFontData(): Promise<ArrayBuffer | null> {
+  try {
+    const css = await fetch(
+      "https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap",
+      {
+        headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" },
+        cache: "force-cache",
+      }
+    ).then((r) => r.text())
+    const url = css.match(/src: url\(([^)]+\.woff2)\)/)?.[1]
+    if (!url) return null
+    return fetch(url, { cache: "force-cache" }).then((r) => r.arrayBuffer())
+  } catch {
+    return null
+  }
 }
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
-  const size = parseInt(searchParams.get("size") ?? "512", 10)
+  const size = Math.min(1024, Math.max(16, parseInt(searchParams.get("size") ?? "512", 10)))
   const maskable = searchParams.get("maskable") === "1"
 
-  const fontData = await getNunitoBlack()
+  const fontData = await getFontData()
   const fontSize = Math.round(size * 0.625)
   const marginTop = Math.round(size * 0.04)
+  const borderRadius = maskable ? "0%" : "22%"
+
+  const fonts: ConstructorParameters<typeof ImageResponse>[1]["fonts"] = fontData
+    ? [{ name: "Nunito", data: fontData, weight: 900, style: "normal" as const }]
+    : []
 
   return new ImageResponse(
     (
@@ -32,7 +44,7 @@ export async function GET(req: NextRequest) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRadius: maskable ? "0%" : "22%",
+          borderRadius,
         }}
       >
         <div
@@ -40,7 +52,7 @@ export async function GET(req: NextRequest) {
             color: "white",
             fontSize,
             fontWeight: 900,
-            fontFamily: "Nunito",
+            fontFamily: fontData ? "Nunito" : "Arial Black, sans-serif",
             lineHeight: 1,
             marginTop,
           }}
@@ -52,7 +64,7 @@ export async function GET(req: NextRequest) {
     {
       width: size,
       height: size,
-      fonts: [{ name: "Nunito", data: fontData, weight: 900, style: "normal" }],
+      fonts,
     }
   )
 }
