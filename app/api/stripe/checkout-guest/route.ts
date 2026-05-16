@@ -4,19 +4,20 @@ import { stripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from 
 
 const schema = z.object({
   plan: z.enum(["pro-monthly", "pro-yearly"]),
+  coupon: z.string().optional(),
 })
 
-async function createGuestSession(plan: "pro-monthly" | "pro-yearly") {
+async function createGuestSession(plan: "pro-monthly" | "pro-yearly", coupon?: string) {
   const priceId = plan === "pro-yearly" ? STRIPE_PRO_YEARLY_PRICE_ID : STRIPE_PRO_MONTHLY_PRICE_ID
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"
 
   return stripe.checkout.sessions.create({
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
-    allow_promotion_codes: true,
+    ...(coupon ? { discounts: [{ coupon }] } : { allow_promotion_codes: true }),
     billing_address_collection: "auto",
     success_url: `${appUrl}/welcome?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${appUrl}/checkout?plan=${plan}`,
+    cancel_url: `${appUrl}/checkout?plan=${plan}${coupon ? `&coupon=${coupon}` : ""}`,
     metadata: { guestCheckout: "true", plan },
     subscription_data: { metadata: { guestCheckout: "true", plan } },
   })
@@ -28,7 +29,7 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "Invalid plan" }, { status: 400 })
 
   try {
-    const session = await createGuestSession(parsed.data.plan)
+    const session = await createGuestSession(parsed.data.plan, parsed.data.coupon)
     return NextResponse.json({ url: session.url })
   } catch (err) {
     console.error("[checkout-guest] Stripe error:", err)
