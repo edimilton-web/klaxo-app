@@ -30,9 +30,9 @@ export async function GET(req: NextRequest) {
   const marginTop = Math.round(size * 0.04)
   const borderRadius = maskable ? "0%" : "22%"
 
-  const fonts: ConstructorParameters<typeof ImageResponse>[1]["fonts"] = fontData
-    ? [{ name: "Nunito", data: fontData, weight: 900, style: "normal" as const }]
-    : []
+  const extraOptions = fontData
+    ? { fonts: [{ name: "Nunito", data: fontData, weight: 900 as const, style: "normal" as const }] }
+    : {}
 
   return new ImageResponse(
     (
@@ -61,10 +61,6 @@ export async function GET(req: NextRequest) {
         </div>
       </div>
     ),
-    {
-      width: size,
-      height: size,
-      fonts,
-    }
+    { width: size, height: size, ...extraOptions }
   )
 }
