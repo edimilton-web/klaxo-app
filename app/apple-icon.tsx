@@ -4,14 +4,18 @@ export const runtime = "edge"
 export const size = { width: 180, height: 180 }
 export const contentType = "image/png"
 
-async function getNunitoBlack(): Promise<ArrayBuffer> {
-  const css = await fetch(
-    "https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap",
-    { headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" } }
-  ).then((r) => r.text())
-  const url = css.match(/src: url\(([^)]+\.woff2)\)/)?.[1]
-  if (!url) throw new Error("Nunito woff2 URL not found")
-  return fetch(url).then((r) => r.arrayBuffer())
+async function getNunitoBlack(): Promise<ArrayBuffer | null> {
+  try {
+    const css = await fetch(
+      "https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap",
+      { headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" } }
+    ).then((r) => r.text())
+    const url = css.match(/src: url\(([^)]+\.woff2)\)/)?.[1]
+    if (!url) return null
+    return await fetch(url).then((r) => r.arrayBuffer())
+  } catch {
+    return null
+  }
 }
 
 export default async function AppleIcon() {
@@ -34,7 +38,7 @@ export default async function AppleIcon() {
             color: "white",
             fontSize: 108,
             fontWeight: 900,
-            fontFamily: "Nunito",
+            fontFamily: fontData ? "Nunito" : "system-ui",
             lineHeight: 1,
             marginTop: "12px",
           }}
@@ -45,7 +49,7 @@ export default async function AppleIcon() {
     ),
     {
       ...size,
-      fonts: [{ name: "Nunito", data: fontData, weight: 900, style: "normal" }],
+      ...(fontData ? { fonts: [{ name: "Nunito", data: fontData, weight: 900, style: "normal" }] } : {}),
     }
   )
 }
