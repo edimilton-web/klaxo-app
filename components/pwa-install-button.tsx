@@ -6,37 +6,41 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>
 }
 
-export function PwaInstallButton() {
+function usePwaPrompt() {
   const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [show, setShow] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
 
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) return
+    setIsStandalone(window.matchMedia("(display-mode: standalone)").matches)
 
     const early = (window as any).__pwaPrompt as BeforeInstallPromptEvent | null
-    if (early) { setPrompt(early); setShow(true); return }
+    if (early) { setPrompt(early); return }
 
     const handler = (e: Event) => {
       e.preventDefault()
       setPrompt(e as BeforeInstallPromptEvent)
-      setShow(true)
     }
     window.addEventListener("beforeinstallprompt", handler)
     return () => window.removeEventListener("beforeinstallprompt", handler)
   }, [])
 
-  async function handleInstall() {
+  async function trigger() {
     if (!prompt) return
     await prompt.prompt()
     const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") setShow(false)
+    if (outcome === "accepted") setPrompt(null)
   }
 
-  if (!show) return null
+  return { prompt, isStandalone, trigger }
+}
+
+export function PwaInstallButton() {
+  const { prompt, isStandalone, trigger } = usePwaPrompt()
+  if (isStandalone || !prompt) return null
 
   return (
     <button
-      onClick={handleInstall}
+      onClick={trigger}
       className="mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm text-violet-400 hover:bg-violet-600/10 transition-colors"
     >
       <svg className="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -48,36 +52,12 @@ export function PwaInstallButton() {
 }
 
 export function PwaInstallMobileButton() {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null)
-  const [show, setShow] = useState(false)
-
-  useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) return
-
-    const early = (window as any).__pwaPrompt as BeforeInstallPromptEvent | null
-    if (early) { setPrompt(early); setShow(true); return }
-
-    const handler = (e: Event) => {
-      e.preventDefault()
-      setPrompt(e as BeforeInstallPromptEvent)
-      setShow(true)
-    }
-    window.addEventListener("beforeinstallprompt", handler)
-    return () => window.removeEventListener("beforeinstallprompt", handler)
-  }, [])
-
-  async function handleInstall() {
-    if (!prompt) return
-    await prompt.prompt()
-    const { outcome } = await prompt.userChoice
-    if (outcome === "accepted") setShow(false)
-  }
-
-  if (!show) return null
+  const { prompt, isStandalone, trigger } = usePwaPrompt()
+  if (isStandalone || !prompt) return null
 
   return (
     <button
-      onClick={handleInstall}
+      onClick={trigger}
       className="flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-xs font-medium text-white/35 transition-colors"
     >
       <svg className="h-5 w-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>

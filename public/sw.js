@@ -1,6 +1,10 @@
-const CACHE = "klaxo-v1"
+const CACHE = "klaxo-v2"
+const OFFLINE_URL = "/offline"
 
 self.addEventListener("install", (e) => {
+  e.waitUntil(
+    caches.open(CACHE).then((cache) => cache.add(OFFLINE_URL))
+  )
   self.skipWaiting()
 })
 
@@ -18,6 +22,8 @@ self.addEventListener("fetch", (e) => {
   if (!e.request.url.startsWith(self.location.origin)) return
   if (e.request.url.includes("/api/")) return
 
+  const isNavigation = e.request.mode === "navigate"
+
   e.respondWith(
     fetch(e.request)
       .then((res) => {
@@ -27,6 +33,12 @@ self.addEventListener("fetch", (e) => {
         }
         return res
       })
-      .catch(() => caches.match(e.request))
+      .catch(() =>
+        caches.match(e.request).then((cached) => {
+          if (cached) return cached
+          if (isNavigation) return caches.match(OFFLINE_URL)
+          return new Response("", { status: 408, statusText: "Offline" })
+        })
+      )
   )
 })

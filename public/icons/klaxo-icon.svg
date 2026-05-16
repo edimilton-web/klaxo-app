@@ -8,5 +8,13 @@
     
   </defs>
   <rect width="240" height="240" rx="53" ry="53" fill="url(#klaxoGrad)"></rect>
-  <text class="klaxo-k" x="120" y="124">K</text>
+  <text
+    x="120" y="124"
+    font-family="Nunito, system-ui, sans-serif"
+    font-weight="900"
+    font-size="150"
+    fill="#FFFFFF"
+    text-anchor="middle"
+    dominant-baseline="central"
+  >K</text>
 </svg>
