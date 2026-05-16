@@ -6,7 +6,6 @@ import { stripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from 
 
 const schema = z.object({
   priceType: z.enum(["monthly", "yearly"]),
-  coupon: z.string().optional(),
 })
 
 export async function POST(req: Request) {
@@ -29,13 +28,11 @@ export async function POST(req: Request) {
 
   const priceId = parsed.data.priceType === "yearly" ? STRIPE_PRO_YEARLY_PRICE_ID : STRIPE_PRO_MONTHLY_PRICE_ID
 
-  const coupon = parsed.data.coupon
-
   const checkoutSession = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
-    ...(coupon ? { discounts: [{ coupon }] } : { allow_promotion_codes: true }),
+    allow_promotion_codes: true,
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?success=1`,
     cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing?canceled=1`,
     metadata: { userId: user.id },

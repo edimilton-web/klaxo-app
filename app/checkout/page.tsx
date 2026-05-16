@@ -38,7 +38,6 @@ function CheckoutContent() {
   const searchParams = useSearchParams()
   const rawPlan = searchParams.get("plan") ?? "pro-monthly"
   const plan: Plan = rawPlan in PLANS ? (rawPlan as Plan) : "pro-monthly"
-  const coupon = searchParams.get("coupon") ?? undefined
   const config = PLANS[plan]
 
   const [loading, setLoading] = useState(false)
@@ -51,7 +50,7 @@ function CheckoutContent() {
       const res = await fetch("/api/stripe/checkout-guest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ plan, coupon }),
+        body: JSON.stringify({ plan }),
       })
       const data = await res.json()
       if (!res.ok || !data.url) {
