@@ -4,7 +4,9 @@ import { useEffect } from "react"
 export function PwaRegister() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {})
+      navigator.serviceWorker.register("/sw.js").catch((err) => {
+        console.error("[PWA] Service worker registration failed:", err)
+      })
     }
   }, [])
   return null
