@@ -1,4 +1,4 @@
-const CACHE = "klaxo-v2"
+const CACHE = "klaxo-v3"
 const OFFLINE_URL = "/offline"
 
 self.addEventListener("install", (e) => {
