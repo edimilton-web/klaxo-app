@@ -4,6 +4,8 @@ import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/prisma"
+import { addSubscriberToMailerLite } from "@/lib/mailerlite"
+import { sendNewUserAlert } from "@/lib/resend"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -36,6 +38,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  events: {
+    async createUser({ user }) {
+      if (!user.email) return
+      const name = user.name ?? user.email.split("@")[0]
+      addSubscriberToMailerLite({ email: user.email, name }).catch((err) => {
+        console.error("[MailerLite] Google OAuth subscriber add failed:", err)
+      })
+      sendNewUserAlert({ email: user.email, name, authMethod: "Google" }).catch((err) => {
+        console.error("[NewUserAlert] Google OAuth alert failed:", err)
+      })
+    },
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

@@ -73,6 +73,34 @@ export async function sendProSetupEmail({
   })
 }
 
+export async function sendNewUserAlert({
+  email,
+  name,
+  authMethod,
+}: {
+  email: string
+  name: string
+  authMethod: "Google" | "Email"
+}) {
+  const now = new Date().toISOString().replace("T", " ").slice(0, 19) + " UTC"
+  return resend.emails.send({
+    from: FROM,
+    to: "hello@klaxo.app",
+    subject: `🎉 New Klaxo user — ${email}`,
+    text: [
+      "New user registered on Klaxo.",
+      "",
+      `Email: ${email}`,
+      `Name: ${name}`,
+      `Plan: Free`,
+      `Date: ${now}`,
+      `Auth method: ${authMethod}`,
+      "",
+      "→ View in dashboard: app.klaxo.app/dashboard",
+    ].join("\n"),
+  })
+}
+
 export async function sendMonthlySummary({
   to,
   userName,

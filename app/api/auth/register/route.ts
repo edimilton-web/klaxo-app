@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { randomBytes } from "crypto"
 import { prisma } from "@/lib/prisma"
-import { sendVerificationEmail } from "@/lib/resend"
+import { sendVerificationEmail, sendNewUserAlert } from "@/lib/resend"
 import { addSubscriberToMailerLite } from "@/lib/mailerlite"
 
 const schema = z.object({
@@ -26,9 +26,12 @@ export async function POST(req: Request) {
   const hashed = await bcrypt.hash(password, 12)
   await prisma.user.create({ data: { name, email, password: hashed } })
 
-  // Add to MailerLite — fire and forget, errors are logged but don't block registration
+  // Add to MailerLite — fire and forget
   addSubscriberToMailerLite({ email, name }).catch((err) => {
     console.error("[MailerLite] Failed to add subscriber:", err)
+  })
+  sendNewUserAlert({ email, name, authMethod: "Email" }).catch((err) => {
+    console.error("[NewUserAlert] Failed to send alert:", err)
   })
 
   const token = randomBytes(32).toString("hex")
