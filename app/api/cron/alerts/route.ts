@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { sendRenewalAlert } from "@/lib/resend"
+import { sendRenewalAlert, sendPaymentConfirmationEmail } from "@/lib/resend"
+import { generatePaymentToken } from "@/lib/payment-token"
 
 async function sendPushNotification({
   playerId,
@@ -120,6 +121,45 @@ export async function POST(req: Request) {
         await prisma.alert.update({ where: { id: alertRecord.id }, data: { status: "FAILED" } })
         failed++
       }
+    }
+  }
+
+  // Payment confirmation emails — subscriptions that became overdue yesterday
+  const yesterday = new Date(today)
+  yesterday.setDate(yesterday.getDate() - 1)
+
+  const overdueSubscriptions = await prisma.subscription.findMany({
+    where: {
+      status: "ACTIVE",
+      nextBillingDate: { gte: yesterday, lt: today },
+      paymentReminderSent: false,
+    },
+    include: { user: true },
+  })
+
+  for (const sub of overdueSubscriptions) {
+    try {
+      const token = generatePaymentToken(sub.id, sub.userId)
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"
+      const confirmUrl = `${appUrl}/api/subscriptions/${sub.id}/confirm-payment?token=${token}`
+
+      await sendPaymentConfirmationEmail({
+        to: sub.user.email,
+        userName: sub.user.name ?? "user",
+        subscriptionName: sub.name,
+        amount: Number(sub.amount),
+        currency: sub.currency,
+        dueDate: sub.nextBillingDate.toISOString(),
+        confirmUrl,
+      })
+
+      await prisma.subscription.update({
+        where: { id: sub.id },
+        data: { paymentReminderSent: true },
+      })
+      sent++
+    } catch {
+      failed++
     }
   }
 

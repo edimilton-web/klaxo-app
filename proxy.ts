@@ -8,7 +8,7 @@ export default auth((req) => {
   const isLoggedIn = !!session?.user
   const isAuthPath = AUTH_PATHS.some((p) => nextUrl.pathname.startsWith(p))
   const isDashboard = nextUrl.pathname.startsWith("/dashboard") || nextUrl.pathname.startsWith("/subscriptions") || nextUrl.pathname.startsWith("/billing") || nextUrl.pathname.startsWith("/settings")
-  const isApiProtected = nextUrl.pathname.startsWith("/api/") && !nextUrl.pathname.startsWith("/api/auth") && !nextUrl.pathname.startsWith("/api/stripe/webhook") && !nextUrl.pathname.startsWith("/api/stripe/checkout-guest") && !nextUrl.pathname.startsWith("/api/stripe/session-info") && !nextUrl.pathname.startsWith("/api/cron") && !nextUrl.pathname.startsWith("/api/carousel")
+  const isApiProtected = nextUrl.pathname.startsWith("/api/") && !nextUrl.pathname.startsWith("/api/auth") && !nextUrl.pathname.startsWith("/api/stripe/webhook") && !nextUrl.pathname.startsWith("/api/stripe/checkout-guest") && !nextUrl.pathname.startsWith("/api/stripe/session-info") && !nextUrl.pathname.startsWith("/api/cron") && !nextUrl.pathname.startsWith("/api/carousel") && !nextUrl.pathname.endsWith("/confirm-payment")
 
   if (isLoggedIn && isAuthPath) {
     return NextResponse.redirect(new URL("/dashboard", nextUrl))

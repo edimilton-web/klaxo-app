@@ -73,10 +73,13 @@ model Subscription {
   category        String?
   status          SubscriptionStatus @default(ACTIVE)
   notes           String?
-  logoUrl         String?
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
-  alerts          Alert[]
+  logoUrl             String?
+  lastPaidAt          DateTime?
+  paymentReminderSent Boolean            @default(false)
+  snoozedUntil        DateTime?
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+  alerts              Alert[]
 
   @@index([userId])
   @@index([userId, status])

@@ -6,8 +6,10 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
 import { toMonthlyEur } from "@/lib/exchange-rate"
+import { SuccessToast } from "@/components/ui/success-toast"
 
-export default async function SubscriptionsPage() {
+export default async function SubscriptionsPage({ searchParams }: { searchParams: Promise<{ paid?: string; error?: string }> }) {
+  const { paid } = await searchParams
   const session = await auth()
   const userId = session!.user.id
 
@@ -32,6 +34,7 @@ export default async function SubscriptionsPage() {
 
   return (
     <div>
+      {paid && <SuccessToast message={`${decodeURIComponent(paid)} marked as paid — renewal date updated!`} />}
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Subscriptions</h1>
@@ -85,7 +88,7 @@ export default async function SubscriptionsPage() {
               </div>
               <div className="space-y-2">
                 {active.map((sub) => (
-                  <SubscriptionItem key={sub.id} sub={{ ...sub, amount: Number(sub.amount), amountEur: sub.amountEur ? Number(sub.amountEur) : null, nextBillingDate: sub.nextBillingDate.toISOString() }} />
+                  <SubscriptionItem key={sub.id} sub={{ ...sub, amount: Number(sub.amount), amountEur: sub.amountEur ? Number(sub.amountEur) : null, nextBillingDate: sub.nextBillingDate.toISOString(), snoozedUntil: sub.snoozedUntil ? sub.snoozedUntil.toISOString() : null }} />
                 ))}
               </div>
             </div>
@@ -98,7 +101,7 @@ export default async function SubscriptionsPage() {
               </div>
               <div className="space-y-2">
                 {paused.map((sub) => (
-                  <SubscriptionItem key={sub.id} sub={{ ...sub, amount: Number(sub.amount), amountEur: sub.amountEur ? Number(sub.amountEur) : null, nextBillingDate: sub.nextBillingDate.toISOString() }} />
+                  <SubscriptionItem key={sub.id} sub={{ ...sub, amount: Number(sub.amount), amountEur: sub.amountEur ? Number(sub.amountEur) : null, nextBillingDate: sub.nextBillingDate.toISOString(), snoozedUntil: sub.snoozedUntil ? sub.snoozedUntil.toISOString() : null }} />
                 ))}
               </div>
             </div>

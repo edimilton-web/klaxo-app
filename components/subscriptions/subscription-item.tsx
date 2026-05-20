@@ -20,6 +20,7 @@ interface Subscription {
   status: string
   notes?: string | null
   logoUrl?: string | null
+  snoozedUntil?: string | null
 }
 
 export function SubscriptionItem({ sub }: { sub: Subscription }) {
@@ -27,6 +28,8 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const days = getDaysUntil(sub.nextBillingDate)
+  const isSnoozed = sub.snoozedUntil ? new Date(sub.snoozedUntil) > new Date() : false
+  const isOverdue = days <= -1 && sub.status === "ACTIVE" && !isSnoozed
 
   async function handleCancel() {
     setLoading(true)
@@ -61,6 +64,9 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
+            {isOverdue && (
+              <span className="flex h-2 w-2 flex-shrink-0 rounded-full bg-orange-400" title="Payment overdue" />
+            )}
             <span className="font-semibold text-lg text-white">{sub.name}</span>
             {sub.status === "PAUSED" && <Badge variant="warning">Paused</Badge>}
             {sub.category && <Badge>{sub.category}</Badge>}

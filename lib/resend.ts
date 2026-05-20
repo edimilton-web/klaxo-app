@@ -3,6 +3,7 @@ import { RenewalAlertEmail } from "@/emails/renewal-alert"
 import { MonthlySummaryEmail } from "@/emails/monthly-summary"
 import { VerifyEmail } from "@/emails/verify-email"
 import { ProSetupEmail } from "@/emails/pro-setup"
+import { PaymentConfirmationEmail } from "@/emails/payment-confirmation"
 import { createElement } from "react"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
@@ -98,6 +99,38 @@ export async function sendNewUserAlert({
       "",
       "→ View in dashboard: app.klaxo.app/dashboard",
     ].join("\n"),
+  })
+}
+
+export async function sendPaymentConfirmationEmail({
+  to,
+  userName,
+  subscriptionName,
+  amount,
+  currency,
+  dueDate,
+  confirmUrl,
+}: {
+  to: string
+  userName: string
+  subscriptionName: string
+  amount: number
+  currency: string
+  dueDate: string
+  confirmUrl: string
+}) {
+  return resend.emails.send({
+    from: FROM,
+    to,
+    subject: `${subscriptionName} renewed yesterday — did you pay?`,
+    react: createElement(PaymentConfirmationEmail, {
+      userName,
+      subscriptionName,
+      amount,
+      currency,
+      dueDate,
+      confirmUrl,
+    }),
   })
 }
 
