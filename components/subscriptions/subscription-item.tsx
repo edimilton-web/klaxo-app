@@ -26,6 +26,7 @@ interface Subscription {
 export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const router = useRouter()
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [markPaidOpen, setMarkPaidOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const days = getDaysUntil(sub.nextBillingDate)
   const isSnoozed = sub.snoozedUntil ? new Date(sub.snoozedUntil) > new Date() : false
@@ -38,6 +39,16 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
     setConfirmOpen(false)
     if (!res.ok) { toast.error("Failed to cancel subscription"); return }
     toast.success("Subscription cancelled")
+    router.refresh()
+  }
+
+  async function handleMarkPaid() {
+    setLoading(true)
+    const res = await fetch(`/api/subscriptions/${sub.id}/mark-paid`, { method: "POST" })
+    setLoading(false)
+    setMarkPaidOpen(false)
+    if (!res.ok) { toast.error("Failed to mark as paid"); return }
+    toast.success("Done! Your next renewal date has been updated.")
     router.refresh()
   }
 
@@ -96,7 +107,7 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
                 : <svg className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               }
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => setConfirmOpen(true)}>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => isOverdue ? setMarkPaidOpen(true) : setConfirmOpen(true)}>
               <svg className="h-4 w-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
             </Button>
           </div>
@@ -108,6 +119,14 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
         <div className="mt-5 flex gap-3">
           <Button variant="outline" onClick={() => setConfirmOpen(false)} className="flex-1">Keep it</Button>
           <Button variant="danger" onClick={handleCancel} loading={loading} className="flex-1">Cancel subscription</Button>
+        </div>
+      </Modal>
+
+      <Modal open={markPaidOpen} onClose={() => setMarkPaidOpen(false)} title="Have you paid for this subscription?">
+        <p className="text-sm text-white/60">We'll update your next renewal date automatically.</p>
+        <div className="mt-5 flex gap-3">
+          <Button variant="ghost" onClick={() => setMarkPaidOpen(false)} className="flex-1 text-white/50 hover:text-white/70">Not yet</Button>
+          <Button onClick={handleMarkPaid} loading={loading} className="flex-1 bg-violet-600 hover:bg-violet-500 text-white">Yes, I've paid</Button>
         </div>
       </Modal>
     </>
