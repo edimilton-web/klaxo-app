@@ -22,13 +22,13 @@ export function OverdueBanner({ subscriptionId, subscriptionName, nextBillingDat
     setLoading(true)
     const res = await fetch(`/api/subscriptions/${subscriptionId}/mark-paid`, { method: "POST" })
     setLoading(false)
-    if (!res.ok) { toast.error("Erro ao registar pagamento"); return }
+    if (!res.ok) { toast.error("Failed to mark as paid"); return }
     if (fromModal) {
       setModalOpen(false)
       setConfirmed(true)
       setTimeout(() => { router.push("/subscriptions"); router.refresh() }, 1200)
     } else {
-      toast.success("Ótimo! A próxima renovação foi atualizada automaticamente.")
+      toast.success("Done! Your next renewal date has been updated.")
       router.push("/subscriptions")
       router.refresh()
     }
@@ -37,7 +37,7 @@ export function OverdueBanner({ subscriptionId, subscriptionName, nextBillingDat
   if (confirmed) {
     return (
       <div className="mb-6 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4 text-center text-sm font-medium text-emerald-400">
-        ✓ Atualizado
+        ✓ Updated
       </div>
     )
   }
@@ -53,7 +53,7 @@ export function OverdueBanner({ subscriptionId, subscriptionName, nextBillingDat
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-orange-200">
-              Esta subscrição venceu a {formatDate(nextBillingDate)}. Já pagaste?
+              This subscription was due on {formatDate(nextBillingDate)}. Have you paid?
             </p>
             <p className="mt-0.5 text-xs text-orange-300/60">{subscriptionName}</p>
             <div className="mt-3">
@@ -63,7 +63,7 @@ export function OverdueBanner({ subscriptionId, subscriptionName, nextBillingDat
                 loading={loading}
                 className="bg-violet-600 hover:bg-violet-500 text-white"
               >
-                Já paguei
+                I've paid
               </Button>
             </div>
           </div>
@@ -78,22 +78,22 @@ export function OverdueBanner({ subscriptionId, subscriptionName, nextBillingDat
         </div>
       </div>
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Já pagaste esta subscrição?">
-        <p className="text-sm text-white/60">Vamos atualizar a próxima data de renovação automaticamente.</p>
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Have you paid for this subscription?">
+        <p className="text-sm text-white/60">We'll update your next renewal date automatically.</p>
         <div className="mt-5 flex gap-3">
           <Button
             variant="ghost"
             onClick={() => setModalOpen(false)}
             className="flex-1 text-white/50 hover:text-white/70"
           >
-            Ainda não
+            Not yet
           </Button>
           <Button
             onClick={() => handleMarkPaid(true)}
             loading={loading}
             className="flex-1 bg-violet-600 hover:bg-violet-500 text-white"
           >
-            Sim, já paguei
+            Yes, I've paid
           </Button>
         </div>
       </Modal>
