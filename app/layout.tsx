@@ -58,15 +58,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script dangerouslySetInnerHTML={{ __html: `window.__pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){window.__pwaPrompt=e;if(!localStorage.getItem('pwa-install-dismissed-v1')){e.preventDefault();}});` }} />
         <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-6HPT9Q6QYP"
+          src="https://www.googletagmanager.com/gtag/js?id=G-2T6K61JYF9"
           strategy="afterInteractive"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics-app" strategy="afterInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-6HPT9Q6QYP');
+            gtag('config', 'G-2T6K61JYF9');
           `}
         </Script>
       </head>
