@@ -57,6 +57,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${dmSans.variable} ${nunito.variable} h-full antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `window.__pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){window.__pwaPrompt=e;if(!localStorage.getItem('pwa-install-dismissed-v1')){e.preventDefault();}});` }} />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-6HPT9Q6QYP"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6HPT9Q6QYP');
+          `}
+        </Script>
       </head>
       <body className="min-h-full flex flex-col bg-[#0A0A0F] font-sans">
         <SessionProvider>
