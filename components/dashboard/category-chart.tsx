@@ -42,6 +42,8 @@ export function CategoryChart({ data }: CategoryChartProps) {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
+        stroke="#16161F"
+        strokeWidth={2}
         style={{ filter: glow }}
       />
     )
@@ -74,8 +76,12 @@ export function CategoryChart({ data }: CategoryChartProps) {
                 <Cell
                   key={entry.name}
                   fill={colors[i]}
-                  opacity={activeIndex === undefined || activeIndex === i ? 1 : 0.4}
-                  style={{ cursor: "pointer", transition: "opacity 0.2s" }}
+                  style={{
+                    cursor: "pointer",
+                    opacity: activeIndex === undefined || activeIndex === i ? 1 : 0.4,
+                    filter: "none",
+                    transition: "opacity 0.2s",
+                  }}
                 />
               ))}
             </Pie>
