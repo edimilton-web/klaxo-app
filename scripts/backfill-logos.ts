@@ -1,4 +1,4 @@
-// Preenche/atualiza logoUrl em subscrições sem logo ou com URL Clearbit.
+// Preenche/atualiza logoUrl em subscrições sem logo ou com URL antigo.
 // Executar: npx tsx scripts/backfill-logos.ts
 import { PrismaClient } from "@prisma/client"
 import { getLogoUrlForService } from "../lib/service-logos"
@@ -11,9 +11,10 @@ async function main() {
       OR: [
         { logoUrl: null },
         { logoUrl: { startsWith: "https://logo.clearbit.com/" } },
+        { logoUrl: { startsWith: "/api/logo/" } },
       ],
     },
-    select: { id: true, name: true, logoUrl: true },
+    select: { id: true, name: true },
   })
 
   console.log(`Found ${subs.length} subscription(s) to update.`)

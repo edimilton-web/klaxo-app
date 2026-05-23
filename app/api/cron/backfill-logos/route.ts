@@ -13,6 +13,7 @@ export async function POST(req: Request) {
       OR: [
         { logoUrl: null },
         { logoUrl: { startsWith: "https://logo.clearbit.com/" } },
+        { logoUrl: { startsWith: "/api/logo/" } },
       ],
     },
     select: { id: true, name: true },

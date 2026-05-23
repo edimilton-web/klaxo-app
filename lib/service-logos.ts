@@ -78,7 +78,7 @@ export function getServiceDomain(name: string): string | null {
 }
 
 export function getClearbitLogoUrl(domain: string): string {
-  return `/api/logo/${domain}`
+  return `https://www.google.com/s2/favicons?domain=${domain}&sz=128`
 }
 
 export function getLogoUrlForService(name: string): string | null {
