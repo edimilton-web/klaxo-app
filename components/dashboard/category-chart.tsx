@@ -42,8 +42,8 @@ export function CategoryChart({ data }: CategoryChartProps) {
         startAngle={startAngle}
         endAngle={endAngle}
         fill={fill}
-        stroke="#16161F"
-        strokeWidth={2}
+        stroke="#fff"
+        strokeWidth={1}
         style={{ filter: glow }}
       />
     )
