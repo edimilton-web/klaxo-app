@@ -1,5 +1,5 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Sector } from "recharts"
 import { formatCurrency, resolveSubscriptionColors } from "@/lib/utils"
 
@@ -23,28 +23,29 @@ export function CategoryChart({ data }: CategoryChartProps) {
   // selected takes priority over hovered for activeShape
   const activeIndex = selectedIndex !== undefined ? selectedIndex : hoveredIndex
 
-  const activeShape = useCallback(
-    (props: any) => {
-      const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props
-      const isSel = selectedIndex !== undefined
-      const glow = isSel
-        ? `drop-shadow(0 0 10px ${hexToRgba(fill, 0.7)})`
-        : `drop-shadow(0 0 6px ${hexToRgba(fill, 0.4)})`
-      return (
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={isSel ? outerRadius + 5 : outerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-          style={{ filter: glow }}
-        />
-      )
-    },
-    [selectedIndex],
-  )
+  // Stable ref so activeShape function identity never changes (prevents Recharts remounting)
+  const selectedRef = useRef(selectedIndex)
+  selectedRef.current = selectedIndex
+
+  const activeShape = useCallback((props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props
+    const isSel = selectedRef.current !== undefined
+    const glow = isSel
+      ? `drop-shadow(0 0 10px ${hexToRgba(fill, 0.7)})`
+      : `drop-shadow(0 0 6px ${hexToRgba(fill, 0.4)})`
+    return (
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={isSel ? outerRadius + 5 : outerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+        style={{ filter: glow }}
+      />
+    )
+  }, [])
 
   if (!data.length) return null
 
@@ -78,18 +79,21 @@ export function CategoryChart({ data }: CategoryChartProps) {
                 />
               ))}
             </Pie>
-            <Tooltip
-              formatter={(value, name) => [formatCurrency(Number(value)), name]}
-              contentStyle={{
-                borderRadius: "12px",
-                border: "1px solid rgba(255,255,255,0.08)",
-                background: "#1A1A24",
-                fontSize: "13px",
-                color: "#fff",
-              }}
-              itemStyle={{ color: "rgba(255,255,255,0.7)" }}
-              labelStyle={{ color: "rgba(255,255,255,0.5)" }}
-            />
+            {/* Hide tooltip when a segment is selected — center label takes over */}
+            {selectedIndex === undefined && (
+              <Tooltip
+                formatter={(value, name) => [formatCurrency(Number(value)), name]}
+                contentStyle={{
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  background: "#1A1A24",
+                  fontSize: "13px",
+                  color: "#fff",
+                }}
+                itemStyle={{ color: "rgba(255,255,255,0.7)" }}
+                labelStyle={{ color: "rgba(255,255,255,0.5)" }}
+              />
+            )}
           </PieChart>
         </ResponsiveContainer>
 
