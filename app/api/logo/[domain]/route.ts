@@ -3,7 +3,9 @@ import { NextResponse } from "next/server"
 export async function GET(_req: Request, { params }: { params: Promise<{ domain: string }> }) {
   const { domain } = await params
   const apiKey = process.env.BRANDFETCH_API_KEY
-  if (!apiKey) return new NextResponse(null, { status: 404 })
+  if (!apiKey) {
+    return NextResponse.redirect(`https://logo.clearbit.com/${domain}`)
+  }
 
   try {
     const brandRes = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {

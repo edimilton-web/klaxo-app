@@ -3,6 +3,7 @@ import { z } from "zod"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
 import { convertToEur } from "@/lib/exchange-rate"
+import { getLogoUrlForService } from "@/lib/service-logos"
 
 const updateSchema = z.object({
   name: z.string().min(1).max(100).optional(),
@@ -42,7 +43,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   const parsed = updateSchema.safeParse(body)
   if (!parsed.success) return NextResponse.json({ error: "Invalid data", code: "VALIDATION_ERROR" }, { status: 400 })
 
-  const data = parsed.data
+  const data = { ...parsed.data }
+  if (data.name && data.logoUrl === undefined) {
+    const resolved = getLogoUrlForService(data.name)
+    if (resolved) data.logoUrl = resolved
+  }
+
   let amountEur: number | undefined
   if (data.amount || data.currency) {
     const amount = data.amount ?? Number(sub.amount)

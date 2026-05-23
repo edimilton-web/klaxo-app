@@ -6,11 +6,11 @@ export function SplashScreen() {
   const [phase, setPhase] = useState<"show" | "fade" | "done">("show")
 
   useEffect(() => {
-    if (sessionStorage.getItem("klaxo-splash")) {
+    if (localStorage.getItem("klaxo-splash")) {
       setPhase("done")
       return
     }
-    sessionStorage.setItem("klaxo-splash", "1")
+    localStorage.setItem("klaxo-splash", "1")
     const t1 = setTimeout(() => setPhase("fade"), 3200)
     const t2 = setTimeout(() => setPhase("done"), 3800)
     return () => { clearTimeout(t1); clearTimeout(t2) }
