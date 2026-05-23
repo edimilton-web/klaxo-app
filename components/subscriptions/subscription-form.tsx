@@ -61,7 +61,7 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
   }, [])
 
   const selectSuggestion = (service: typeof KNOWN_SERVICES[0]) => {
-    setForm((f) => ({ ...f, name: service.name, category: service.category, domain: service.domain }))
+    setForm((f) => ({ ...f, name: service.name, category: service.category, domain: service.domain, logoUrl: service.logoUrl ?? "" }))
     setSuggestions([])
   }
 

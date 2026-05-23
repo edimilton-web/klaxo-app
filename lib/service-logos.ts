@@ -16,6 +16,8 @@ export const SERVICE_DOMAIN_MAP: Record<string, string> = {
   "vodafone tv": "vodafone.pt",
   "sic": "sic.pt",
   "rtp": "rtp.pt",
+  "rtp play": "rtp.pt",
+  "meo kanal": "meo.pt",
   // MÚSICA
   "spotify": "spotify.com",
   "apple music": "apple.com",

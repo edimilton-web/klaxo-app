@@ -23,6 +23,12 @@ interface Subscription {
   snoozedUntil?: string | null
 }
 
+function nameToColor(name: string): string {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return `hsl(${Math.abs(hash) % 360}, 55%, 38%)`
+}
+
 export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const router = useRouter()
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -31,6 +37,7 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const days = getDaysUntil(sub.nextBillingDate)
   const isSnoozed = sub.snoozedUntil ? new Date(sub.snoozedUntil) > new Date() : false
   const isOverdue = days <= -1 && sub.status === "ACTIVE" && !isSnoozed
+  const initBg = nameToColor(sub.name)
 
   async function handleCancel() {
     setLoading(true)
@@ -67,9 +74,12 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   return (
     <>
       <div className="flex items-center gap-4 rounded-xl border border-white/[0.12] bg-[#16161F] p-4 hover:border-violet-500/40 transition-colors">
-        <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${sub.logoUrl ? "bg-white" : "bg-white/8 text-base font-bold text-white/50"}`}>
+        <div
+          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden text-base font-bold text-white"
+          style={sub.logoUrl ? { background: "white" } : { background: initBg }}
+        >
           {sub.logoUrl
-            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; if (el.parentElement) { el.parentElement.className = "flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-white/8 text-base font-bold text-white/50 overflow-hidden"; el.parentElement.textContent = sub.name[0].toUpperCase() } }} />
+            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; const p = el.parentElement; if (p) { p.style.background = initBg; p.textContent = sub.name[0].toUpperCase() } }} />
             : sub.name[0].toUpperCase()}
         </div>
 

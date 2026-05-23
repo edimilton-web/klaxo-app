@@ -57,4 +57,22 @@ export const KNOWN_SERVICES: Array<{ name: string; domain: string; category: str
   { name: "ChatGPT Plus", domain: "openai.com", category: "AI" },
   { name: "Claude Pro", domain: "anthropic.com", category: "AI" },
   { name: "Midjourney", domain: "midjourney.com", category: "AI" },
+  // OPERADORAS PT
+  { name: "MEO", domain: "meo.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=meo.pt&sz=128" },
+  { name: "NOS", domain: "nos.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=nos.pt&sz=128" },
+  { name: "Vodafone", domain: "vodafone.pt", category: "Other", logoUrl: "https://www.google.com/s2/favicons?domain=vodafone.pt&sz=128" },
+  { name: "NOWO", domain: "nowo.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=nowo.pt&sz=128" },
+  // STREAMING PT
+  { name: "NOS Play", domain: "nos.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=nos.pt&sz=128" },
+  { name: "MEO Kanal", domain: "meo.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=meo.pt&sz=128" },
+  { name: "SIC", domain: "sic.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=sic.pt&sz=128" },
+  { name: "RTP", domain: "rtp.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=rtp.pt&sz=128" },
+  { name: "RTP Play", domain: "rtp.pt", category: "Entertainment", logoUrl: "https://www.google.com/s2/favicons?domain=rtp.pt&sz=128" },
+  // NOTÍCIAS PT
+  { name: "Público", domain: "publico.pt", category: "News", logoUrl: "https://www.google.com/s2/favicons?domain=publico.pt&sz=128" },
+  { name: "Expresso", domain: "expresso.pt", category: "News", logoUrl: "https://www.google.com/s2/favicons?domain=expresso.pt&sz=128" },
+  { name: "Observador", domain: "observador.pt", category: "News", logoUrl: "https://www.google.com/s2/favicons?domain=observador.pt&sz=128" },
+  // FITNESS PT
+  { name: "Holmes Place", domain: "holmesplace.pt", category: "Health", logoUrl: "https://www.google.com/s2/favicons?domain=holmesplace.pt&sz=128" },
+  { name: "VivaFit", domain: "vivafit.pt", category: "Health", logoUrl: "https://www.google.com/s2/favicons?domain=vivafit.pt&sz=128" },
 ]
