@@ -4,6 +4,7 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { formatCurrency, formatDate, getDaysUntil, BILLING_CYCLE_LABELS } from "@/lib/utils"
+import { getServiceDomain } from "@/lib/service-logos"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Modal } from "@/components/ui/modal"
@@ -29,6 +30,38 @@ function nameToColor(name: string): string {
   return `hsl(${Math.abs(hash) % 360}, 55%, 38%)`
 }
 
+function LogoBox({ name, storedLogoUrl }: { name: string; storedLogoUrl?: string | null }) {
+  const [stage, setStage] = useState(0)
+  const domain = getServiceDomain(name)
+  const initBg = nameToColor(name)
+
+  // Build URL chain: Clearbit → Google Favicons → initials
+  const chain: string[] = domain
+    ? [`https://logo.clearbit.com/${domain}`, `https://www.google.com/s2/favicons?domain=${domain}&sz=64`]
+    : storedLogoUrl
+    ? [storedLogoUrl]
+    : []
+
+  if (!chain.length || stage >= chain.length) {
+    return (
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden text-base font-bold text-white" style={{ background: initBg }}>
+        {name[0].toUpperCase()}
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden bg-white">
+      <img
+        src={chain[stage]}
+        alt={name}
+        className="h-full w-full object-contain p-1.5"
+        onError={() => setStage((s) => s + 1)}
+      />
+    </div>
+  )
+}
+
 export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const router = useRouter()
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -37,7 +70,6 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   const days = getDaysUntil(sub.nextBillingDate)
   const isSnoozed = sub.snoozedUntil ? new Date(sub.snoozedUntil) > new Date() : false
   const isOverdue = days <= -1 && sub.status === "ACTIVE" && !isSnoozed
-  const initBg = nameToColor(sub.name)
 
   async function handleCancel() {
     setLoading(true)
@@ -74,14 +106,7 @@ export function SubscriptionItem({ sub }: { sub: Subscription }) {
   return (
     <>
       <div className="flex items-center gap-4 rounded-xl border border-white/[0.12] bg-[#16161F] p-4 hover:border-violet-500/40 transition-colors">
-        <div
-          className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden text-base font-bold text-white"
-          style={sub.logoUrl ? { background: "white" } : { background: initBg }}
-        >
-          {sub.logoUrl
-            ? <img src={sub.logoUrl} alt={sub.name} className="h-full w-full object-contain p-1.5" onError={(e) => { const el = e.currentTarget; el.style.display = "none"; const p = el.parentElement; if (p) { p.style.background = initBg; p.textContent = sub.name[0].toUpperCase() } }} />
-            : sub.name[0].toUpperCase()}
-        </div>
+        <LogoBox name={sub.name} storedLogoUrl={sub.logoUrl} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
