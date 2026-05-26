@@ -42,7 +42,9 @@ export async function POST(req: Request) {
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"
   const verifyUrl = `${appUrl}/api/auth/verify-email?token=${token}&email=${encodeURIComponent(email)}`
-  await sendVerificationEmail({ to: email, userName: name, verifyUrl })
+  sendVerificationEmail({ to: email, userName: name, verifyUrl }).catch((err) => {
+    console.error("[VerificationEmail] Failed to send:", err)
+  })
 
   return NextResponse.json({ ok: true }, { status: 201 })
 }
