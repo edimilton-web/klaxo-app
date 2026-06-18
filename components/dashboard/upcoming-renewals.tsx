@@ -33,7 +33,7 @@ export function UpcomingRenewals({ items }: UpcomingRenewalsProps) {
           const days = getDaysUntil(item.nextBillingDate)
           return (
             <div key={item.id} className="flex items-center gap-3">
-              <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${item.logoUrl ? "bg-slate-900" : "bg-white/8 text-sm font-bold text-white/60"}`}>
+              <div className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden ${item.logoUrl ? "bg-white" : "bg-white/8 text-sm font-bold text-white/60"}`}>
                 {item.logoUrl ? (
                   <img src={item.logoUrl} alt={item.name} className="h-full w-full object-contain p-1" />
                 ) : (
