@@ -13,7 +13,7 @@ const createSchema = z.object({
   nextBillingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   category: z.string().optional(),
   notes: z.string().optional(),
-  logoUrl: z.string().url().optional(),
+  logoUrl: z.string().optional(),
   domain: z.string().optional(),
 })
 
