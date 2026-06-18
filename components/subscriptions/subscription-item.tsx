@@ -35,12 +35,10 @@ function LogoBox({ name, storedLogoUrl }: { name: string; storedLogoUrl?: string
   const domain = getServiceDomain(name)
   const initBg = nameToColor(name)
 
-  // Build URL chain: Clearbit → Google Favicons → initials
-  const chain: string[] = domain
-    ? [`https://logo.clearbit.com/${domain}`, `https://www.google.com/s2/favicons?domain=${domain}&sz=64`]
-    : storedLogoUrl
-    ? [storedLogoUrl]
-    : []
+  const chain: string[] = [
+    ...(storedLogoUrl ? [storedLogoUrl] : []),
+    ...(domain ? [`https://logo.clearbit.com/${domain}`, `https://www.google.com/s2/favicons?domain=${domain}&sz=64`] : []),
+  ]
 
   if (!chain.length || stage >= chain.length) {
     return (
