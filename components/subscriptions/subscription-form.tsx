@@ -1,11 +1,11 @@
 "use client"
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
 import { toast } from "sonner"
-import { searchBrandLogo } from "@/lib/brandfetch"
+import { searchBrand } from "@/lib/brandfetch"
 import { CATEGORIES, CURRENCIES, BILLING_CYCLE_LABELS } from "@/lib/utils"
 import { z } from "zod"
 
@@ -36,7 +36,8 @@ interface SubscriptionFormProps {
 export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState<Array<{ name: string; domain: string; category: string; logoUrl: string }>>([])
+  const [suggestions, setSuggestions] = useState<Array<{ name: string; domain: string; icon: string }>>([])
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [form, setForm] = useState({
     name: initialData?.name ?? "",
     amount: initialData?.amount?.toString() ?? "",
@@ -50,18 +51,21 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleNameChange = useCallback(async (value: string) => {
+  const handleNameChange = useCallback((value: string) => {
     setForm((f) => ({ ...f, name: value }))
+    if (debounceRef.current) clearTimeout(debounceRef.current)
     if (value.length >= 2) {
-      const results = await searchBrandLogo(value)
-      setSuggestions(results.map((r) => ({ name: r.name, domain: r.domain, category: "", logoUrl: r.logo })))
+      debounceRef.current = setTimeout(async () => {
+        const results = await searchBrand(value)
+        setSuggestions(results)
+      }, 300)
     } else {
       setSuggestions([])
     }
   }, [])
 
-  const selectSuggestion = (service: { name: string; domain: string; category: string; logoUrl: string }) => {
-    setForm((f) => ({ ...f, name: service.name, category: service.category, domain: service.domain, logoUrl: service.logoUrl }))
+  const selectSuggestion = (service: { name: string; domain: string; icon: string }) => {
+    setForm((f) => ({ ...f, name: service.name, domain: service.domain, logoUrl: `/api/logo/${service.domain}` }))
     setSuggestions([])
   }
 
@@ -120,11 +124,11 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
               <li key={s.name}>
                 <button type="button" onClick={() => selectSuggestion(s)}
                   className="flex w-full items-center gap-3 px-3 py-2.5 text-sm hover:bg-white/5 transition-colors">
-                  {s.logoUrl && (
-                    <img src={s.logoUrl} alt={s.name} className="w-6 h-6 rounded object-contain bg-white p-0.5" />
+                  {s.icon && (
+                    <img src={s.icon} alt={s.name} className="w-6 h-6 rounded object-contain bg-white p-0.5" />
                   )}
                   <span className="font-medium text-white">{s.name}</span>
-                  <span className="ml-auto text-xs text-white/35">{s.category}</span>
+                  <span className="ml-auto text-xs text-white/35">{s.domain}</span>
                 </button>
               </li>
             ))}
