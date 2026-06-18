@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select } from "@/components/ui/select"
 import { toast } from "sonner"
-import { KNOWN_SERVICES } from "@/lib/brandfetch"
+import { searchBrandLogo } from "@/lib/brandfetch"
 import { CATEGORIES, CURRENCIES, BILLING_CYCLE_LABELS } from "@/lib/utils"
 import { z } from "zod"
 
@@ -36,7 +36,7 @@ interface SubscriptionFormProps {
 export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [suggestions, setSuggestions] = useState<typeof KNOWN_SERVICES>([])
+  const [suggestions, setSuggestions] = useState<Array<{ name: string; domain: string; category: string; logoUrl: string }>>([])
   const [form, setForm] = useState({
     name: initialData?.name ?? "",
     amount: initialData?.amount?.toString() ?? "",
@@ -50,18 +50,18 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
 
-  const handleNameChange = useCallback((value: string) => {
+  const handleNameChange = useCallback(async (value: string) => {
     setForm((f) => ({ ...f, name: value }))
     if (value.length >= 2) {
-      const matches = KNOWN_SERVICES.filter((s) => s.name.toLowerCase().includes(value.toLowerCase())).slice(0, 6)
-      setSuggestions(matches)
+      const results = await searchBrandLogo(value)
+      setSuggestions(results.map((r) => ({ name: r.name, domain: r.domain, category: "", logoUrl: r.logo })))
     } else {
       setSuggestions([])
     }
   }, [])
 
-  const selectSuggestion = (service: typeof KNOWN_SERVICES[0]) => {
-    setForm((f) => ({ ...f, name: service.name, category: service.category, domain: service.domain, logoUrl: service.logoUrl ?? "" }))
+  const selectSuggestion = (service: { name: string; domain: string; category: string; logoUrl: string }) => {
+    setForm((f) => ({ ...f, name: service.name, category: service.category, domain: service.domain, logoUrl: service.logoUrl }))
     setSuggestions([])
   }
 
@@ -120,6 +120,9 @@ export function SubscriptionForm({ initialData }: SubscriptionFormProps) {
               <li key={s.name}>
                 <button type="button" onClick={() => selectSuggestion(s)}
                   className="flex w-full items-center gap-3 px-3 py-2.5 text-sm hover:bg-white/5 transition-colors">
+                  {s.logoUrl && (
+                    <img src={s.logoUrl} alt={s.name} className="w-6 h-6 rounded object-contain bg-white p-0.5" />
+                  )}
                   <span className="font-medium text-white">{s.name}</span>
                   <span className="ml-auto text-xs text-white/35">{s.category}</span>
                 </button>
