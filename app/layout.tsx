@@ -13,7 +13,7 @@ const nunito = Nunito({ subsets: ["latin"], weight: ["900"], variable: "--font-n
 export const metadata: Metadata = {
   title: "Klaxo — Personal subscription manager",
   description: "Track all your subscriptions in one place. Total cost in EUR, email alerts before each renewal. Built for the European market.",
-  metadataBase: new URL("https://app.klaxo.app"),
+  metadataBase: new URL("https://www.klaxo.app"),
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
   manifest: "/manifest.json",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     title: "Klaxo — Personal subscription manager",
     description: "Stop paying for subscriptions you forgot about.",
     type: "website",
-    url: "https://app.klaxo.app",
+    url: "https://www.klaxo.app",
     siteName: "Klaxo",
     locale: "en_EU",
     images: [{ url: "/icons/klaxo-icon-512.png", width: 512, height: 512, alt: "Klaxo" }],
