@@ -3,23 +3,26 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { posts, getPostBySlug } from "@/lib/posts"
 
-type Props = { params: { slug: string } }
+// ✅ ALTERAÇÃO 1: params agora é Promise
+type Props = { params: Promise<{ slug: string }> }
 
 export function generateStaticParams() {
   return posts.map((p) => ({ slug: p.slug }))
 }
 
-export function generateMetadata({ params }: Props): Metadata {
-  const post = getPostBySlug(params.slug)
+// ✅ ALTERAÇÃO 2: async + await params + canonical com www
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  const post = getPostBySlug(slug)
   if (!post) return {}
   return {
     title: `${post.title} | Klaxo Blog`,
     description: post.description,
-    alternates: { canonical: `https://klaxo.app/blog/${post.slug}` },
+    alternates: { canonical: `https://www.klaxo.app/blog/${post.slug}` },
     openGraph: {
       title: post.title,
       description: post.description,
-      url: `https://klaxo.app/blog/${post.slug}`,
+      url: `https://www.klaxo.app/blog/${post.slug}`,
       type: "article",
     },
   }
@@ -132,8 +135,10 @@ function renderContent(content: string): React.ReactNode[] {
   return out
 }
 
-export default function BlogPostPage({ params }: Props) {
-  const post = getPostBySlug(params.slug)
+// ✅ ALTERAÇÃO 3: async + await params
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params
+  const post = getPostBySlug(slug)
   if (!post) notFound()
 
   return (
