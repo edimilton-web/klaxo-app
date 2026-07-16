@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import { posts } from "@/lib/posts"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://klaxo.app"
+  const base = "https://www.klaxo.app"
   const blogPosts = posts.map((p) => ({
     url: `${base}/blog/${p.slug}`,
     lastModified: new Date(),
