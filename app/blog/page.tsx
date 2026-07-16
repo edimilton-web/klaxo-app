@@ -5,11 +5,11 @@ import { posts } from "@/lib/posts"
 export const metadata: Metadata = {
   title: "Blog — Klaxo",
   description: "Articles on subscription tracking, spending habits, and how to stop paying for things you forgot about.",
-  alternates: { canonical: "https://klaxo.app/blog" },
+  alternates: { canonical: "https://www.klaxo.app/blog" },
   openGraph: {
     title: "Blog — Klaxo",
     description: "Articles on subscription tracking, spending habits, and how to stop paying for things you forgot about.",
-    url: "https://klaxo.app/blog",
+    url: "https://www.klaxo.app/blog",
     type: "website",
   },
 }
