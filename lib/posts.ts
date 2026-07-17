@@ -9,6 +9,67 @@ export type Post = {
 
 export const posts: Post[] = [
   {
+    slug: "why-you-underestimate-subscription-spending",
+    title: "The 89% Problem: Why Almost Everyone Underestimates What They Spend on Subscriptions",
+    date: "July 17, 2026",
+    readTime: "7 min read",
+    description: "A 2,500-person US study found 89% got their subscription spending wrong. UK and EU data show the same blind spot. Here's why — and how to fix it.",
+    content: `Ask someone how much they spend on subscriptions each month and they'll give you a number. Ask them to actually add it up, and the number changes. It always goes up, and usually by more than they'd guess.
+
+## The study that measured the gap
+
+In 2021, the consulting firm West Monroe surveyed 2,500 US consumers for its "State of Subscription Services Spending" report. Each person estimated their monthly subscription spend, then itemized it service by service.
+
+- **89%** underestimated what they actually spent
+- **66%** were off by more than $200 a month
+- **13%** were off by more than $400 a month
+
+West Monroe ran the same survey in 2018, and the gap had gotten wider by 2021 — not narrower. People weren't getting better at tracking this. They were getting worse, even as they spent more.
+
+The study is US-based, so the dollar amounts won't translate directly to a European budget. But the underlying mechanism — confidently underestimating recurring costs — isn't a US quirk. It shows up wherever subscriptions do.
+
+## The UK numbers aren't any better
+
+Citizens Advice, the UK's national consumer rights charity, found that 13 million people in the UK have been charged for a subscription they didn't mean to sign up for, wasting an estimated £800 million between them. Separately, 47% of Brits said they'd been caught out by a forgotten annual subscription — the kind that renews once a year and is easy to lose track of between charges.
+
+Widen the lens to Europe and it holds. YouGov surveyed subscribers across 17 markets and found only 38% had used all of their active subscriptions in the past six months. Put differently: for most subscribers, something on their card was billing quietly while going completely unused.
+
+## Why this happens to careful people too
+
+This isn't a discipline problem. It's a design problem.
+
+Individual charges are too small to register. A €9.99 line item doesn't feel like real money the way a €300 purchase does — but ten of those add up to nearly €100 a month without a single charge ever feeling significant on its own.
+
+Billing dates are scattered across the calendar and across payment methods. One renews on the 3rd, another in November, a third through the App Store instead of a card. There's rarely one statement where the full picture shows up at once.
+
+Cancelling is harder than signing up, on purpose. Signup is one click. Cancelling often means hunting through settings menus or sitting through a "wait, are you sure?" flow built to make you give up halfway. That friction protects revenue, and services know it.
+
+And free trials convert silently. A two-week trial that felt free turns into a real charge the moment nobody remembers to cancel it, and by the second month it's just another line nobody questions anymore.
+
+None of this requires anyone to be careless. It just requires a normal amount of inattention applied to a system built to reward it.
+
+## What the gap actually costs
+
+Take the West Monroe number: 66% of people off by more than $200 a month. Even assuming the real gap in Europe runs smaller, this isn't a rounding error — it's a spending category large enough to matter.
+
+A €150 monthly gap is €1,800 a year. Most households would notice that instantly if it landed as one annual bill. It goes unnoticed only because it never does.
+
+## Closing the gap
+
+The fix isn't complicated. It just requires doing the one thing most people skip: putting every subscription in front of you, in one place, at the same time.
+
+Pull the last 60-90 days of bank and card statements and list every recurring charge, no matter how small. Check the App Store and Google Play separately — these rarely show up clearly on bank statements and are one of the easiest categories to forget entirely. Add up the annual cost, not the monthly one; a €4.99 charge looks negligible until it's €59.88 a year. Flag anything not used in the last month — on its own, this filter catches most of the obviously wasted spend. Then set a recurring check-in, quarterly is enough, because the West Monroe data shows the gap grows over time as new subscriptions pile onto old ones nobody cancelled.
+
+Doing this once fixes today's problem. The habit is what keeps it fixed.
+
+---
+
+The 89% figure isn't really about financial discipline. It's what happens by default when recurring costs are split across a dozen services, a dozen billing dates, and two or three payment methods, with nothing forcing them into one view.
+
+Most of that gap closes the moment someone actually sees the full list.
+`,
+  },
+  {
     slug: "subscription-fatigue-europe",
     title: "Subscription Fatigue: Why Europeans Are Spending More Than Ever (Without Noticing)",
     date: "May 23, 2026",

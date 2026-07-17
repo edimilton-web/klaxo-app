@@ -132,6 +132,9 @@ export default function LandingPage() {
             <span className="text-lg font-semibold text-white">Klaxo</span>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/blog">
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Blog</Button>
+            </Link>
             <Link href="/login">
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign in</Button>
             </Link>
@@ -273,6 +276,7 @@ export default function LandingPage() {
           <p className="text-sm text-white/25">© {new Date().getFullYear()} Klaxo · Personal subscription manager</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/25">
             <a href="mailto:support@klaxo.app" className="hover:text-white/60 transition-colors">support@klaxo.app</a>
+            <Link href="/blog" className="hover:text-white/60 transition-colors">Blog</Link>
             <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy &amp; GDPR</Link>
             <Link href="/terms" className="hover:text-white/60 transition-colors">Terms of Service</Link>
             <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">klaxo.app</a>
