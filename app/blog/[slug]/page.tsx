@@ -26,6 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       url: `https://www.klaxo.app/blog/${post.slug}`,
       type: "article",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.description,
+      images: [`/blog/${post.slug}/opengraph-image`],
+    },
   }
 }
 

@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     url: "https://www.klaxo.app/blog",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog — Klaxo",
+    description: "Articles on subscription tracking, spending habits, and how to stop paying for things you forgot about.",
+    images: ["/blog/opengraph-image"],
+  },
 }
 
 export default function BlogPage() {
