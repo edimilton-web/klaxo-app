@@ -5,6 +5,8 @@ export type Post = {
   readTime: string
   description: string
   content: string
+  /** Path under /public, e.g. "/blog/covers/{slug}.webp". Omit to fall back to the generated gradient cover. */
+  coverImage?: string
 }
 
 export const posts: Post[] = [
@@ -13,6 +15,7 @@ export const posts: Post[] = [
     title: "The 89% Problem: Why Almost Everyone Underestimates What They Spend on Subscriptions",
     date: "July 17, 2026",
     readTime: "7 min read",
+    coverImage: "/blog/why-you-underestimate-subscription-spending.webp",
     description: "A 2,500-person US study found 89% got their subscription spending wrong. UK and EU data show the same blind spot. Here's why — and how to fix it.",
     content: `Ask someone how much they spend on subscriptions each month and they'll give you a number. Ask them to actually add it up, and the number changes. It always goes up, and usually by more than they'd guess.
 
@@ -74,6 +77,7 @@ Most of that gap closes the moment someone actually sees the full list.
     title: "Subscription Fatigue: Why Europeans Are Spending More Than Ever (Without Noticing)",
     date: "May 23, 2026",
     readTime: "6 min read",
+    coverImage: "/blog/subscription-fatigue-europe.webp",
     description: "The average European pays for 8-12 subscriptions but guesses four. Here's why the math is invisible — and how to fix it.",
     content: `You didn't sign up to spend €200 a year on subscriptions you don't use. Nobody does.
 
@@ -174,6 +178,7 @@ No dollar conversions. No features built around US-only services. Just a clear v
     title: "Bobby App Alternative: What Europeans Should Use Instead",
     date: "May 17, 2026",
     readTime: "7 min read",
+    coverImage: "/blog/bobby-app-alternative-europe.webp",
     description: "Bobby works. It just hasn't changed in years — and it was never built for Europe.",
     content: `Bobby has been around since 2015. For a while, it was the best option for tracking personal subscriptions on iPhone — clean design, simple concept, no unnecessary features. You added your subscriptions manually, set the billing dates, and Bobby reminded you before they renewed.
 
@@ -299,6 +304,7 @@ Open Banking integration via PSD2 is in active development. It will allow Klaxo 
     title: "How to Cancel Subscriptions You Forgot You Had",
     date: "May 16, 2026",
     readTime: "7 min read",
+    coverImage: "/blog/how-to-cancel-forgotten-subscriptions.webp",
     description: "Find everything that's charging you — and actually cancel it, including the ones that make it deliberately difficult.",
     content: `
 At some point, you signed up for something, used it for a while, and then just... stopped. The subscription didn't stop. It kept going. It's probably still going right now.
@@ -427,6 +433,7 @@ That's the problem Klaxo solves. Track what you have, get notified before renewa
     title: "How Much Are Europeans Really Spending on Subscriptions? (2026 Data)",
     date: "May 16, 2026",
     readTime: "7 min read",
+    coverImage: "/blog/how-much-europeans-spend-on-subscriptions-2026.webp",
     description: "Most people guess around €50/month. The real number is nearly four times that — and here's why.",
     content: `
 Most people, when asked how much they spend on subscriptions each month, guess low. Not a little low — significantly low. By about half.
@@ -551,6 +558,7 @@ That's a pretty achievable bar. Most people just haven't set up a system to meet
     title: "Best Subscription Tracker App for Europe in 2026",
     date: "May 14, 2026",
     readTime: "8 min read",
+    coverImage: "/blog/best-subscription-tracker-europe-2026.webp",
     description: "We compared every major app. Here's what actually works for European users — and what doesn't.",
     content: `
 **The Problem With Most Subscription Trackers**
@@ -635,6 +643,7 @@ A subscription tracker doesn't just help you see what you're paying. It helps yo
     title: "I found €34/month I was wasting — here's how",
     date: 'May 3, 2026',
     readTime: '4 min read',
+    coverImage: '/blog/i-found-34-euros-i-was-wasting.webp',
     description: 'A honest look at how subscription costs pile up without you noticing — and what I did about it.',
     content: `
 I was doing a routine check of my bank statement when I spotted three charges I didn't recognise.
@@ -681,6 +690,7 @@ The €34 I found paid for a lot of dinners.
     title: 'Why every subscription tracker I tried was built for Americans',
     date: 'May 3, 2026',
     readTime: '5 min read',
+    coverImage: '/blog/why-every-subscription-tracker-was-built-for-americans.webp',
     description: "Most financial tools assume you live in the US. Here's why that's a problem for Europeans — and what to do instead.",
     content: `
 Search for "subscription tracker" and you'll find plenty of options. Download one and you'll immediately notice the problem.

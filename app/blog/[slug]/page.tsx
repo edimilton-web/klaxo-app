@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { posts, getPostBySlug, type Post } from "@/lib/posts"
+import { PostCover } from "@/components/blog/PostCover"
 
 // ✅ ALTERAÇÃO 1: params agora é Promise
 type Props = { params: Promise<{ slug: string }> }
@@ -203,6 +204,10 @@ export default async function BlogPostPage({ params }: Props) {
         <p className="text-base text-white/50 leading-relaxed mb-10 pb-8 border-b border-white/10">
           {post.description}
         </p>
+
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-10">
+          <PostCover slug={post.slug} title={post.title} coverImage={post.coverImage} priority sizes="(max-width: 768px) 100vw, 672px" />
+        </div>
 
         <div>{renderContent(post.content, readMinutes >= 6 ? <MidArticleCta /> : undefined)}</div>
 
