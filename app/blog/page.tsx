@@ -12,12 +12,13 @@ export const metadata: Metadata = {
     description: "Articles on subscription tracking, spending habits, and how to stop paying for things you forgot about.",
     url: "https://www.klaxo.app/blog",
     type: "website",
+    images: [{ url: "https://www.klaxo.app/blog/og/blog-index.jpg", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Blog — Klaxo",
     description: "Articles on subscription tracking, spending habits, and how to stop paying for things you forgot about.",
-    images: ["/blog/opengraph-image"],
+    images: ["https://www.klaxo.app/blog/og/blog-index.jpg"],
   },
 }
 
