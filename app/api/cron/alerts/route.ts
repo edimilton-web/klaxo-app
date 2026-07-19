@@ -44,13 +44,15 @@ async function sendPushNotification({
   })
 }
 
-async function pingHealthcheck(suffix: "" | "/fail") {
+async function pingHealthcheck(suffix: "" | "/fail"): Promise<string> {
   const url = process.env.HEALTHCHECK_PING_URL
-  if (!url) return
+  if (!url) return "skipped: HEALTHCHECK_PING_URL not set"
   try {
-    await fetch(`${url}${suffix}`, { signal: AbortSignal.timeout(5000) })
-  } catch {
+    const res = await fetch(`${url}${suffix}`, { signal: AbortSignal.timeout(5000) })
+    return `ok: ${res.status}`
+  } catch (err) {
     // A falha do ping nunca pode partir o cron.
+    return `error: ${err instanceof Error ? err.message : String(err)}`
   }
 }
 
@@ -232,11 +234,10 @@ export async function GET(req: Request) {
       totalActiveSubscriptions,
     })
 
-    await pingHealthcheck("")
+    const healthcheckPing = await pingHealthcheck("")
+    return NextResponse.json({ ok: true, sent, failed, advanced, healthcheckPing })
   } catch (err) {
     await pingHealthcheck("/fail")
     throw err
   }
-
-  return NextResponse.json({ ok: true, sent, failed, advanced })
 }
