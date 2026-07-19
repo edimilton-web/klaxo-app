@@ -57,9 +57,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id as string },
-          select: { plan: true },
+          select: { plan: true, createdAt: true },
         })
         token.plan = dbUser?.plan ?? "FREE"
+        token.createdAt = dbUser?.createdAt.toISOString() ?? new Date().toISOString()
       }
       return token
     },
@@ -67,6 +68,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (token && session.user) {
         session.user.id = token.id as string
         session.user.plan = token.plan as string
+        session.user.createdAt = token.createdAt as string
       }
       return session
     },

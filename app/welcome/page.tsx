@@ -1,7 +1,29 @@
 "use client"
 import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useSession } from "next-auth/react"
 import { KlaxoLogo } from "@/components/klaxo-logo"
+
+const SIGNUP_WINDOW_MS = 5 * 60 * 1000
+
+function useSignUpTracking() {
+  const { data: session } = useSession()
+
+  useEffect(() => {
+    const user = session?.user
+    if (!user?.createdAt) return
+
+    const ageMs = Date.now() - new Date(user.createdAt).getTime()
+    if (ageMs > SIGNUP_WINDOW_MS) return // existing user, not a fresh sign-up
+
+    const key = `klaxo_signup_fired_${user.id}`
+    if (localStorage.getItem(key)) return
+    localStorage.setItem(key, "1")
+
+    window.gtag?.("event", "sign_up")
+    window.fbq?.("track", "CompleteRegistration")
+  }, [session])
+}
 
 // ─── PWA install helpers ─────────────────────────────────────────────────────
 
@@ -240,6 +262,7 @@ function PwaInstallPage() {
 function WelcomeContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get("session_id")
+  useSignUpTracking()
   if (sessionId) return <PaymentConfirmedScreen sessionId={sessionId} />
   return <PwaInstallPage />
 }

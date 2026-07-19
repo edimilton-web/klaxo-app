@@ -5,6 +5,7 @@ import { Toaster } from "sonner"
 import Script from "next/script"
 import { PwaRegister } from "@/components/pwa-register"
 import { PwaInstallBanner } from "@/components/pwa-install-banner"
+import { ConsentBanner } from "@/components/consent-banner"
 import "./globals.css"
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" })
@@ -57,16 +58,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${dmSans.variable} ${nunito.variable} h-full antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `window.__pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){window.__pwaPrompt=e;if(!localStorage.getItem('pwa-install-dismissed-v1')){e.preventDefault();}});` }} />
+        <Script id="consent-default" strategy="beforeInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            window.gtag = gtag;
+            gtag('consent', 'default', {
+              'analytics_storage': 'denied',
+              'ad_storage': 'denied',
+              'ad_user_data': 'denied',
+              'ad_personalization': 'denied',
+              'wait_for_update': 500
+            });
+          `}
+        </Script>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-2T6K61JYF9"
           strategy="afterInteractive"
         />
         <Script id="google-analytics-app" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-2T6K61JYF9');
+            gtag('config', 'G-2T6K61JYF9', {
+              linker: { domains: ['klaxo.app', 'www.klaxo.app', 'app.klaxo.app'] }
+            });
           `}
         </Script>
         <Script id="meta-pixel" strategy="afterInteractive">
@@ -80,14 +95,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '968536769219649');
-            fbq('track', 'PageView');
+            fbq('consent', 'revoke');
           `}
         </Script>
-        <noscript>
-          <img height="1" width="1" style={{display:'none'}}
-            src="https://www.facebook.com/tr?id=968536769219649&ev=PageView&noscript=1"
-          />
-        </noscript>
       </head>
       <body className="min-h-full flex flex-col bg-[#0A0A0F] font-sans">
         <SessionProvider>
@@ -95,6 +105,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Toaster richColors position="top-right" />
           <PwaRegister />
           <PwaInstallBanner />
+          <ConsentBanner />
         </SessionProvider>
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
           <Script

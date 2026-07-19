@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { KlaxoLogo } from "@/components/klaxo-logo"
+import { CookieSettingsLink } from "@/components/cookie-settings-link"
 
 const FEATURES = [
   {
@@ -16,7 +17,7 @@ const FEATURES = [
   {
     icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
     title: "Privacy first",
-    desc: "No Google Analytics, no tracking cookies. Plausible analytics only — fully GDPR compliant.",
+    desc: "Cookies only run with your consent, and you can opt out anytime — fully GDPR compliant.",
   },
 ]
 
@@ -279,6 +280,7 @@ export default function LandingPage() {
             <Link href="/blog" className="hover:text-white/60 transition-colors">Blog</Link>
             <Link href="/privacy" className="hover:text-white/60 transition-colors">Privacy &amp; GDPR</Link>
             <Link href="/terms" className="hover:text-white/60 transition-colors">Terms of Service</Link>
+            <CookieSettingsLink className="hover:text-white/60 transition-colors" />
             <a href="https://www.klaxo.app" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors">klaxo.app</a>
           </div>
         </div>

@@ -5,6 +5,7 @@ declare module "next-auth" {
     user: {
       id: string
       plan: string
+      createdAt: string
     } & DefaultSession["user"]
   }
 }
