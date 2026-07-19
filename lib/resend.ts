@@ -134,6 +134,56 @@ export async function sendPaymentConfirmationEmail({
   })
 }
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "eddie.varjao.reis@gmail.com"
+
+export async function sendAdminDailySummary({
+  remindersSent,
+  failures,
+  advanced,
+  newUsers,
+  totalUsers,
+  totalActiveSubscriptions,
+}: {
+  remindersSent: Array<{ daysUntil: number; subscriptionName: string; userEmail: string }>
+  failures: Array<{ context: string; subscriptionName: string; userEmail: string; error: string }>
+  advanced: Array<{ subscriptionName: string; userEmail: string; oldDate: string; newDate: string }>
+  newUsers: Array<{ email: string; createdAt: string }>
+  totalUsers: number
+  totalActiveSubscriptions: number
+}) {
+  const subject = `Klaxo daily — ${remindersSent.length} lembretes, ${newUsers.length} novos users`
+
+  const lines = [
+    `Klaxo — resumo diário`,
+    ``,
+    `Lembretes enviados hoje: ${remindersSent.length}`,
+    ...remindersSent.map((r) => `  - [${r.daysUntil}d] ${r.subscriptionName} (${r.userEmail})`),
+    ``,
+    `Falhas: ${failures.length}`,
+    ...failures.map((f) => `  - [${f.context}] ${f.subscriptionName} (${f.userEmail}): ${f.error}`),
+    ``,
+    `Subscrições avançadas automaticamente: ${advanced.length}`,
+    ...advanced.map((a) => `  - ${a.subscriptionName} (${a.userEmail}): ${a.oldDate} -> ${a.newDate}`),
+    ``,
+    `Novos utilizadores (24h): ${newUsers.length}`,
+    ...newUsers.map((u) => `  - ${u.email} (${u.createdAt})`),
+    ``,
+    `Total de utilizadores: ${totalUsers}`,
+    `Total de subscrições ativas: ${totalActiveSubscriptions}`,
+    ``,
+    remindersSent.length === 0 && failures.length === 0 && advanced.length === 0 && newUsers.length === 0
+      ? "Tudo ok, nada a reportar."
+      : "",
+  ]
+
+  return resend.emails.send({
+    from: FROM,
+    to: ADMIN_EMAIL,
+    subject,
+    text: lines.join("\n"),
+  })
+}
+
 export async function sendMonthlySummary({
   to,
   userName,
