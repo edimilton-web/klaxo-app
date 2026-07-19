@@ -10,12 +10,12 @@ export async function POST(req: Request) {
   }
 
   const today = new Date()
-  if (today.getDate() !== 1) {
+  if (today.getUTCDate() !== 1) {
     return NextResponse.json({ ok: true, message: "Not the 1st of the month" })
   }
 
-  const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1)
-  const monthLabel = prevMonth.toLocaleString("en-GB", { month: "long", year: "numeric" })
+  const prevMonth = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - 1, 1))
+  const monthLabel = prevMonth.toLocaleString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" })
 
   const users = await prisma.user.findMany({
     where: { subscriptions: { some: { status: "ACTIVE" } } },

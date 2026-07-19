@@ -1,16 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-
-function advanceBillingDate(date: Date, billingCycle: string): Date {
-  const next = new Date(date)
-  switch (billingCycle) {
-    case "MONTHLY": next.setMonth(next.getMonth() + 1); break
-    case "YEARLY": next.setFullYear(next.getFullYear() + 1); break
-    case "WEEKLY": next.setDate(next.getDate() + 7); break
-  }
-  return next
-}
+import { advanceUntilFuture } from "@/lib/billing"
 
 export async function POST(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
@@ -23,11 +14,8 @@ export async function POST(_req: Request, { params }: { params: Promise<{ id: st
   }
 
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  let nextBillingDate = advanceBillingDate(sub.nextBillingDate, sub.billingCycle)
-  while (nextBillingDate < today) {
-    nextBillingDate = advanceBillingDate(nextBillingDate, sub.billingCycle)
-  }
+  today.setUTCHours(0, 0, 0, 0)
+  const { date: nextBillingDate } = advanceUntilFuture(sub.nextBillingDate, sub.billingCycle, today, 1)
 
   const updated = await prisma.subscription.update({
     where: { id },

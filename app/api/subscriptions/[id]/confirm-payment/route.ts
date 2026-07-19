@@ -1,16 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { verifyPaymentToken } from "@/lib/payment-token"
-
-function advanceBillingDate(date: Date, billingCycle: string): Date {
-  const next = new Date(date)
-  switch (billingCycle) {
-    case "MONTHLY": next.setMonth(next.getMonth() + 1); break
-    case "YEARLY": next.setFullYear(next.getFullYear() + 1); break
-    case "WEEKLY": next.setDate(next.getDate() + 7); break
-  }
-  return next
-}
+import { advanceUntilFuture } from "@/lib/billing"
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -33,11 +24,10 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   }
 
   const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  let nextBillingDate = advanceBillingDate(sub.nextBillingDate, sub.billingCycle)
-  while (nextBillingDate < today) {
-    nextBillingDate = advanceBillingDate(nextBillingDate, sub.billingCycle)
-  }
+  today.setUTCHours(0, 0, 0, 0)
+  // The daily cron already auto-advances overdue subscriptions, so this is
+  // idempotent: only advances if the date is somehow still in the past.
+  const { date: nextBillingDate } = advanceUntilFuture(sub.nextBillingDate, sub.billingCycle, today, 0)
 
   await prisma.subscription.update({
     where: { id },
