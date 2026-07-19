@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma"
 import { sendMonthlySummary } from "@/lib/resend"
 import { toMonthlyEur } from "@/lib/exchange-rate"
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   const auth = req.headers.get("Authorization")
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized", code: "UNAUTHORIZED" }, { status: 401 })
