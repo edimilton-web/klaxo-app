@@ -115,7 +115,7 @@ svg, canvas {
 
 /* ...and wait for the splash to start clearing on a fresh login. */
 html[data-klx-welcome] {
-  --klx-stagger-base: 560ms;
+  --klx-stagger-base: 1150ms;
 }
 
 /* --------------------------------------------------------------------------
@@ -145,12 +145,12 @@ html[data-klx-welcome] .klx-splash {
     ),
     var(--klx-splash-bg);
 
-  animation: klx-splash-out 940ms var(--klx-ease) forwards;
+  animation: klx-splash-out 1800ms var(--klx-ease) forwards;
 }
 
 @keyframes klx-splash-out {
   0%,
-  62% {
+  72% {
     opacity: 1;
     visibility: visible;
   }
@@ -165,12 +165,12 @@ html[data-klx-welcome] .klx-splash {
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  animation: klx-inner-drift 940ms var(--klx-ease) forwards;
+  animation: klx-inner-drift 1800ms var(--klx-ease) forwards;
 }
 
 @keyframes klx-inner-drift {
   0%,
-  62% {
+  72% {
     transform: translateY(0);
   }
   100% {
@@ -186,24 +186,24 @@ html[data-klx-welcome] .klx-splash {
   position: relative;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
 }
 
 .klx-splash__tile {
   position: relative;
   display: grid;
   place-items: center;
-  width: 64px;
-  height: 64px;
+  width: 96px;
+  height: 96px;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 24px;
   background: linear-gradient(150deg, #8b5cf6 0%, var(--klx-violet) 55%, #5b21b6 100%);
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.09) inset,
     0 1px 0 rgba(255, 255, 255, 0.22) inset,
     0 14px 40px -12px rgba(124, 58, 237, 0.75);
-  animation: klx-tile-in 240ms var(--klx-ease) both;
+  animation: klx-tile-in 380ms var(--klx-ease) both;
 }
 
 @keyframes klx-tile-in {
@@ -218,7 +218,7 @@ html[data-klx-welcome] .klx-splash {
 }
 
 .klx-splash__letter {
-  font-size: 30px;
+  font-size: 46px;
   font-weight: 700;
   line-height: 1;
   color: #fff;
@@ -237,7 +237,7 @@ html[data-klx-welcome] .klx-splash {
     rgba(255, 255, 255, 0.42) 50%,
     transparent 62%
   );
-  animation: klx-sheen 320ms 240ms linear both;
+  animation: klx-sheen 420ms 380ms linear both;
 }
 
 @keyframes klx-sheen {
@@ -253,14 +253,14 @@ html[data-klx-welcome] .klx-splash {
 .klx-splash__ring {
   position: absolute;
   inset: 0;
-  border-radius: 18px;
+  border-radius: 24px;
   border: 1.5px solid var(--klx-violet-soft);
-  animation: klx-ring 440ms 180ms var(--klx-ease) both;
+  animation: klx-ring 560ms 300ms var(--klx-ease) both;
 }
 
 .klx-splash__ring--delayed {
-  animation-delay: 300ms;
-  animation-duration: 480ms;
+  animation-delay: 480ms;
+  animation-duration: 620ms;
 }
 
 @keyframes klx-ring {
@@ -280,19 +280,19 @@ html[data-klx-welcome] .klx-splash {
 
 .klx-splash__title {
   margin: 0;
-  font-size: 1.0625rem;
+  font-size: 1.375rem;
   font-weight: 500;
   letter-spacing: -0.015em;
   color: rgba(255, 255, 255, 0.94);
-  animation: klx-rise 320ms 260ms var(--klx-ease) both;
+  animation: klx-rise 380ms 450ms var(--klx-ease) both;
 }
 
 .klx-splash__sub {
   margin: -0.75rem 0 0;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.48);
-  animation: klx-rise 320ms 380ms var(--klx-ease) both;
+  animation: klx-rise 380ms 620ms var(--klx-ease) both;
 }
 
 @keyframes klx-rise {
@@ -352,7 +352,7 @@ html[data-klx-welcome] .klx-splash {
   }
 
   html[data-klx-welcome] .klx-splash {
-    animation: klx-splash-out-reduced 620ms linear forwards;
+    animation: klx-splash-out-reduced 1100ms linear forwards;
   }
 
   .klx-splash__inner,
@@ -378,7 +378,7 @@ html[data-klx-welcome] .klx-splash {
 
 @keyframes klx-splash-out-reduced {
   0%,
-  55% {
+  65% {
     opacity: 1;
     visibility: visible;
   }
