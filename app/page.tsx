@@ -6,24 +6,10 @@ import { Hero } from "@/components/home/hero"
 import { StatStrip } from "@/components/home/stat-strip"
 import { Problem } from "@/components/home/problem"
 import { HowItWorks } from "@/components/home/how-it-works"
-
-const FEATURES = [
-  {
-    icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-    title: "Real cost in EUR",
-    desc: "See exactly how much you spend monthly across all currencies, automatically converted to EUR.",
-  },
-  {
-    icon: "M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9",
-    title: "Email alerts",
-    desc: "Get notified 5 days before each renewal — no more surprise charges on your statement.",
-  },
-  {
-    icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z",
-    title: "Privacy first",
-    desc: "Cookies only run with your consent, and you can opt out anytime — fully GDPR compliant.",
-  },
-]
+import { Features } from "@/components/home/features"
+import { ProductShowcase } from "@/components/home/product-showcase"
+import { AnchorFeature } from "@/components/home/anchor-feature"
+import { Privacy } from "@/components/home/privacy"
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -95,25 +81,10 @@ export default function LandingPage() {
       <Problem />
       <HowItWorks />
 
-      {/* Features */}
-      <section className="px-4 py-20 md:px-6">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-10 text-center text-2xl font-bold text-white md:text-3xl">Everything you need</h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-white/[0.12] bg-[#16161F] p-5 hover:border-violet-500/25 transition-colors">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-violet-600/15">
-                  <svg className="h-5 w-5 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.75} d={f.icon} />
-                  </svg>
-                </div>
-                <h3 className="font-semibold text-white">{f.title}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-white/40">{f.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <Features />
+      <ProductShowcase />
+      <AnchorFeature />
+      <Privacy />
 
       {/* Pricing */}
       <section className="px-4 py-16 md:px-6">
