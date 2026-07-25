@@ -7,7 +7,7 @@ export function Pricing() {
       <div className="mx-auto max-w-2xl">
         <h2 className="mb-4 text-center text-2xl font-bold text-white md:text-3xl">Simple pricing</h2>
         <p className="mb-10 text-center text-sm text-white/35">
-          No trials that convert silently. No hidden tiers. Ironic pricing games would be a bad look for us.
+          No trials that convert silently. No hidden tiers. What you see is what you pay.
         </p>
         <div className="grid gap-5 sm:grid-cols-2">
           {/* Free */}
