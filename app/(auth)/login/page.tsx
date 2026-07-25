@@ -60,13 +60,13 @@ export default function LoginPage() {
     if (res?.error) {
       toast.error("Invalid email or password")
     } else {
-      router.push("/dashboard")
+      window.location.assign("/dashboard?welcome=1")
     }
   }
 
   async function handleGoogle() {
     setGoogleLoading(true)
-    await signIn("google", { callbackUrl: "/dashboard" })
+    await signIn("google", { callbackUrl: "/dashboard?welcome=1" })
   }
 
   return (

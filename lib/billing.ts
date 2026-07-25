@@ -1,3 +1,5 @@
+import { prisma } from "@/lib/prisma"
+
 export type BillingCycle = "WEEKLY" | "MONTHLY" | "YEARLY"
 
 function daysInUTCMonth(year: number, monthIndex: number): number {
@@ -48,4 +50,22 @@ export function advanceUntilFuture(
     cycles++
   }
   return { date: next, cycles }
+}
+
+/** Counts active subscriptions renewing between today and the end of the
+ * current calendar month (UTC), clamped like the rest of this file. */
+export function countRenewalsInCurrentMonth(userId: string): Promise<number> {
+  const now = new Date()
+  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))
+  const monthEnd = new Date(
+    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), daysInUTCMonth(now.getUTCFullYear(), now.getUTCMonth()))
+  )
+
+  return prisma.subscription.count({
+    where: {
+      userId,
+      status: "ACTIVE",
+      nextBillingDate: { gte: today, lte: monthEnd },
+    },
+  })
 }

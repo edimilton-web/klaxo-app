@@ -87,3 +87,303 @@ svg, canvas {
   outline: none !important;
   -webkit-focus-ring-color: transparent !important;
 }
+
+/* ==========================================================================
+   Klaxo — welcome splash + dashboard stagger
+   Pure CSS. Append to app/globals.css (outside any @layer, or inside
+   @layer components if you prefer Tailwind's cascade ordering).
+
+   Timeline (total 940ms, non-blocking — the dashboard fetches underneath):
+     000–240ms   tile scales 0.88 → 1 and fades in
+     180–620ms   two glow rings expand outward and dissipate
+     240–560ms   sheen sweeps across the tile
+     260–580ms   "Welcome back, {name}" rises 6px into place
+     380–700ms   context line rises into place
+     560ms       dashboard cards begin their stagger underneath
+     580–940ms   overlay fades out, content drifts up 10px
+   ========================================================================== */
+
+:root {
+  --klx-violet: #7c3aed;
+  --klx-violet-soft: #a78bfa;
+  --klx-splash-bg: #0b0a0f;
+  --klx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Cards animate immediately on ordinary navigation... */
+  --klx-stagger-base: 0ms;
+}
+
+/* ...and wait for the splash to start clearing on a fresh login. */
+html[data-klx-welcome] {
+  --klx-stagger-base: 560ms;
+}
+
+/* --------------------------------------------------------------------------
+   Overlay
+   -------------------------------------------------------------------------- */
+
+.klx-splash {
+  display: none;
+}
+
+html[data-klx-welcome] .klx-splash {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  align-items: center;
+  justify-content: center;
+
+  /* Purely decorative: never intercept a click. */
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      58% 46% at 50% 44%,
+      rgba(124, 58, 237, 0.18),
+      transparent 72%
+    ),
+    var(--klx-splash-bg);
+
+  animation: klx-splash-out 940ms var(--klx-ease) forwards;
+}
+
+@keyframes klx-splash-out {
+  0%,
+  62% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.klx-splash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  animation: klx-inner-drift 940ms var(--klx-ease) forwards;
+}
+
+@keyframes klx-inner-drift {
+  0%,
+  62% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-10px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   The K
+   -------------------------------------------------------------------------- */
+
+.klx-splash__mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+}
+
+.klx-splash__tile {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(150deg, #8b5cf6 0%, var(--klx-violet) 55%, #5b21b6 100%);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.09) inset,
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 14px 40px -12px rgba(124, 58, 237, 0.75);
+  animation: klx-tile-in 240ms var(--klx-ease) both;
+}
+
+@keyframes klx-tile-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.klx-splash__letter {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: -0.02em;
+  /* Optical centering — the K reads left-heavy in most grotesques. */
+  transform: translateX(0.5px);
+}
+
+/* Light sweeping across the tile. */
+.klx-splash__sheen {
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.42) 50%,
+    transparent 62%
+  );
+  animation: klx-sheen 320ms 240ms linear both;
+}
+
+@keyframes klx-sheen {
+  from {
+    transform: translateX(-115%);
+  }
+  to {
+    transform: translateX(115%);
+  }
+}
+
+/* Expanding rings. */
+.klx-splash__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  border: 1.5px solid var(--klx-violet-soft);
+  animation: klx-ring 440ms 180ms var(--klx-ease) both;
+}
+
+.klx-splash__ring--delayed {
+  animation-delay: 300ms;
+  animation-duration: 480ms;
+}
+
+@keyframes klx-ring {
+  from {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.05);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Copy
+   -------------------------------------------------------------------------- */
+
+.klx-splash__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: rgba(255, 255, 255, 0.94);
+  animation: klx-rise 320ms 260ms var(--klx-ease) both;
+}
+
+.klx-splash__sub {
+  margin: -0.75rem 0 0;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.48);
+  animation: klx-rise 320ms 380ms var(--klx-ease) both;
+}
+
+@keyframes klx-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard stagger
+   Add className="klx-stagger" to the grid wrapper. Direct children animate.
+   -------------------------------------------------------------------------- */
+
+.klx-stagger > * {
+  animation: klx-card-in 420ms var(--klx-ease) both;
+}
+
+.klx-stagger > *:nth-child(1)  { animation-delay: calc(var(--klx-stagger-base) +   0ms); }
+.klx-stagger > *:nth-child(2)  { animation-delay: calc(var(--klx-stagger-base) +  55ms); }
+.klx-stagger > *:nth-child(3)  { animation-delay: calc(var(--klx-stagger-base) + 110ms); }
+.klx-stagger > *:nth-child(4)  { animation-delay: calc(var(--klx-stagger-base) + 165ms); }
+.klx-stagger > *:nth-child(5)  { animation-delay: calc(var(--klx-stagger-base) + 220ms); }
+.klx-stagger > *:nth-child(6)  { animation-delay: calc(var(--klx-stagger-base) + 275ms); }
+.klx-stagger > *:nth-child(7)  { animation-delay: calc(var(--klx-stagger-base) + 330ms); }
+.klx-stagger > *:nth-child(8)  { animation-delay: calc(var(--klx-stagger-base) + 385ms); }
+
+/* Anything past the eighth item lands together — a long list should not take
+   two seconds to finish arriving. */
+.klx-stagger > *:nth-child(n + 9) {
+  animation-delay: calc(var(--klx-stagger-base) + 420ms);
+}
+
+@keyframes klx-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   Keep the greeting — it carries the meaning — and drop the movement.
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-klx-welcome] {
+    --klx-stagger-base: 0ms;
+  }
+
+  html[data-klx-welcome] .klx-splash {
+    animation: klx-splash-out-reduced 620ms linear forwards;
+  }
+
+  .klx-splash__inner,
+  .klx-splash__tile,
+  .klx-splash__title,
+  .klx-splash__sub {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .klx-splash__ring,
+  .klx-splash__sheen {
+    display: none;
+  }
+
+  .klx-stagger > * {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes klx-splash-out-reduced {
+  0%,
+  55% {
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}

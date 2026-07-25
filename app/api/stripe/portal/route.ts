@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 
 export async function POST() {
   const session = await auth()
@@ -12,7 +12,7 @@ export async function POST() {
     return NextResponse.json({ error: "No active Stripe subscription", code: "NO_STRIPE_CUSTOMER" }, { status: 400 })
   }
 
-  const portalSession = await stripe.billingPortal.sessions.create({
+  const portalSession = await getStripe().billingPortal.sessions.create({
     customer: user.stripeCustomerId,
     return_url: `${process.env.NEXT_PUBLIC_APP_URL}/billing`,
   })

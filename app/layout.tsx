@@ -11,6 +11,15 @@ import "./globals.css"
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" })
 const nunito = Nunito({ subsets: ["latin"], weight: ["900"], variable: "--font-nunito" })
 
+const WELCOME_BOOTSTRAP = `(function(){try{
+  var p = new URLSearchParams(location.search);
+  if (p.get('welcome') !== '1') return;
+  p.delete('welcome');
+  var q = p.toString();
+  history.replaceState(null, '', location.pathname + (q ? '?' + q : ''));
+  document.documentElement.setAttribute('data-klx-welcome', '');
+}catch(e){}})();`
+
 export const metadata: Metadata = {
   title: "Klaxo — Personal subscription manager",
   description: "Track all your subscriptions in one place. Total cost in EUR, email alerts before each renewal. Built for the European market.",
@@ -57,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${dmSans.variable} ${nunito.variable} h-full antialiased`}>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: WELCOME_BOOTSTRAP }} />
         <script dangerouslySetInnerHTML={{ __html: `window.__pwaPrompt=null;window.addEventListener('beforeinstallprompt',function(e){window.__pwaPrompt=e;if(!localStorage.getItem('pwa-install-dismissed-v1')){e.preventDefault();}});` }} />
         <Script id="consent-default" strategy="beforeInteractive">
           {`

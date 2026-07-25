@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import { sendProSetupEmail } from "@/lib/resend"
 import crypto from "crypto"
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
   let stripeSession
   try {
-    stripeSession = await stripe.checkout.sessions.retrieve(sessionId, {
+    stripeSession = await getStripe().checkout.sessions.retrieve(sessionId, {
       expand: ["customer", "subscription"],
     })
   } catch {

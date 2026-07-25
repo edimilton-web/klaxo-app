@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { stripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from "@/lib/stripe"
+import { getStripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from "@/lib/stripe"
 
 const schema = z.object({
   priceType: z.enum(["monthly", "yearly"]),
@@ -21,14 +21,14 @@ export async function POST(req: Request) {
 
   let customerId = user.stripeCustomerId
   if (!customerId) {
-    const customer = await stripe.customers.create({ email: user.email, name: user.name ?? undefined, metadata: { userId: user.id } })
+    const customer = await getStripe().customers.create({ email: user.email, name: user.name ?? undefined, metadata: { userId: user.id } })
     customerId = customer.id
     await prisma.user.update({ where: { id: user.id }, data: { stripeCustomerId: customerId } })
   }
 
   const priceId = parsed.data.priceType === "yearly" ? STRIPE_PRO_YEARLY_PRICE_ID : STRIPE_PRO_MONTHLY_PRICE_ID
 
-  const checkoutSession = await stripe.checkout.sessions.create({
+  const checkoutSession = await getStripe().checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],

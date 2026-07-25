@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
-import { stripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from "@/lib/stripe"
+import { getStripe, STRIPE_PRO_MONTHLY_PRICE_ID, STRIPE_PRO_YEARLY_PRICE_ID } from "@/lib/stripe"
 
 const schema = z.object({
   plan: z.enum(["pro-monthly", "pro-yearly"]),
@@ -10,7 +10,7 @@ async function createGuestSession(plan: "pro-monthly" | "pro-yearly") {
   const priceId = plan === "pro-yearly" ? STRIPE_PRO_YEARLY_PRICE_ID : STRIPE_PRO_MONTHLY_PRICE_ID
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"
 
-  return stripe.checkout.sessions.create({
+  return getStripe().checkout.sessions.create({
     mode: "subscription",
     line_items: [{ price: priceId, quantity: 1 }],
     allow_promotion_codes: true,
