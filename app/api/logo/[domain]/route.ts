@@ -23,17 +23,26 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
     const data = await brandRes.json()
     const logos: LogoEntry[] = data?.logos ?? []
 
-    // Prefer colored symbol/icon (looks best in small square containers)
-    // Fall back to any logo
-    const pick =
-      logos.find((l) => l.type === "symbol" || l.type === "icon") ??
-      logos.find((l) => l.theme === "dark") ??
-      logos[0]
+    // Our container has a light/white background. Brandfetch's `theme`
+    // describes the mark's OWN color, not the background it targets:
+    // theme "light" = a light/white-colored mark (meant to sit on a dark
+    // backdrop — invisible on our white box), theme "dark" = a dark/black
+    // mark (meant to sit on a light backdrop — what we need). Confirmed by
+    // pixel-sampling real assets (Anthropic/Vercel/GitHub "light" symbols
+    // render as pure white; their "dark" symbols render near-black).
+    // Prefer symbol/icon over full logo, and within each type prefer
+    // theme "dark", then unthemed, and only use "light" as a last resort.
+    const typeRank = (l: LogoEntry) => (l.type === "symbol" || l.type === "icon" ? 0 : l.type === "logo" ? 1 : 2)
+    const themeRank = (l: LogoEntry) => (l.theme === "dark" ? 0 : l.theme === "light" ? 2 : 1)
+    const pick = [...logos].sort((a, b) => typeRank(a) - typeRank(b) || themeRank(a) - themeRank(b))[0]
 
     const formats = pick?.formats ?? []
-    const png = formats.find((f) => f.format === "png")
-    const svg = formats.find((f) => f.format === "svg")
-    const src: string | undefined = png?.src ?? svg?.src
+    // Prefer transparent-background assets, then PNG over SVG
+    const transparentFormats = formats.filter((f) => !f.background)
+    const formatPool = transparentFormats.length ? transparentFormats : formats
+    const png = formatPool.find((f) => f.format === "png")
+    const svg = formatPool.find((f) => f.format === "svg")
+    const src: string | undefined = png?.src ?? svg?.src ?? formatPool[0]?.src
 
     if (!src) return new NextResponse(null, { status: 404 })
 
