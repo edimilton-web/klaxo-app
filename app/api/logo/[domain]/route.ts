@@ -62,7 +62,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
     return new NextResponse(buffer, {
       headers: {
         "content-type": contentType,
-        "cache-control": "public, max-age=86400",
+        // Was 24h — logo-selection bugs would keep showing stale (broken)
+        // bytes in browsers for a full day after being fixed server-side.
+        // 1h + stale-while-revalidate keeps most of the caching benefit
+        // while bounding how long a bad response can linger client-side.
+        "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
       },
     })
   } catch {
