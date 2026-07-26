@@ -6,10 +6,17 @@ type LogoEntry = {
   formats: Array<{ format: string; src: string; background: string | null }>
 }
 
+// Domains where Brandfetch's only asset is verified to be wrong/mismatched
+// artwork (not the brand's own mark) rather than a missing-asset 404 we
+// could otherwise fall back on. Skip Brandfetch entirely for these.
+// - contabo.com: their sole "logo" entry is a partner-hardware banner
+//   (Dell/HPE/AMD/Samsung), not Contabo's own logo. Verified 2026-07-26.
+const KNOWN_BAD_BRANDFETCH_DOMAINS = new Set(["contabo.com"])
+
 export async function GET(_req: Request, { params }: { params: Promise<{ domain: string }> }) {
   const { domain } = await params
   const apiKey = process.env.BRANDFETCH_API_KEY
-  if (!apiKey) {
+  if (!apiKey || KNOWN_BAD_BRANDFETCH_DOMAINS.has(domain)) {
     return NextResponse.redirect(`https://logo.clearbit.com/${domain}`)
   }
 
