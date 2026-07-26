@@ -1,6 +1,8 @@
 import {
-  Body, Container, Head, Heading, Html, Link, Preview, Section, Text, Hr,
+  Body, Container, Head, Heading, Html, Img, Link, Preview, Section, Text, Hr,
 } from "@react-email/components"
+
+const DEFAULT_LOGO_URL = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"}/email/logo.png`
 
 interface PaymentConfirmationEmailProps {
   userName: string
@@ -9,6 +11,7 @@ interface PaymentConfirmationEmailProps {
   currency: string
   dueDate: string
   confirmUrl: string
+  logoUrl?: string
 }
 
 export function PaymentConfirmationEmail({
@@ -18,6 +21,7 @@ export function PaymentConfirmationEmail({
   currency,
   dueDate,
   confirmUrl,
+  logoUrl = DEFAULT_LOGO_URL,
 }: PaymentConfirmationEmailProps) {
   const formatted = new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(amount)
   const dateFormatted = new Intl.DateTimeFormat("en-GB", { day: "2-digit", month: "long", year: "numeric" }).format(new Date(dueDate))
@@ -30,9 +34,7 @@ export function PaymentConfirmationEmail({
         <Container style={{ maxWidth: "560px", margin: "0 auto" }}>
           <Section style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "40px", border: "1px solid #e2e8f0" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
-              <div style={{ backgroundColor: "#6C47FF", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>K</span>
-              </div>
+              <Img src={logoUrl} width="36" height="36" alt="Klaxo" style={{ borderRadius: "10px", display: "block" }} />
               <span style={{ fontSize: "20px", fontWeight: "700", color: "#0f172a" }}>Klaxo</span>
             </div>
 
