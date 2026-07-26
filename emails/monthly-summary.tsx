@@ -1,6 +1,8 @@
 import {
-  Body, Container, Head, Heading, Html, Link, Preview, Section, Text, Hr, Row, Column,
+  Body, Container, Head, Heading, Html, Img, Link, Preview, Section, Text, Hr, Row, Column,
 } from "@react-email/components"
+
+const DEFAULT_LOGO_URL = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://app.klaxo.app"}/email/logo.png`
 
 interface MonthlySummaryEmailProps {
   userName: string
@@ -8,6 +10,7 @@ interface MonthlySummaryEmailProps {
   totalAnnualEur: number
   subscriptions: Array<{ name: string; amountEur: number; billingCycle: string }>
   month: string
+  logoUrl?: string
 }
 
 const CYCLE_LABELS: Record<string, string> = { WEEKLY: "Weekly", MONTHLY: "Monthly", YEARLY: "Yearly" }
@@ -18,6 +21,7 @@ export function MonthlySummaryEmail({
   totalAnnualEur,
   subscriptions,
   month,
+  logoUrl = DEFAULT_LOGO_URL,
 }: MonthlySummaryEmailProps) {
   const fmt = (v: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "EUR" }).format(v)
 
@@ -29,9 +33,7 @@ export function MonthlySummaryEmail({
         <Container style={{ maxWidth: "560px", margin: "0 auto" }}>
           <Section style={{ backgroundColor: "#6C47FF", borderRadius: "16px 16px 0 0", padding: "32px 40px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "20px" }}>
-              <div style={{ backgroundColor: "rgba(255,255,255,0.2)", borderRadius: "10px", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ color: "white", fontWeight: "800", fontSize: "18px" }}>K</span>
-              </div>
+              <Img src={logoUrl} width="36" height="36" alt="Klaxo" style={{ borderRadius: "10px", display: "block" }} />
               <span style={{ fontSize: "20px", fontWeight: "700", color: "white" }}>Klaxo</span>
             </div>
             <Heading style={{ fontSize: "24px", fontWeight: "700", color: "white", margin: "0 0 4px 0" }}>
