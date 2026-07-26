@@ -30,15 +30,20 @@ function nameToColor(name: string): string {
   return `hsl(${Math.abs(hash) % 360}, 55%, 38%)`
 }
 
+function extractDomainFromLogoUrl(url?: string | null): string | null {
+  const match = url?.match(/^\/api\/logo\/([^/?]+)/)
+  return match ? match[1] : null
+}
+
 function LogoBox({ name, storedLogoUrl }: { name: string; storedLogoUrl?: string | null }) {
   const [stage, setStage] = useState(0)
-  const domain = getServiceDomain(name)
+  const domain = extractDomainFromLogoUrl(storedLogoUrl) ?? getServiceDomain(name)
   const initBg = nameToColor(name)
 
   const chain: string[] = [
     ...(storedLogoUrl ? [storedLogoUrl] : []),
-    ...(domain ? [`https://logo.clearbit.com/${domain}`, `https://www.google.com/s2/favicons?domain=${domain}&sz=64`] : []),
-  ]
+    ...(domain ? [`/api/logo/${domain}`, `https://www.google.com/s2/favicons?domain=${domain}&sz=128`] : []),
+  ].filter((url, i, arr) => arr.indexOf(url) === i)
 
   if (!chain.length || stage >= chain.length) {
     return (
@@ -51,10 +56,15 @@ function LogoBox({ name, storedLogoUrl }: { name: string; storedLogoUrl?: string
   return (
     <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl overflow-hidden bg-white">
       <img
+        key={chain[stage]}
         src={chain[stage]}
         alt={name}
         className="h-full w-full object-contain p-1.5"
         onError={() => setStage((s) => s + 1)}
+        onLoad={(e) => {
+          const img = e.currentTarget
+          if (img.naturalWidth === 0 || img.naturalHeight === 0) setStage((s) => s + 1)
+        }}
       />
     </div>
   )
