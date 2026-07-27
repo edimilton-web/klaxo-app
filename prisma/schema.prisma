@@ -139,3 +139,10 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model LogoCache {
+  domain      String   @id
+  imageData   Bytes
+  contentType String
+  updatedAt   DateTime @updatedAt
+}

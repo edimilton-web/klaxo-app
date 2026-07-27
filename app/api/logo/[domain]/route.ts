@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
 
 type LogoEntry = {
   type: string
@@ -15,12 +16,46 @@ const KNOWN_BAD_BRANDFETCH_DOMAINS = new Set(["contabo.com"])
 
 const NO_STORE_HEADERS = { "cache-control": "no-store" }
 
+// Company logos essentially never change, and a cached hit is already a
+// known-good, previously-validated resolution — cache aggressively.
+const CACHED_HEADERS = { "cache-control": "public, max-age=2592000, immutable" }
+
 // Clearbit returns HTTP 200 with a tiny generic placeholder (observed:
 // ~300 bytes) for domains it has no real logo for, instead of a 404 —
 // so a status check alone isn't enough. The smallest legitimate asset
 // we've seen served (a Brandfetch symbol SVG) is ~1.5KB, so anything
 // under 1KB is almost certainly a blank/placeholder image, not a logo.
 const MIN_VALID_LOGO_BYTES = 1000
+
+async function fetchLogoBytes(src: string): Promise<{ buffer: ArrayBuffer; contentType: string } | null> {
+  try {
+    const res = await fetch(src, { cache: "no-store", signal: AbortSignal.timeout(5000) })
+    if (!res.ok) return null
+    const buffer = await res.arrayBuffer()
+    if (buffer.byteLength < MIN_VALID_LOGO_BYTES) return null
+    return { buffer, contentType: res.headers.get("content-type") ?? "image/png" }
+  } catch {
+    return null
+  }
+}
+
+// Persist a validated logo so future requests for this domain never need
+// to hit Brandfetch/Clearbit again — both have been observed intermittent
+// (timeouts, DNS failures, placeholder responses). Caching is a
+// nice-to-have on top of a response we're already serving, so a DB error
+// here must never fail the request itself.
+async function cacheLogo(domain: string, buffer: ArrayBuffer, contentType: string) {
+  try {
+    const imageData = Buffer.from(buffer)
+    await prisma.logoCache.upsert({
+      where: { domain },
+      create: { domain, imageData, contentType },
+      update: { imageData, contentType },
+    })
+  } catch {
+    // ignore — the response to the client already succeeded
+  }
+}
 
 // Proxy Clearbit server-side (rather than redirecting the browser to it)
 // so a client-side DNS/ad-blocker block on logo.clearbit.com — a common
@@ -30,30 +65,28 @@ const MIN_VALID_LOGO_BYTES = 1000
 // uncached 404 so the client's onError falls through to the initials
 // immediately instead of hanging or rendering an empty/blank image.
 async function proxyClearbit(domain: string): Promise<NextResponse> {
-  try {
-    const res = await fetch(`https://logo.clearbit.com/${domain}`, {
-      cache: "no-store",
-      signal: AbortSignal.timeout(5000),
-    })
-    if (!res.ok) return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
-    const contentType = res.headers.get("content-type") ?? "image/png"
-    const buffer = await res.arrayBuffer()
-    if (buffer.byteLength < MIN_VALID_LOGO_BYTES) {
-      return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
-    }
-    return new NextResponse(buffer, {
-      headers: {
-        "content-type": contentType,
-        "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
-      },
-    })
-  } catch {
-    return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
-  }
+  const result = await fetchLogoBytes(`https://logo.clearbit.com/${domain}`)
+  if (!result) return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
+  await cacheLogo(domain, result.buffer, result.contentType)
+  return new NextResponse(result.buffer, {
+    headers: { "content-type": result.contentType, ...CACHED_HEADERS },
+  })
 }
 
 export async function GET(_req: Request, { params }: { params: Promise<{ domain: string }> }) {
   const { domain } = await params
+
+  // Serve straight from our persistent cache when we already have a
+  // validated logo for this domain — logos rarely change, and this
+  // removes any dependency on Brandfetch/Clearbit's live availability
+  // (both observed intermittent) for every domain after the first hit.
+  const cached = await prisma.logoCache.findUnique({ where: { domain } }).catch(() => null)
+  if (cached) {
+    return new NextResponse(new Uint8Array(cached.imageData), {
+      headers: { "content-type": cached.contentType, ...CACHED_HEADERS },
+    })
+  }
+
   const apiKey = process.env.BRANDFETCH_API_KEY
   if (!apiKey || KNOWN_BAD_BRANDFETCH_DOMAINS.has(domain)) {
     return proxyClearbit(domain)
@@ -93,23 +126,13 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
 
     if (!src) return proxyClearbit(domain)
 
-    const imgRes = await fetch(src, { signal: AbortSignal.timeout(5000) })
-    if (!imgRes.ok) return proxyClearbit(domain)
+    const result = await fetchLogoBytes(src)
+    if (!result) return proxyClearbit(domain)
 
-    const contentType = imgRes.headers.get("content-type") ?? "image/png"
-    const buffer = await imgRes.arrayBuffer()
+    await cacheLogo(domain, result.buffer, result.contentType)
 
-    if (buffer.byteLength < MIN_VALID_LOGO_BYTES) return proxyClearbit(domain)
-
-    return new NextResponse(buffer, {
-      headers: {
-        "content-type": contentType,
-        // Was 24h — logo-selection bugs would keep showing stale (broken)
-        // bytes in browsers for a full day after being fixed server-side.
-        // 1h + stale-while-revalidate keeps most of the caching benefit
-        // while bounding how long a bad response can linger client-side.
-        "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
-      },
+    return new NextResponse(result.buffer, {
+      headers: { "content-type": result.contentType, ...CACHED_HEADERS },
     })
   } catch {
     return proxyClearbit(domain)
