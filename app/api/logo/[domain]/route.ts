@@ -15,12 +15,20 @@ const KNOWN_BAD_BRANDFETCH_DOMAINS = new Set(["contabo.com"])
 
 const NO_STORE_HEADERS = { "cache-control": "no-store" }
 
+// Clearbit returns HTTP 200 with a tiny generic placeholder (observed:
+// ~300 bytes) for domains it has no real logo for, instead of a 404 —
+// so a status check alone isn't enough. The smallest legitimate asset
+// we've seen served (a Brandfetch symbol SVG) is ~1.5KB, so anything
+// under 1KB is almost certainly a blank/placeholder image, not a logo.
+const MIN_VALID_LOGO_BYTES = 1000
+
 // Proxy Clearbit server-side (rather than redirecting the browser to it)
 // so a client-side DNS/ad-blocker block on logo.clearbit.com — a common
 // case, verified: it fails to resolve on this network while brandfetch.io
 // resolves fine — can't break the fallback. Any failure here (timeout,
-// DNS, non-200) returns a fast, uncached 404 so the client's onError
-// falls through to the initials immediately instead of hanging.
+// DNS, non-200, or a suspiciously tiny placeholder body) returns a fast,
+// uncached 404 so the client's onError falls through to the initials
+// immediately instead of hanging or rendering an empty/blank image.
 async function proxyClearbit(domain: string): Promise<NextResponse> {
   try {
     const res = await fetch(`https://logo.clearbit.com/${domain}`, {
@@ -30,6 +38,9 @@ async function proxyClearbit(domain: string): Promise<NextResponse> {
     if (!res.ok) return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
     const contentType = res.headers.get("content-type") ?? "image/png"
     const buffer = await res.arrayBuffer()
+    if (buffer.byteLength < MIN_VALID_LOGO_BYTES) {
+      return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
+    }
     return new NextResponse(buffer, {
       headers: {
         "content-type": contentType,
@@ -87,6 +98,8 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
 
     const contentType = imgRes.headers.get("content-type") ?? "image/png"
     const buffer = await imgRes.arrayBuffer()
+
+    if (buffer.byteLength < MIN_VALID_LOGO_BYTES) return proxyClearbit(domain)
 
     return new NextResponse(buffer, {
       headers: {
