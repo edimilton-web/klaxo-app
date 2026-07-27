@@ -13,19 +13,48 @@ type LogoEntry = {
 //   (Dell/HPE/AMD/Samsung), not Contabo's own logo. Verified 2026-07-26.
 const KNOWN_BAD_BRANDFETCH_DOMAINS = new Set(["contabo.com"])
 
+const NO_STORE_HEADERS = { "cache-control": "no-store" }
+
+// Proxy Clearbit server-side (rather than redirecting the browser to it)
+// so a client-side DNS/ad-blocker block on logo.clearbit.com — a common
+// case, verified: it fails to resolve on this network while brandfetch.io
+// resolves fine — can't break the fallback. Any failure here (timeout,
+// DNS, non-200) returns a fast, uncached 404 so the client's onError
+// falls through to the initials immediately instead of hanging.
+async function proxyClearbit(domain: string): Promise<NextResponse> {
+  try {
+    const res = await fetch(`https://logo.clearbit.com/${domain}`, {
+      cache: "no-store",
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!res.ok) return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
+    const contentType = res.headers.get("content-type") ?? "image/png"
+    const buffer = await res.arrayBuffer()
+    return new NextResponse(buffer, {
+      headers: {
+        "content-type": contentType,
+        "cache-control": "public, max-age=3600, stale-while-revalidate=86400",
+      },
+    })
+  } catch {
+    return new NextResponse(null, { status: 404, headers: NO_STORE_HEADERS })
+  }
+}
+
 export async function GET(_req: Request, { params }: { params: Promise<{ domain: string }> }) {
   const { domain } = await params
   const apiKey = process.env.BRANDFETCH_API_KEY
   if (!apiKey || KNOWN_BAD_BRANDFETCH_DOMAINS.has(domain)) {
-    return NextResponse.redirect(`https://logo.clearbit.com/${domain}`)
+    return proxyClearbit(domain)
   }
 
   try {
     const brandRes = await fetch(`https://api.brandfetch.io/v2/brands/${domain}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
       cache: "no-store",
+      signal: AbortSignal.timeout(5000),
     })
-    if (!brandRes.ok) return new NextResponse(null, { status: 404 })
+    if (!brandRes.ok) return proxyClearbit(domain)
 
     const data = await brandRes.json()
     const logos: LogoEntry[] = data?.logos ?? []
@@ -51,10 +80,10 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
     const svg = formatPool.find((f) => f.format === "svg")
     const src: string | undefined = png?.src ?? svg?.src ?? formatPool[0]?.src
 
-    if (!src) return new NextResponse(null, { status: 404 })
+    if (!src) return proxyClearbit(domain)
 
-    const imgRes = await fetch(src)
-    if (!imgRes.ok) return new NextResponse(null, { status: 404 })
+    const imgRes = await fetch(src, { signal: AbortSignal.timeout(5000) })
+    if (!imgRes.ok) return proxyClearbit(domain)
 
     const contentType = imgRes.headers.get("content-type") ?? "image/png"
     const buffer = await imgRes.arrayBuffer()
@@ -70,6 +99,6 @@ export async function GET(_req: Request, { params }: { params: Promise<{ domain:
       },
     })
   } catch {
-    return new NextResponse(null, { status: 404 })
+    return proxyClearbit(domain)
   }
 }
