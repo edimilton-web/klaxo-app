@@ -74,7 +74,7 @@ export default function LandingPage() {
               <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign in</Button>
             </Link>
             <Link href="/register">
-              <Button size="sm">Get started free</Button>
+              <Button size="sm" className="min-h-11">Get started free</Button>
             </Link>
           </div>
         </div>
