@@ -10,19 +10,19 @@ const SCREENSHOTS: Record<(typeof TABS)[number], { src: string; width: number; h
     src: "/screenshots/dashboard.png",
     width: 1023,
     height: 569,
-    alt: "Klaxo dashboard mostrando o resumo de subscrições e o gráfico de gastos mensais",
+    alt: "Klaxo dashboard showing subscription summary and monthly spending chart",
   },
   Subscriptions: {
     src: "/screenshots/subscriptions.png",
     width: 1003,
     height: 499,
-    alt: "Lista de subscrições do Klaxo com logos, preços e datas de renovação",
+    alt: "Klaxo subscription list with logos, prices, and renewal dates",
   },
   Alerts: {
     src: "/screenshots/alerts.png",
     width: 921,
     height: 2048,
-    alt: "Notificação de alerta do Klaxo a avisar de uma renovação de subscrição próxima",
+    alt: "Klaxo renewal reminder notification",
   },
 }
 
