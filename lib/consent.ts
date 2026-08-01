@@ -47,7 +47,6 @@ export function applyConsent(consent: ConsentChoice) {
 
   if (consent.marketing) {
     window.fbq?.("consent", "grant")
-    window.fbq?.("track", "PageView")
   } else {
     window.fbq?.("consent", "revoke")
   }
