@@ -4,6 +4,10 @@ const FAQS = [
     a: "No, and that's deliberate. You add subscriptions manually in seconds. No bank credentials, no open-banking permissions, no risk.",
   },
   {
+    q: "Do you store my card details?",
+    a: "No. When you subscribe, you're redirected to a secure Stripe checkout page where you enter your card details directly into Stripe's system. Klaxo's servers never see or store your card number, expiry date, or CVC — we only receive an anonymous customer reference to manage your subscription. Stripe is certified PCI DSS Level 1, the highest standard in the industry.",
+  },
+  {
     q: "What happens when I hit 5 subscriptions on the free plan?",
     a: "Nothing bad. Your existing subscriptions keep working and you keep getting alerts. You just can't add a 6th until you upgrade or remove one.",
   },
