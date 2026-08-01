@@ -25,15 +25,15 @@ export default function PrivacyPage() {
 
       <main className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">Privacy Policy &amp; GDPR</h1>
-        <p className="mt-3 text-sm text-slate-500">Last updated: May 2026</p>
+        <p className="mt-3 text-sm text-slate-500">Last updated: August 2026</p>
 
         <div className="mt-10 space-y-10 text-slate-700">
 
           <section>
             <h2 className="text-xl font-bold text-slate-900">1. Who we are</h2>
             <p className="mt-3 leading-relaxed">
-              Klaxo is a personal subscription management service built for the European market.
-              For any privacy-related matter, contact us at{" "}
+              Klaxo is a personal subscription management service operated by Edimilton Gomes Reis, a sole trader established in Portugal, acting as data controller.
+              For any privacy-related matter, including a request for our full postal address, contact us at{" "}
               <a href="mailto:privacy@klaxo.app" className="text-violet-600 hover:underline">privacy@klaxo.app</a>.
             </p>
           </section>
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
               <li><strong>Subscription data:</strong> service names, amounts, currencies, billing cycles, and renewal dates that you enter manually.</li>
               <li><strong>Billing data:</strong> your Stripe customer ID and subscription ID. We never store full card numbers — Stripe handles all payment data.</li>
               <li><strong>Usage analytics:</strong> anonymous, cookieless page-view data via Plausible. No personal identifiers, no cross-site tracking.</li>
-              <li><strong>Analytics &amp; marketing cookies (with consent):</strong> if you accept them in the cookie banner, Google Analytics (GA4) and the Meta Pixel set cookies to measure site usage and ad performance. These load only after you consent and can be withdrawn at any time — see Section 8.</li>
+              <li><strong>Analytics &amp; marketing cookies (with consent):</strong> if you accept them in the cookie banner, Google Analytics (GA4) and the Meta Pixel set cookies to measure site usage and ad performance. These load only after you consent and can be withdrawn at any time — see Section 9.</li>
             </ul>
           </section>
 
@@ -80,27 +80,35 @@ export default function PrivacyPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  <tr><td className="px-4 py-3">Supabase</td><td className="px-4 py-3">Database (PostgreSQL)</td><td className="px-4 py-3">EU (Frankfurt)</td></tr>
-                  <tr><td className="px-4 py-3">Vercel</td><td className="px-4 py-3">Hosting &amp; serverless functions</td><td className="px-4 py-3">EU (Dublin)</td></tr>
+                  <tr><td className="px-4 py-3">Neon</td><td className="px-4 py-3">Database (PostgreSQL)</td><td className="px-4 py-3">EU (Frankfurt)</td></tr>
+                  <tr><td className="px-4 py-3">Vercel</td><td className="px-4 py-3">Hosting &amp; serverless functions</td><td className="px-4 py-3">EU (Paris/Frankfurt)</td></tr>
                   <tr><td className="px-4 py-3">Stripe</td><td className="px-4 py-3">Payment processing</td><td className="px-4 py-3">EU (Ireland)</td></tr>
                   <tr><td className="px-4 py-3">Resend</td><td className="px-4 py-3">Transactional email</td><td className="px-4 py-3">EU region</td></tr>
                   <tr><td className="px-4 py-3">Plausible</td><td className="px-4 py-3">Anonymous analytics</td><td className="px-4 py-3">EU (Germany)</td></tr>
                   <tr><td className="px-4 py-3">Google Analytics (GA4)</td><td className="px-4 py-3">Analytics — with consent only</td><td className="px-4 py-3">EU/US (SCCs)</td></tr>
                   <tr><td className="px-4 py-3">Meta Pixel</td><td className="px-4 py-3">Ad measurement — with consent only</td><td className="px-4 py-3">EU/US (SCCs)</td></tr>
+                  <tr><td className="px-4 py-3">Cloudflare</td><td className="px-4 py-3">CDN and DNS</td><td className="px-4 py-3">Global (EU edge)</td></tr>
                 </tbody>
               </table>
             </div>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900">6. Data retention</h2>
+            <h2 className="text-xl font-bold text-slate-900">6. International data transfers</h2>
+            <p className="mt-3 leading-relaxed">
+              The vast majority of your data is processed and stored within the EU/EEA. Where a sub-processor is based outside the EU/EEA — currently Google Analytics (GA4) and the Meta Pixel, both of which may involve a transfer of data to the United States — that transfer is safeguarded under the European Commission&apos;s Standard Contractual Clauses (SCCs) and, where applicable, the EU-US Data Privacy Framework. Both of these tools load only after you give explicit consent in the cookie banner (see Section 9).
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-slate-900">7. Data retention</h2>
             <p className="mt-3 leading-relaxed">
               Your data is retained for as long as your account is active. When you delete your account (Settings → Delete account), all personal data is permanently removed from our database within 30 days. Anonymised analytics data is retained indefinitely.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900">7. Your rights under GDPR</h2>
+            <h2 className="text-xl font-bold text-slate-900">8. Your rights under GDPR</h2>
             <p className="mt-3 leading-relaxed">As a data subject in the EU/EEA you have the right to:</p>
             <ul className="mt-2 list-disc space-y-1 pl-5 leading-relaxed">
               <li><strong>Access</strong> — request a copy of the personal data we hold about you.</li>
@@ -109,6 +117,7 @@ export default function PrivacyPage() {
               <li><strong>Portability</strong> — export your subscriptions as CSV (Pro feature).</li>
               <li><strong>Objection / Restriction</strong> — object to or restrict certain processing.</li>
               <li><strong>Withdraw consent</strong> — disable email alerts at any time in Settings.</li>
+              <li><strong>Lodge a complaint</strong> — with a supervisory authority, namely the CNPD in Portugal (<a href="https://www.cnpd.pt" target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline">cnpd.pt</a>) or the data protection authority of your country of residence; for UK residents, the ICO (<a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer" className="text-violet-600 hover:underline">ico.org.uk</a>).</li>
             </ul>
             <p className="mt-3 leading-relaxed">
               To exercise any of these rights, email{" "}
@@ -118,21 +127,21 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900">8. Cookies</h2>
+            <h2 className="text-xl font-bold text-slate-900">9. Cookies</h2>
             <p className="mt-3 leading-relaxed">
               Klaxo uses a single session cookie required for authentication. Plausible analytics is cookieless and always on. Google Analytics (GA4) and the Meta Pixel are <strong>off by default</strong> and only load after you accept analytics or marketing cookies in the cookie banner — you can accept, reject, or customize your choice at any time, and withdraw it just as easily.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900">9. Security</h2>
+            <h2 className="text-xl font-bold text-slate-900">10. Security</h2>
             <p className="mt-3 leading-relaxed">
               All data is encrypted in transit (TLS 1.3) and at rest. Passwords are hashed with bcrypt (12 rounds). We conduct periodic security reviews.
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-900">10. Contact</h2>
+            <h2 className="text-xl font-bold text-slate-900">11. Contact</h2>
             <p className="mt-3 leading-relaxed">
               For privacy and GDPR enquiries:{" "}
               <a href="mailto:privacy@klaxo.app" className="text-violet-600 hover:underline">privacy@klaxo.app</a>
