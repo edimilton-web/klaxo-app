@@ -7,23 +7,24 @@ import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
 import { toMonthlyEur } from "@/lib/exchange-rate"
 import { SuccessToast } from "@/components/ui/success-toast"
+import { getUserPlan } from "@/lib/get-user-plan"
 
 export default async function SubscriptionsPage({ searchParams }: { searchParams: Promise<{ paid?: string; error?: string }> }) {
   const { paid } = await searchParams
   const session = await auth()
   const userId = session!.user.id
 
-  const [subscriptions, user] = await Promise.all([
+  const [subscriptions, plan] = await Promise.all([
     prisma.subscription.findMany({
       where: { userId, status: { not: "CANCELLED" } },
       orderBy: { nextBillingDate: "asc" },
     }),
-    prisma.user.findUnique({ where: { id: userId }, select: { plan: true } }),
+    getUserPlan(userId),
   ])
 
   const active = subscriptions.filter((s) => s.status === "ACTIVE")
   const paused = subscriptions.filter((s) => s.status === "PAUSED")
-  const isProUser = user?.plan === "PRO"
+  const isProUser = plan === "PRO"
   const atLimit = !isProUser && active.length >= 5
 
   let totalMonthlyEur = 0

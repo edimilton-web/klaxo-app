@@ -1,7 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Modal } from "@/components/ui/modal"
@@ -29,16 +28,15 @@ const PRO_FEATURES = ["Unlimited subscriptions", "Custom alerts", "Monthly email
 
 export default function BillingPage() {
   const params = useSearchParams()
-  const { data: session, update } = useSession()
   const [loading, setLoading] = useState<string | null>(null)
   const [cancelModal, setCancelModal] = useState(false)
-  const plan = session?.user?.plan ?? null
+  const [plan, setPlan] = useState<string | null>(null)
 
   useEffect(() => {
     if (params.get("success")) toast.success("Successfully upgraded to Pro!")
     if (params.get("canceled")) toast.info("Checkout canceled")
-    if (params.get("success") || params.get("refresh")) update()
-  }, [params, update])
+    fetch("/api/settings").then(r => r.json()).then(d => setPlan(d?.plan ?? "FREE"))
+  }, [params])
 
   async function handleCheckout(priceType: string) {
     setLoading(priceType)

@@ -52,7 +52,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   callbacks: {
-    async jwt({ token, user, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id
         const dbUser = await prisma.user.findUnique({
@@ -61,13 +61,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         })
         token.plan = dbUser?.plan ?? "FREE"
         token.createdAt = dbUser?.createdAt.toISOString() ?? new Date().toISOString()
-      }
-      if (trigger === "update") {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { plan: true },
-        })
-        token.plan = dbUser?.plan ?? token.plan
       }
       return token
     },

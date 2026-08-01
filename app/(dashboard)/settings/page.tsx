@@ -14,16 +14,18 @@ export default function SettingsPage() {
   const [deleteModal, setDeleteModal] = useState(false)
   const [installModal, setInstallModal] = useState(false)
   const [form, setForm] = useState({ name: "", email: "", alertDaysBefore: 5 })
+  const [plan, setPlan] = useState<string | null>(null)
 
   useEffect(() => {
     if (session?.user) {
       fetch("/api/settings").then(r => r.json()).then(d => {
         setForm({ name: d.name ?? "", email: d.email ?? "", alertDaysBefore: d.alertDaysBefore ?? 5 })
+        setPlan(d.plan ?? "FREE")
       })
     }
   }, [session])
 
-  const isPro = session?.user?.plan === "PRO"
+  const isPro = plan === "PRO"
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault()

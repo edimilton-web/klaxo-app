@@ -9,6 +9,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { prisma } from "@/lib/prisma"
 import { toMonthlyEur } from "@/lib/exchange-rate"
+import { getUserPlan } from "@/lib/get-user-plan"
 
 async function getDashboardData(userId: string) {
   const [subscriptions, upcoming] = await Promise.all([
@@ -46,8 +47,11 @@ async function getDashboardData(userId: string) {
 
 export default async function DashboardPage() {
   const session = await auth()
-  const data = await getDashboardData(session!.user.id)
-  const isProUser = session?.user?.plan === "PRO"
+  const [data, plan] = await Promise.all([
+    getDashboardData(session!.user.id),
+    getUserPlan(session!.user.id),
+  ])
+  const isProUser = plan === "PRO"
 
   return (
     <div>
