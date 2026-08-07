@@ -1,12 +1,6 @@
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
-
-const SUBS = [
-  { name: "Netflix", amount: "€15.99", cycle: "Monthly", daysUntil: 3, color: "#E50914" },
-  { name: "Spotify", amount: "€9.99", cycle: "Monthly", daysUntil: 12, color: "#1DB954" },
-  { name: "Adobe CC", amount: "€54.99", cycle: "Monthly", daysUntil: 21, color: "#FF0000" },
-  { name: "GitHub", amount: "€3.67", cycle: "Monthly", daysUntil: 28, color: "#6e40c9" },
-]
 
 function MiniDashboard() {
   return (
@@ -14,48 +8,14 @@ function MiniDashboard() {
       <div className="pointer-events-none absolute -inset-8 rounded-3xl bg-violet-600/10 blur-3xl" />
 
       <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0D0D14] shadow-2xl shadow-black/60">
-        <div className="flex items-center gap-2 border-b border-white/[0.06] px-4 py-3">
-          <div className="flex gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-            <div className="h-2.5 w-2.5 rounded-full bg-white/10" />
-          </div>
-          <div className="mx-auto flex h-6 w-48 items-center justify-center rounded-md bg-white/5 text-xs text-white/20">
-            app.klaxo.app/dashboard
-          </div>
-        </div>
-
-        <div className="p-5">
-          <div className="mb-5 grid grid-cols-3 gap-3">
-            <div className="rounded-xl border border-white/[0.07] bg-gradient-to-br from-violet-600 to-indigo-600 p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-violet-200/70">Monthly</p>
-              <p className="mt-1 text-lg font-bold text-white">€84.64</p>
-            </div>
-            <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Yearly</p>
-              <p className="mt-1 text-lg font-bold text-white">€1,015.68</p>
-            </div>
-            <div className="rounded-xl border border-white/[0.12] bg-[#16161F] p-3">
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-white/40">Active</p>
-              <p className="mt-1 text-lg font-bold text-white">4</p>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            {SUBS.map((sub) => (
-              <div key={sub.name} className="flex items-center gap-3 rounded-xl border border-white/[0.12] bg-[#16161F] px-3 py-2.5">
-                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg" style={{ background: sub.color + "22" }}>
-                  <span className="text-xs font-bold" style={{ color: sub.color }}>{sub.name[0]}</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white">{sub.name}</p>
-                  <p className="text-xs text-white/35">{sub.cycle} · renews in {sub.daysUntil}d</p>
-                </div>
-                <span className="text-sm font-semibold text-white">{sub.amount}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        <Image
+          src="/screenshots/dashboard.png"
+          width={1023}
+          height={569}
+          alt="Klaxo dashboard showing subscription summary and monthly spending chart"
+          className="h-auto w-full"
+          priority
+        />
       </div>
     </div>
   )
