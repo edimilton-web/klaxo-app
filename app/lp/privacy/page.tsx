@@ -1,11 +1,32 @@
 import type { Metadata } from "next"
 import { DashboardMock } from "../_components/dashboard-mock"
 import { LpCta, LpFooter, LpHeader, LpOpen } from "../_components/lp-chrome"
+import { ogImages, twitterImages } from "../og-metadata"
 
+const TITLE = "Track every subscription — without connecting your bank | Klaxo"
+const DESCRIPTION =
+  "Emma and Snoop need access to your bank account. Klaxo doesn’t. Add your subscriptions in seconds, get reminded before every renewal. Free to start."
+
+// Metadata merges shallowly, so defining openGraph here replaces the root
+// layout's block outright — every field it needs has to be spelled out.
 export const metadata: Metadata = {
-  title: "Track every subscription — without connecting your bank | Klaxo",
-  description:
-    "Emma and Snoop need access to your bank account. Klaxo doesn’t. Add your subscriptions in seconds, get reminded before every renewal. Free to start.",
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    type: "website",
+    siteName: "Klaxo",
+    locale: "en_GB",
+    url: "https://www.klaxo.app/lp/privacy",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ogImages,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+    images: twitterImages,
+  },
 }
 
 const CTA = "Start free — no bank, no card"
