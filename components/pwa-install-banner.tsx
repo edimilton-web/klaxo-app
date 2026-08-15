@@ -1,5 +1,6 @@
 "use client"
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { KlaxoLogo } from "@/components/klaxo-logo"
 
 interface BeforeInstallPromptEvent extends Event {
@@ -14,7 +15,13 @@ export function PwaInstallBanner() {
   const [isIos, setIsIos] = useState(false)
   const [visible, setVisible] = useState(false)
 
+  // Paid landing pages carry a single call to action; a second prompt in the
+  // corner competes with it.
+  const pathname = usePathname()
+  const onLandingPage = pathname?.startsWith("/lp/") ?? false
+
   useEffect(() => {
+    if (onLandingPage) return
     if (window.matchMedia("(display-mode: standalone)").matches) return
     if (localStorage.getItem(DISMISSED_KEY)) return
 
@@ -41,7 +48,7 @@ export function PwaInstallBanner() {
     }
     window.addEventListener("beforeinstallprompt", handler)
     return () => window.removeEventListener("beforeinstallprompt", handler)
-  }, [])
+  }, [onLandingPage])
 
   function dismiss() {
     localStorage.setItem(DISMISSED_KEY, "1")
@@ -59,7 +66,7 @@ export function PwaInstallBanner() {
     }
   }
 
-  if (!visible) return null
+  if (onLandingPage || !visible) return null
 
   return (
     <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm rounded-2xl border border-white/[0.08] bg-[#111118] p-4 shadow-2xl shadow-black/60 md:left-auto md:right-6 md:max-w-xs">

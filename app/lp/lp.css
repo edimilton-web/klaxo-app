@@ -1,0 +1,986 @@
+/* ==========================================================================
+   Klaxo — paid landing pages (/lp/*)
+   Scoped under .lp-root. Nothing here leaks into the app or the marketing site.
+
+   Direction: elevated dark. A blue-grey ground rather than near-black, cards
+   that sit above it on a lit edge, and a lot of vertical air. Brand violet
+   carries identity; a warm coral carries the action, so the button never
+   dissolves into the brand.
+   ========================================================================== */
+
+.lp-root {
+  /* Ground and surfaces ------------------------------------------------- */
+  --lp-bg: #12121a;
+  --lp-surface: #1a1a25;
+  --lp-surface-2: #20202d;
+  --lp-border: rgba(255, 255, 255, 0.07);
+  --lp-border-lit: rgba(255, 255, 255, 0.14);
+
+  /* Text — every value below meets AA against --lp-bg ------------------- */
+  --lp-text: #f4f4f7;
+  --lp-text-2: #9e9eaf; /* 7.2:1  */
+  --lp-text-3: #7e7e92; /* 4.75:1 */
+
+  /* Brand violet. The solid tone is for fills, dots and borders; the lifted
+     tone is the only one used for text, where it clears AA at 6.8:1. */
+  --lp-brand: #6d5ae6;
+  --lp-brand-lit: #9b8cff;
+
+  /* Action. Set per page below — coral, deliberately outside the brand
+     palette, with near-black ink on top for a 6.6:1 contrast ratio. */
+  --lp-cta-ink: #12121a;
+
+  --lp-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Body face stays DM Sans — the app's voice. Display and mono are loaded
+     and scoped by app/lp/layout.tsx. */
+  --lp-font-body: var(--font-dm-sans);
+
+  /* The root layout gives <body> `min-h-full flex flex-col`. */
+  flex: 1 1 auto;
+  overflow-x: clip;
+  background: var(--lp-bg);
+  color: var(--lp-text);
+  font-family: var(--lp-font-body), ui-sans-serif, sans-serif;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Privacy leads with reassurance, so its coral is a shade softer. */
+.lp-page--privacy {
+  --lp-cta: #ff7a5c;
+  --lp-cta-hover: #ff8d73;
+  --lp-cta-glow: rgba(255, 122, 92, 0.45);
+}
+
+/* Forgotten leads with urgency, so its coral runs hotter — and the money
+   figure sits in the same warm family so the two read as one argument. */
+.lp-page--forgotten {
+  --lp-cta: #ff6b4a;
+  --lp-cta-hover: #ff8062;
+  --lp-cta-glow: rgba(255, 107, 74, 0.45);
+  --lp-money: #ff8a6b;
+}
+
+/* --------------------------------------------------------------------------
+   Shell and rhythm — the air is the design
+   -------------------------------------------------------------------------- */
+
+.lp-shell {
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .lp-shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+.lp-sec {
+  padding-block: 5rem;
+}
+
+@media (min-width: 900px) {
+  .lp-sec {
+    padding-block: 8.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Type
+   -------------------------------------------------------------------------- */
+
+/* Both the figure and the answer are <p> elements sitting inside .lp-card,
+   where `.lp-card p` (0,1,1) would otherwise win over a lone class (0,1,0)
+   and shrink them to body size. The .lp-card prefix settles it. */
+.lp-h1,
+.lp-h2,
+.lp-h3,
+.lp-card .lp-stat__num,
+.lp-card .lp-answer {
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  margin: 0;
+  color: var(--lp-text);
+}
+
+/* Capped at 50px: above that the longest word in either headline no longer
+   fits the hero column and strands a single word on its own line. */
+.lp-h1 {
+  font-size: clamp(2rem, 4.4vw, 3.125rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.lp-h2 {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.lp-h3 {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+/* Micro-labels are the only capitalised text on the page. */
+.lp-label {
+  margin: 0 0 1.25rem;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-brand-lit);
+}
+
+.lp-lead {
+  margin: 1.5rem 0 0;
+  max-width: 46ch;
+  font-size: clamp(1.0625rem, 1.5vw, 1.1875rem);
+  line-height: 1.6;
+  color: var(--lp-text-2);
+}
+
+.lp-body {
+  margin: 1.5rem 0 0;
+  max-width: 62ch;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  color: var(--lp-text-2);
+}
+
+.lp-source {
+  margin: 2rem 0 0;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  color: var(--lp-text-3);
+}
+
+/* Centred section openers. */
+.lp-open {
+  max-width: 44rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.lp-open .lp-body,
+.lp-open .lp-lead {
+  margin-inline: auto;
+}
+
+/* --------------------------------------------------------------------------
+   Action
+   -------------------------------------------------------------------------- */
+
+.lp-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding-inline: 1.625rem;
+  border-radius: 0.8rem;
+  background: var(--lp-cta);
+  color: var(--lp-cta-ink);
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  box-shadow: 0 10px 30px -12px var(--lp-cta-glow);
+  transition: background 160ms ease, transform 160ms var(--lp-ease),
+    box-shadow 160ms ease;
+}
+
+.lp-cta:hover {
+  background: var(--lp-cta-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 38px -12px var(--lp-cta-glow);
+}
+
+.lp-cta:active {
+  transform: translateY(0);
+}
+
+.lp-cta:focus-visible {
+  outline: 2px solid var(--lp-cta);
+  outline-offset: 3px;
+}
+
+.lp-cta__arrow {
+  transition: transform 180ms var(--lp-ease);
+}
+
+.lp-cta:hover .lp-cta__arrow {
+  transform: translateX(3px);
+}
+
+.lp-trust {
+  margin: 1.125rem 0 0;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--lp-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+   -------------------------------------------------------------------------- */
+
+.lp-hero {
+  display: grid;
+  gap: 3.5rem;
+  padding-block: 2rem 4.5rem;
+}
+
+/* Grid items default to min-width:auto, so a wide card would push the track
+   past the viewport on a phone. */
+.lp-hero > * {
+  min-width: 0;
+}
+
+@media (min-width: 1040px) {
+  .lp-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+    align-items: center;
+    gap: 5rem;
+    padding-block: 4rem 8rem;
+  }
+}
+
+.lp-hero__act {
+  margin-top: 2.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Surfaces
+   -------------------------------------------------------------------------- */
+
+.lp-card {
+  position: relative;
+  border: 1px solid var(--lp-border);
+  border-radius: 1.25rem;
+  background: var(--lp-surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.045),
+    0 24px 48px -32px rgba(0, 0, 0, 0.85);
+}
+
+.lp-card--pad {
+  padding: 1.75rem;
+}
+
+.lp-card--hover {
+  transition: border-color 200ms ease, background 200ms ease,
+    transform 200ms var(--lp-ease);
+}
+
+.lp-card--hover:hover {
+  border-color: var(--lp-border-lit);
+  background: var(--lp-surface-2);
+  transform: translateY(-3px);
+}
+
+.lp-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--lp-border);
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-text-3);
+}
+
+.lp-card p {
+  margin: 0.625rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--lp-text-2);
+}
+
+/* A short violet rule instead of an icon — brand, used sparingly. */
+.lp-card--ruled::before {
+  content: "";
+  display: block;
+  width: 1.75rem;
+  height: 2px;
+  margin-bottom: 1.125rem;
+  border-radius: 2px;
+  background: var(--lp-brand);
+}
+
+.lp-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.lp-grid > * {
+  min-width: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Rows — the statement vocabulary, kept from the hero cards
+   -------------------------------------------------------------------------- */
+
+.lp-row {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--lp-border);
+  font-size: 0.875rem;
+}
+
+.lp-row:last-child {
+  border-bottom: 0;
+}
+
+.lp-row__date {
+  flex: 0 0 3.75rem;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--lp-text-3);
+}
+
+.lp-row__name {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--lp-text);
+}
+
+.lp-row__amount {
+  flex: 0 0 auto;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-text);
+}
+
+.lp-row__amount--money {
+  color: var(--lp-money);
+}
+
+.lp-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.375rem 1.25rem;
+  border-top: 1px solid var(--lp-border-lit);
+  background: rgba(255, 138, 107, 0.06);
+}
+
+.lp-total__label {
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-text-3);
+}
+
+.lp-total__value {
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(1.625rem, 4vw, 2.125rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--lp-money);
+}
+
+.lp-total__unit {
+  font-size: 0.875rem;
+  letter-spacing: 0;
+  opacity: 0.65;
+}
+
+/* Permission rows (privacy hero card) */
+.lp-perm {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--lp-border);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--lp-text-2);
+}
+
+.lp-perm:last-child {
+  border-bottom: 0;
+}
+
+.lp-perm__mark {
+  flex: 0 0 auto;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.75;
+  color: var(--lp-text-3);
+}
+
+.lp-card .lp-answer {
+  padding: 1.75rem 1.25rem;
+  font-size: 1.375rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.lp-answer span {
+  color: var(--lp-brand-lit);
+}
+
+/* --------------------------------------------------------------------------
+   Figures — the data section pulls its numbers out of the sentence
+   -------------------------------------------------------------------------- */
+
+.lp-figures {
+  display: grid;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+/* One verified figure rather than two — a lone stat gets the full measure. */
+.lp-figures--single {
+  max-width: 34rem;
+  margin-inline: auto;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.lp-figure {
+  padding: 2.25rem 1.75rem;
+  text-align: center;
+}
+
+.lp-figures--single .lp-figure p:not(.lp-stat__num) {
+  max-width: 42ch;
+}
+
+.lp-card .lp-stat__num {
+  font-size: clamp(2.75rem, 6.5vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.lp-figure p {
+  margin: 1rem auto 0;
+  max-width: 26ch;
+}
+
+/* --------------------------------------------------------------------------
+   Steps — a real sequence, so the numbers carry information
+   -------------------------------------------------------------------------- */
+
+.lp-steps {
+  display: grid;
+  gap: 1rem;
+  margin: 3.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  counter-reset: lp-step;
+}
+
+.lp-step {
+  counter-increment: lp-step;
+  min-width: 0;
+  padding: 1.75rem;
+}
+
+.lp-step::before {
+  content: "0" counter(lp-step);
+  display: block;
+  margin-bottom: 1rem;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--lp-brand-lit);
+}
+
+/* --------------------------------------------------------------------------
+   Trust
+   -------------------------------------------------------------------------- */
+
+.lp-trust-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 3.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Four points, so two by two — auto-fit would strand the fourth on its own. */
+@media (min-width: 768px) {
+  .lp-trust-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lp-trust-grid li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  min-width: 0;
+  padding: 1.375rem 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--lp-text-2);
+}
+
+.lp-tick {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin-top: 0.05rem;
+  border-radius: 999px;
+  background: rgba(109, 90, 230, 0.18);
+  color: var(--lp-brand-lit);
+  font-size: 0.6875rem;
+  line-height: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Product shot
+   -------------------------------------------------------------------------- */
+
+.lp-shot {
+  max-width: 52rem;
+  margin: 3.5rem auto 0;
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   Dashboard mock — the product, drawn in sterling
+   -------------------------------------------------------------------------- */
+
+.lp-mock {
+  padding: 1.25rem;
+  font-size: 0.8125rem;
+}
+
+.lp-mock p {
+  margin: 0;
+}
+
+.lp-mock__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.125rem;
+}
+
+.lp-mock__title {
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--lp-text);
+}
+
+.lp-mock__sub {
+  margin-top: 0.125rem !important;
+  font-size: 0.6875rem;
+  color: var(--lp-text-3);
+}
+
+.lp-mock__add {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: var(--lp-brand);
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.lp-mock__stats {
+  display: grid;
+  gap: 0.625rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 640px) {
+  .lp-mock__stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.lp-mock__stat {
+  min-width: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 0.75rem;
+  background: var(--lp-surface-2);
+}
+
+.lp-mock__stat--lead {
+  border-color: transparent;
+  background: linear-gradient(150deg, #8b5cf6, var(--lp-brand) 60%, #5b21b6);
+}
+
+.lp-mock__stat-label {
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-text-3);
+}
+
+.lp-mock__stat--lead .lp-mock__stat-label,
+.lp-mock__stat--lead .lp-mock__stat-note {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.lp-mock__stat-value {
+  margin-top: 0.3rem !important;
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--lp-text);
+}
+
+.lp-mock__stat--lead .lp-mock__stat-value {
+  color: #fff;
+}
+
+.lp-mock__stat-note {
+  margin-top: 0.15rem !important;
+  font-size: 0.625rem;
+  color: var(--lp-text-3);
+}
+
+.lp-mock__panels {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 0.625rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .lp-mock__panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.lp-mock__panel {
+  min-width: 0;
+  padding: 0.875rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 0.75rem;
+  background: var(--lp-surface-2);
+}
+
+.lp-mock__panel-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--lp-text);
+}
+
+.lp-mock__donut {
+  width: 7.5rem;
+  height: 7.5rem;
+  margin: 1rem auto;
+  border-radius: 999px;
+  /* The hole. */
+  mask: radial-gradient(circle, transparent 54%, #000 55%);
+  -webkit-mask: radial-gradient(circle, transparent 54%, #000 55%);
+}
+
+.lp-mock__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3rem 0.75rem;
+  font-size: 0.5625rem;
+  color: var(--lp-text-3);
+}
+
+.lp-mock__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.lp-mock__legend i {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+}
+
+.lp-mock__renewal {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 0.625rem;
+  background: var(--lp-surface);
+}
+
+.lp-mock__renewal:first-of-type {
+  margin-top: 1rem;
+}
+
+.lp-mock__avatar {
+  flex: 0 0 auto;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(140deg, #7c5cfc, #4c1d95);
+}
+
+.lp-mock__renewal-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 0.75rem;
+  color: var(--lp-text);
+}
+
+.lp-mock__renewal-amount {
+  flex: 0 0 auto;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-align: right;
+  color: var(--lp-text);
+}
+
+.lp-mock__renewal-name em,
+.lp-mock__renewal-amount em {
+  display: block;
+  margin-top: 0.1rem;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  font-style: normal;
+  color: var(--lp-text-3);
+}
+
+/* --------------------------------------------------------------------------
+   FAQ
+   -------------------------------------------------------------------------- */
+
+.lp-faq {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 46rem;
+  margin: 3.5rem auto 0;
+}
+
+.lp-faq details {
+  padding: 0.375rem 1.5rem;
+}
+
+.lp-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--lp-text);
+}
+
+.lp-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.lp-faq summary:focus-visible {
+  outline: 2px solid var(--lp-brand-lit);
+  outline-offset: 4px;
+  border-radius: 0.375rem;
+}
+
+.lp-faq__sign {
+  flex: 0 0 auto;
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  color: var(--lp-text-3);
+  transition: transform 200ms var(--lp-ease);
+}
+
+.lp-faq details[open] .lp-faq__sign {
+  transform: rotate(45deg);
+}
+
+.lp-faq p {
+  margin: 0 0 1.375rem;
+  max-width: 58ch;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--lp-text-2);
+}
+
+/* --------------------------------------------------------------------------
+   The two repeat calls to action
+   -------------------------------------------------------------------------- */
+
+/* Mid-page: split left/right, so it reads differently from hero and close. */
+.lp-mid {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem 3rem;
+  padding: 2.75rem;
+}
+
+.lp-mid__line {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: clamp(1.25rem, 2.2vw, 1.625rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--lp-text);
+}
+
+.lp-mid__act .lp-trust {
+  margin-top: 0.875rem;
+}
+
+/* Closing: centred, with the brand glow behind it. */
+.lp-close {
+  position: relative;
+  overflow: hidden;
+  padding: 4.5rem 2rem;
+  text-align: center;
+}
+
+.lp-close::before {
+  content: "";
+  position: absolute;
+  inset: -40% 20% auto;
+  height: 22rem;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(109, 90, 230, 0.22),
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.lp-close > * {
+  position: relative;
+}
+
+.lp-close .lp-h2 {
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.lp-close__act {
+  margin-top: 2.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   Header and footer — deliberately near-empty. Paid traffic gets one exit.
+   -------------------------------------------------------------------------- */
+
+.lp-head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding-block: 1.75rem;
+}
+
+.lp-head__word {
+  font-family: var(--lp-font-display), ui-sans-serif, sans-serif;
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--lp-text);
+}
+
+.lp-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.875rem;
+  padding-block: 2.25rem;
+  border-top: 1px solid var(--lp-border);
+  font-family: var(--lp-font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--lp-text-3);
+}
+
+.lp-foot a {
+  color: var(--lp-text-3);
+  text-decoration: none;
+  transition: color 160ms ease;
+}
+
+.lp-foot a:hover {
+  color: var(--lp-text);
+}
+
+.lp-foot a:focus-visible {
+  outline: 2px solid var(--lp-brand-lit);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.lp-foot__links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Motion — one orchestrated page-load in the hero, then quiet.
+
+   Deliberately no scroll-driven reveals: an `animation-timeline: view()`
+   range resolved against an element taller than the viewport can strand
+   content at opacity 0, and no decoration is worth that risk.
+   -------------------------------------------------------------------------- */
+
+.lp-rise {
+  opacity: 0;
+  animation: lp-rise 700ms var(--lp-ease) forwards;
+  animation-delay: var(--lp-d, 0ms);
+}
+
+@keyframes lp-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-rise {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+
+  .lp-cta:hover,
+  .lp-card--hover:hover {
+    transform: none;
+  }
+}
