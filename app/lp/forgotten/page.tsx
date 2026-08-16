@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { DashboardMock } from "../_components/dashboard-mock"
 import { LpCta, LpFooter, LpHeader, LpOpen } from "../_components/lp-chrome"
 import { RunningTotal } from "../_components/running-total"
-import { ogImages, twitterImages } from "../og-metadata"
+import { forgottenOgImages, forgottenTwitterImages } from "../og-metadata"
 
 const TITLE = "The subscriptions you forgot about are still charging you | Klaxo"
 const DESCRIPTION =
@@ -20,13 +20,13 @@ export const metadata: Metadata = {
     url: "https://www.klaxo.app/lp/forgotten",
     title: TITLE,
     description: DESCRIPTION,
-    images: ogImages,
+    images: forgottenOgImages,
   },
   twitter: {
     card: "summary_large_image",
     title: TITLE,
     description: DESCRIPTION,
-    images: twitterImages,
+    images: forgottenTwitterImages,
   },
 }
 
