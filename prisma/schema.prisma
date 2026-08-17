@@ -48,6 +48,10 @@ model User {
   stripeSubId      String?        @unique
   alertDaysBefore      Int            @default(5)
   oneSignalPlayerId    String?
+  // Set when Resend reports a hard bounce or a spam complaint for this
+  // address. Suppressed users are skipped by every outbound email.
+  emailSuppressedAt    DateTime?
+  emailSuppressReason  String?        // "hard_bounce" | "complaint"
   setupToken           String?        @unique
   setupTokenExpiry     DateTime?
   createdAt            DateTime       @default(now())
