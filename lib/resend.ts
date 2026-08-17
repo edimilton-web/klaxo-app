@@ -5,10 +5,41 @@ import { VerifyEmail } from "@/emails/verify-email"
 import { ProSetupEmail } from "@/emails/pro-setup"
 import { PaymentConfirmationEmail } from "@/emails/payment-confirmation"
 import { createElement } from "react"
+import { prisma } from "@/lib/prisma"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM = process.env.RESEND_FROM_EMAIL ?? "noreply@klaxo.app"
+
+type EmailPayload = Parameters<typeof resend.emails.send>[0]
+
+/**
+ * Every email addressed to a user goes through here, so an address that hard
+ * bounced or filed a spam complaint is never written to again — whatever the
+ * email is. A dead address rejects a receipt exactly as it rejects a
+ * reminder, and each attempt costs sender reputation.
+ *
+ * Admin mail (sendNewUserAlert, sendAdminDailySummary) calls resend directly:
+ * it goes to us, and a user's dead address says nothing about ours.
+ *
+ * The crons already filter suppressed users out of their queries; this is the
+ * backstop for the send sites that are not driven by those queries.
+ */
+async function sendToUser(payload: EmailPayload) {
+  const to = Array.isArray(payload.to) ? payload.to[0] : payload.to
+
+  const user = await prisma.user.findFirst({
+    where: { email: { equals: to, mode: "insensitive" } },
+    select: { emailSuppressedAt: true, emailSuppressReason: true },
+  })
+
+  if (user?.emailSuppressedAt) {
+    console.log(`[resend] skipped ${to}: suppressed (${user.emailSuppressReason})`)
+    return { data: null, error: null }
+  }
+
+  return resend.emails.send(payload)
+}
 
 export async function sendRenewalAlert({
   to,
@@ -27,7 +58,7 @@ export async function sendRenewalAlert({
   daysUntil: number
   nextBillingDate: string
 }) {
-  return resend.emails.send({
+  return sendToUser({
     from: FROM,
     to,
     subject: `Renovação em ${daysUntil} dias: ${subscriptionName}`,
@@ -51,7 +82,7 @@ export async function sendVerificationEmail({
   userName: string
   verifyUrl: string
 }) {
-  return resend.emails.send({
+  return sendToUser({
     from: FROM,
     to,
     subject: "Confirma o teu email — Klaxo",
@@ -66,7 +97,7 @@ export async function sendProSetupEmail({
   to: string
   setupUrl: string
 }) {
-  return resend.emails.send({
+  return sendToUser({
     from: FROM,
     to,
     subject: "Set up your Klaxo Pro account",
@@ -119,7 +150,7 @@ export async function sendPaymentConfirmationEmail({
   dueDate: string
   confirmUrl: string
 }) {
-  return resend.emails.send({
+  return sendToUser({
     from: FROM,
     to,
     subject: `${subscriptionName} renewed yesterday — did you pay?`,
@@ -199,7 +230,7 @@ export async function sendMonthlySummary({
   subscriptions: Array<{ name: string; amountEur: number; billingCycle: string }>
   month: string
 }) {
-  return resend.emails.send({
+  return sendToUser({
     from: FROM,
     to,
     subject: `O teu resumo Klaxo de ${month}`,

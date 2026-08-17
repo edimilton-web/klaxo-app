@@ -138,7 +138,7 @@ export async function GET(req: Request) {
     // (default 5) plus a fixed 2-day reminder. Each is deduped independently
     // by its own scheduledFor date, so one can't block the other.
     const users = await prisma.user.findMany({
-      where: { subscriptions: { some: { status: "ACTIVE" } } },
+      where: { subscriptions: { some: { status: "ACTIVE" } }, emailSuppressedAt: null },
       include: { subscriptions: { where: { status: "ACTIVE" } } },
     })
 

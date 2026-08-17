@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   const monthLabel = prevMonth.toLocaleString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" })
 
   const users = await prisma.user.findMany({
-    where: { subscriptions: { some: { status: "ACTIVE" } } },
+    where: { subscriptions: { some: { status: "ACTIVE" } }, emailSuppressedAt: null },
     include: { subscriptions: { where: { status: "ACTIVE" } } },
   })
 
