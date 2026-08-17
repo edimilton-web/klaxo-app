@@ -31,9 +31,14 @@ const STRIPE_DRIFT_WARN_AT = 1
  * Industry guidance puts a healthy hard-bounce rate near 2%. The minimum
  * volume matters more than the threshold: 1 bounce in 3 sends is 33% and
  * means nothing, and an indicator that cries wolf is one you stop reading.
+ *
+ * At current volume (~20 emails a week) a single bounce clears 2% on its
+ * own, and that bounce is already reported by the suppressions indicator.
+ * So the ratio only speaks once there is enough of it to mean something;
+ * individual dead addresses are indicator 1's job, not this one's.
  */
 const BOUNCE_RATE_WARN_AT = 0.02
-const BOUNCE_RATE_MIN_EMAILS = 20
+const BOUNCE_RATE_MIN_EMAILS = 50
 const BOUNCE_WINDOW_DAYS = 7
 const BOUNCE_MAX_PAGES = 5
 
