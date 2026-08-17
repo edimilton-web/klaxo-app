@@ -215,6 +215,40 @@ export async function sendAdminDailySummary({
   })
 }
 
+/**
+ * System health email. Sent only when something needs attention — see
+ * lib/system-health.ts. Goes to the admin, so it does not pass through
+ * sendToUser.
+ *
+ * From alerts@klaxo.app: the klaxo.app domain is verified in Resend, so this
+ * inherits SPF/DKIM. Outbound only, no mailbox behind it.
+ */
+export async function sendSystemHealthEmail({
+  indicators,
+  warnCount,
+}: {
+  indicators: Array<{ label: string; status: "ok" | "warn"; detail: string; message?: string }>
+  warnCount: number
+}) {
+  const lines = [
+    `Klaxo — saúde do sistema`,
+    `${new Date().toISOString().replace("T", " ").slice(0, 19)} UTC`,
+    ``,
+    // An indicator may carry a full sentence, for lines that read badly as
+    // "label: detail" — see the Stripe access failure.
+    ...indicators.map((i) => `${i.status === "warn" ? "⚠" : "✓"} ${i.message ?? `${i.label}: ${i.detail}`}`),
+    ``,
+    `Só recebes este email quando há avisos. Silêncio significa tudo ✓.`,
+  ]
+
+  return resend.emails.send({
+    from: "alerts@klaxo.app",
+    to: ADMIN_EMAIL,
+    subject: `⚠ Klaxo saúde: ${warnCount} aviso(s)`,
+    text: lines.join("\n"),
+  })
+}
+
 export async function sendMonthlySummary({
   to,
   userName,
