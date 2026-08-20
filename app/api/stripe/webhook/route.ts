@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { getStripe } from "@/lib/stripe"
+import { getStripe, stripeUserWhere } from "@/lib/stripe"
 import { prisma } from "@/lib/prisma"
 import Stripe from "stripe"
 import crypto from "crypto"
@@ -21,10 +21,10 @@ export async function POST(req: Request) {
     case "customer.subscription.updated":
     case "customer.subscription.created": {
       const sub = event.data.object as Stripe.Subscription
-      const userId = sub.metadata?.userId
+      const userId = await resolveUserId(sub)
       if (!userId) break
       const isActive = sub.status === "active" || sub.status === "trialing"
-      await prisma.user.update({
+      await prisma.user.updateMany({
         where: { id: userId },
         data: {
           plan: isActive ? "PRO" : "FREE",
@@ -35,9 +35,9 @@ export async function POST(req: Request) {
     }
     case "customer.subscription.deleted": {
       const sub = event.data.object as Stripe.Subscription
-      const userId = sub.metadata?.userId
+      const userId = await resolveUserId(sub)
       if (!userId) break
-      await prisma.user.update({
+      await prisma.user.updateMany({
         where: { id: userId },
         data: { plan: "FREE", stripeSubId: null },
       })
@@ -63,6 +63,8 @@ export async function POST(req: Request) {
         const stripeSubId = session.subscription as string | null
 
         const existing = await prisma.user.findUnique({ where: { email } })
+
+        let guestUserId: string
         if (existing) {
           await prisma.user.update({
             where: { email },
@@ -72,9 +74,10 @@ export async function POST(req: Request) {
               ...(stripeSubId && { stripeSubId }),
             },
           })
+          guestUserId = existing.id
         } else {
           const setupToken = crypto.randomBytes(32).toString("hex")
-          await prisma.user.create({
+          const created = await prisma.user.create({
             data: {
               email,
               plan: "PRO",
@@ -84,6 +87,26 @@ export async function POST(req: Request) {
               setupTokenExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000),
             },
           })
+          guestUserId = created.id
+        }
+
+        // This is the first moment a guest subscription can know its user, so
+        // stamp it now: from here the subscription events identify themselves
+        // and never need the lookup fallback. Best effort — the DB is already
+        // correct, and failing the webhook would only make Stripe retry a
+        // checkout it has finished.
+        if (stripeSubId) {
+          try {
+            await getStripe().subscriptions.update(stripeSubId, {
+              metadata: {
+                guestCheckout: "true",
+                ...(session.metadata?.plan && { plan: session.metadata.plan }),
+                userId: guestUserId,
+              },
+            })
+          } catch (err) {
+            console.error("[stripe-webhook] could not stamp userId on subscription:", err)
+          }
         }
       }
       break
@@ -91,6 +114,20 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ received: true })
+}
+
+/**
+ * The user this subscription belongs to, or null if none can be identified.
+ *
+ * Resolved to a single id before writing: stripeUserWhere may fall back to an
+ * OR across two unique columns, and updateMany over a multi-row match would
+ * try to write the same unique stripeSubId onto both rows.
+ */
+async function resolveUserId(sub: Stripe.Subscription): Promise<string | null> {
+  const where = stripeUserWhere(sub)
+  if (!where) return null
+  const user = await prisma.user.findFirst({ where, select: { id: true } })
+  return user?.id ?? null
 }
 
 export const dynamic = 'force-dynamic'
