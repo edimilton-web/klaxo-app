@@ -84,14 +84,19 @@ async function newSuppressions(): Promise<HealthIndicator> {
 async function stripeDrift(): Promise<HealthIndicator> {
   const label = "Drift Stripe↔BD"
 
-  let stripeActive: number
+  let stripePro: number
   try {
+    // The webhook grants PRO for "active" and "trialing" alike, so both have
+    // to be counted here. Counting only "active" reported every trialing
+    // customer as drift. The list endpoint takes one status at a time.
     // getStripe() itself throws when STRIPE_SECRET_KEY is missing, so a
     // missing key and a failing call both land here.
-    const subs = await getStripe()
-      .subscriptions.list({ status: "active", limit: 100 })
-      .autoPagingToArray({ limit: 500 })
-    stripeActive = subs.length
+    const [active, trialing] = await Promise.all(
+      (["active", "trialing"] as const).map((status) =>
+        getStripe().subscriptions.list({ status, limit: 100 }).autoPagingToArray({ limit: 500 })
+      )
+    )
+    stripePro = active.length + trialing.length
   } catch (err) {
     const reason = err instanceof Error ? err.message : String(err)
     return {
@@ -103,9 +108,9 @@ async function stripeDrift(): Promise<HealthIndicator> {
   }
 
   const dbPro = await prisma.user.count({ where: { plan: "PRO" } })
-  const detail = `${stripeActive} subs ACTIVE no Stripe vs ${dbPro} users PRO na BD`
+  const detail = `${stripePro} subs active+trialing no Stripe vs ${dbPro} users PRO na BD`
 
-  return Math.abs(stripeActive - dbPro) >= STRIPE_DRIFT_WARN_AT ? warn(label, detail) : ok(label, detail)
+  return Math.abs(stripePro - dbPro) >= STRIPE_DRIFT_WARN_AT ? warn(label, detail) : ok(label, detail)
 }
 
 function remindersDelivered(eligible: number, sent: number): HealthIndicator {
