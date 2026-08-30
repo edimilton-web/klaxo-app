@@ -29,18 +29,21 @@ export function ConsentBanner() {
 
   return (
     <>
-      {consent?.analytics && (
+      {(consent?.analytics || consent?.marketing) && (
         <>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=G-2T6K61JYF9"
             strategy="afterInteractive"
           />
-          <Script id="google-analytics-app" strategy="afterInteractive">
+          <Script id="google-tag-config" strategy="afterInteractive">
             {`
               gtag('js', new Date());
+              ${consent?.analytics ? `
               gtag('config', 'G-2T6K61JYF9', {
                 linker: { domains: ['klaxo.app', 'www.klaxo.app', 'app.klaxo.app'] }
-              });
+              });` : ""}
+              ${consent?.marketing ? `
+              gtag('config', 'AW-18335473780');` : ""}
             `}
           </Script>
         </>
