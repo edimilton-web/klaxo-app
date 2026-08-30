@@ -61,6 +61,21 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Git & Deploy Workflow (project-specific)
+
+**Setup — already configured. Do not ask about any of this again.**
+
+- Remote: `git@github.com:edimilton-web/klaxo-app.git`, production branch `main`.
+- Git identity is set locally in this repo (`user.name=Edimilton`, `user.email=eddie.varjao.reis@gmail.com`). Never set it globally, never ask for it.
+- SSH auth works from this machine (`~/.ssh/id_ed25519`, registered on the GitHub account).
+- Deploy is automatic: the Vercel project `klaxo-app` (team `tecfixe`) is connected to this GitHub repo. **Push to `main` = production deploy.**
+- Do NOT use the Vercel CLI. Do not run `vercel`, `vercel --prod`, or `vercel link`. There is no `.vercel` folder and there should not be one.
+- Other branches auto-deploy as Vercel previews. Production only ever comes from `main`.
+
+**Execution rule:** once the user confirms a change is ready, run `git add` → `git commit` → `git push origin main` as one uninterrupted flow. Do not stop to ask for confirmation after the commit, do not report a commit as "pending push", and do not treat the deploy as a separate step to confirm or monitor — the push is the deploy.
+
+**The one gate before pushing:** run `npx tsc --noEmit` first. If it fails, stop and report — do not commit or push broken types. This is the only thing that should interrupt the flow.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
