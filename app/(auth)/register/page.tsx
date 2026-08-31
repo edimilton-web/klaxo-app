@@ -18,6 +18,7 @@ function RegisterForm() {
     email: searchParams.get("email") ?? "",
     password: "",
     confirmPassword: "",
+    company: "", // honeypot — must stay empty; see app/api/auth/register/route.ts
   })
 
   async function handleSubmit(e: React.FormEvent) {
@@ -35,7 +36,7 @@ function RegisterForm() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
+        body: JSON.stringify({ name: form.name, email: form.email, password: form.password, company: form.company }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -85,6 +86,20 @@ function RegisterForm() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Honeypot: hidden from real visitors, off-screen and unreachable by
+               tab/screen-reader. Bots that auto-fill every field on the form
+               populate it; the API silently no-ops when it's non-empty. */}
+            <input
+              type="text"
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              value={form.company}
+              onChange={(e) => setForm({ ...form, company: e.target.value })}
+              className="absolute left-[-9999px] h-0 w-0 opacity-0"
+              style={{ pointerEvents: "none" }}
+            />
             <Input label="Name" type="text" placeholder="Your name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
             <Input label="Email" type="email" placeholder="you@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
             <Input label="Password" type="password" placeholder="At least 8 characters" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />

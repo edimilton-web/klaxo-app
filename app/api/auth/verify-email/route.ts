@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { addSubscriberToMailerLite } from "@/lib/mailerlite"
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
@@ -19,12 +20,19 @@ export async function GET(req: Request) {
     return NextResponse.redirect(`${appUrl}/login?error=expired_token`)
   }
 
-  await prisma.user.update({
+  const user = await prisma.user.update({
     where: { email },
     data: { emailVerified: new Date() },
   })
 
   await prisma.verificationToken.delete({ where: { token } })
+
+  // Only now — email proven real — does the subscriber join the marketing
+  // list. Unverified/bot signups never reach MailerLite, so they never cost
+  // a subscriber slot or hurt deliverability.
+  addSubscriberToMailerLite({ email: user.email, name: user.name ?? "" }).catch((err) => {
+    console.error("[MailerLite] Failed to add subscriber:", err)
+  })
 
   return NextResponse.redirect(`${appUrl}/login?verified=1`)
 }
