@@ -3,8 +3,11 @@ import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useSession } from "next-auth/react"
 import { KlaxoLogo } from "@/components/klaxo-logo"
+import { getStoredConsent } from "@/lib/consent"
 
 const SIGNUP_WINDOW_MS = 5 * 60 * 1000
+const TRACKING_WAIT_MS = 15 * 1000
+const TRACKING_POLL_MS = 500
 
 function useSignUpTracking() {
   const { data: session } = useSession()
@@ -18,10 +21,31 @@ function useSignUpTracking() {
 
     const key = `klaxo_signup_fired_${user.id}`
     if (localStorage.getItem(key)) return
-    localStorage.setItem(key, "1")
 
-    window.gtag?.("event", "sign_up")
-    window.fbq?.("track", "CompleteRegistration")
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const deadline = Date.now() + TRACKING_WAIT_MS
+
+    function send() {
+      const gtag = window.gtag
+      if (typeof gtag !== "function") {
+        // Consent not given yet, or gtag.js still loading. Retry until the
+        // deadline and leave the key unset, so a later visit can still convert.
+        if (Date.now() < deadline) timer = setTimeout(send, TRACKING_POLL_MS)
+        return
+      }
+
+      localStorage.setItem(key, "1")
+      gtag("event", "sign_up")
+
+      if (getStoredConsent()?.marketing) {
+        window.fbq?.("track", "CompleteRegistration")
+      }
+    }
+
+    send()
+    return () => {
+      if (timer) clearTimeout(timer)
+    }
   }, [session])
 }
 

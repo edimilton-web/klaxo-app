@@ -31,12 +31,22 @@ export function ConsentBanner() {
     <>
       {(consent?.analytics || consent?.marketing) && (
         <>
-          <Script
-            src="https://www.googletagmanager.com/gtag/js?id=G-2T6K61JYF9"
-            strategy="afterInteractive"
-          />
-          <Script id="google-tag-config" strategy="afterInteractive">
+          <Script id="google-tag-init" strategy="afterInteractive">
             {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                analytics_storage: 'denied',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied'
+              });
+              gtag('consent', 'update', {
+                analytics_storage: '${consent?.analytics ? "granted" : "denied"}',
+                ad_storage: '${consent?.marketing ? "granted" : "denied"}',
+                ad_user_data: '${consent?.marketing ? "granted" : "denied"}',
+                ad_personalization: '${consent?.marketing ? "granted" : "denied"}'
+              });
               gtag('js', new Date());
               ${consent?.analytics ? `
               gtag('config', 'G-2T6K61JYF9', {
@@ -46,6 +56,10 @@ export function ConsentBanner() {
               gtag('config', 'AW-18335473780');` : ""}
             `}
           </Script>
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-2T6K61JYF9"
+            strategy="afterInteractive"
+          />
         </>
       )}
       {consent?.marketing && (
