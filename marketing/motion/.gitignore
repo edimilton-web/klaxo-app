@@ -1,0 +1,4 @@
+# vídeos renderizados e áudio temporário (gerar com o script de render)
+*.mp4
+.*.wav
+render-tools/
