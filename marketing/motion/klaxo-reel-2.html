@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Klaxo Reel 2 — Subscrições esquecidas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;600&family=Nunito:wght@900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0614;
+    --violet: #7C3AED;
+    --lilac: #A78BFA;
+    --deep: #3B0764;
+    --mint: #34D399;
+    --amber: #FBBF24;
+    --rose: #F43F5E;
+    --ink: #F5F3FF;
+    --muted: #A1A1C2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #050309; color: var(--ink); font-family: "DM Sans", sans-serif; overflow: hidden; }
+
+  #viewport { position: absolute; inset: 0 0 64px 0; overflow: hidden; }
+  body.render #viewport { inset: 0; }
+  #stage {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: var(--bg); transform-origin: 0 0; left: 50%; top: 50%;
+  }
+  .layer { position: absolute; inset: 0; }
+  .abs { position: absolute; }
+  .center-x { left: 0; right: 0; text-align: center; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+  .headline { font-weight: 800; letter-spacing: -0.035em; line-height: 1.04; }
+
+  .glow { position: absolute; border-radius: 50%; filter: blur(120px); }
+  #grid {
+    position: absolute; inset: -200px;
+    background-image:
+      linear-gradient(rgba(167,139,250,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(167,139,250,.07) 1px, transparent 1px);
+    background-size: 90px 90px;
+    mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  }
+
+  /* Ícones em "azulejo" (cena 1) */
+  .tile {
+    position: absolute; width: 250px; height: 250px; border-radius: 64px; display: grid; place-items: center;
+    background: linear-gradient(160deg, #1d1736, #110d22); border: 3px solid rgba(167,139,250,.55);
+    box-shadow: 0 0 90px rgba(124,58,237,.55), 0 30px 60px rgba(0,0,0,.5);
+    font-weight: 900; color: var(--lilac);
+  }
+
+  /* Serviços à volta do total (cena 2) */
+  .svc { position: absolute; display: flex; align-items: center; gap: 24px; }
+  .svc .ico {
+    width: 130px; height: 130px; border-radius: 50%; display: grid; place-items: center;
+    border: 5px solid var(--violet); background: rgba(124,58,237,.12); color: var(--lilac); font-weight: 800; font-size: 46px;
+  }
+  .svc .nm { font-size: 46px; font-weight: 500; }
+  .svc .pr { font-size: 40px; color: var(--muted); margin-top: 2px; }
+
+  /* Telemóvel (cena 3) */
+  #phone {
+    position: absolute; left: 170px; top: 560px; width: 740px; height: 1500px; border-radius: 110px;
+    background: #0f0c1e; border: 16px solid #2b2543; box-shadow: 0 40px 120px rgba(0,0,0,.6), 0 0 160px rgba(124,58,237,.35);
+  }
+  #notch { position: absolute; left: 50%; top: 18px; width: 220px; height: 54px; margin-left: -110px; border-radius: 30px; background: #05030b; }
+  .row {
+    position: absolute; left: 40px; right: 40px; height: 148px; border-radius: 30px; padding: 0 34px;
+    display: flex; align-items: center; gap: 28px;
+    background: rgba(255,255,255,.05); border: 2px solid rgba(124,58,237,.7);
+  }
+  .row .badge { width: 90px; height: 90px; border-radius: 26px; display: grid; place-items: center; font-weight: 800; font-size: 38px; color: #fff; }
+  .row .nm { flex: 1; font-size: 46px; font-weight: 500; }
+  .row .pr { font-size: 44px; font-weight: 700; color: var(--lilac); }
+  .row .pr small { font-size: 28px; font-weight: 500; color: var(--muted); }
+
+  #controls {
+    position: fixed; left: 0; right: 0; bottom: 0; height: 64px; display: flex; gap: 14px; align-items: center;
+    padding: 0 18px; background: #120b20; border-top: 1px solid #2a1f42; font: 14px "JetBrains Mono", monospace; color: #cfc6ee;
+  }
+  #controls button { background: var(--violet); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; font: inherit; cursor: pointer; }
+  #controls input[type=range] { flex: 1; accent-color: var(--violet); }
+  body.render #controls { display: none; }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div class="layer" id="bg">
+      <div id="grid"></div>
+      <div class="glow" id="g1" style="width:900px;height:900px;background:#7C3AED;opacity:.4"></div>
+      <div class="glow" id="g2" style="width:700px;height:700px;background:#3B0764;opacity:.7"></div>
+      <div class="glow" id="g3" style="width:600px;height:600px;background:#A78BFA;opacity:.16"></div>
+    </div>
+
+    <!-- Marca fixa no topo (cenas 2–3) -->
+    <div class="abs" id="brandTag" style="left:0;right:0;top:110px;display:flex;justify-content:center;align-items:center;gap:18px;font:600 30px 'JetBrains Mono',monospace;color:#DDD6FE">
+      <span style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#A78BFA,#7C3AED 52%,#3B0764);display:grid;place-items:center;font:900 34px Nunito,sans-serif;color:#fff">K</span>
+      <span>gestor de subscrições</span>
+    </div>
+
+    <!-- Cena 1 -->
+    <div class="layer" id="s1">
+      <div class="tile" id="tN" style="left:680px;top:250px;font-size:170px;font-family:'DM Sans'">N</div>
+      <div class="tile" id="tS" style="left:90px;top:1330px;font-size:150px">
+        <svg width="150" height="150" viewBox="0 0 100 100" fill="none" stroke="#A78BFA" stroke-width="9" stroke-linecap="round"><path d="M18 36 Q50 26 82 40"/><path d="M22 54 Q50 46 78 57"/><path d="M27 70 Q50 64 72 73"/></svg>
+      </div>
+      <div class="tile" id="tO" style="left:760px;top:1180px;width:200px;height:200px;border-radius:52px;font-size:70px">NOS</div>
+      <div class="abs headline" id="h1" style="left:70px;right:70px;top:640px;font-size:118px;text-align:center"></div>
+    </div>
+
+    <!-- Cena 2 -->
+    <div class="layer" id="s2">
+      <div class="abs svc" id="v0" style="left:90px;top:340px"></div>
+      <div class="abs svc" id="v1" style="left:600px;top:340px"></div>
+      <div class="abs center-x headline" id="totNum" style="top:610px;font-size:250px;color:#FFE4E6;text-shadow:0 0 60px rgba(244,63,94,.85),0 0 130px rgba(244,63,94,.5)"></div>
+      <div class="abs center-x mono" id="totLab" style="top:900px;font-size:34px;letter-spacing:.22em;color:var(--lilac)">POR MÊS</div>
+      <div class="abs center-x mono" id="yearLine" style="top:985px;font-size:46px;color:var(--amber)"></div>
+      <div class="abs svc" id="v2" style="left:90px;top:1130px"></div>
+      <div class="abs svc" id="v3" style="left:600px;top:1130px"></div>
+      <div class="abs center-x headline" id="h2" style="top:1440px;font-size:72px;font-weight:500;letter-spacing:-0.02em;line-height:1.15">Isto é o que as subscrições <span style="color:var(--lilac);font-weight:800">esquecidas</span> te custam.</div>
+    </div>
+
+    <!-- Cena 3 -->
+    <div class="layer" id="s3">
+      <div class="abs center-x headline" id="h3" style="top:230px;font-size:76px;font-weight:500;letter-spacing:-0.025em;line-height:1.14">Finalmente.<br>Todas as tuas subscrições<br>num <span style="font-weight:800;color:#fff">só sítio.</span></div>
+      <div id="phone">
+        <div id="notch"></div>
+        <div class="abs center-x" id="phTot" style="top:130px;font-size:70px;font-weight:500"></div>
+        <div id="rows"></div>
+        <div class="abs" id="manage" style="left:50%;top:880px;transform:translateX(-50%);padding:18px 54px;border-radius:999px;background:rgba(124,58,237,.18);color:var(--lilac);font-size:36px;font-weight:500">Gerir</div>
+      </div>
+    </div>
+
+    <!-- Cena 4 -->
+    <div class="layer" id="s4">
+      <div class="abs" id="logoWrap" style="left:440px;top:330px;width:200px;height:200px">
+        <svg width="200" height="200" viewBox="0 0 100 100" fill="none" style="overflow:visible" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="kg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#A78BFA"/><stop offset="52%" stop-color="#7C3AED"/><stop offset="100%" stop-color="#3B0764"/>
+            </linearGradient>
+            <linearGradient id="ksh" x1="50" y1="4" x2="50" y2="60" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="white" stop-opacity="0.2"/><stop offset="100%" stop-color="white" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="kgl" x="-45%" y="-45%" width="190%" height="190%">
+              <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#6D28D9" flood-opacity="0.65"/>
+              <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#A78BFA" flood-opacity="0.35"/>
+            </filter>
+          </defs>
+          <rect x="4" y="4" width="92" height="92" rx="22" fill="url(#kg)" filter="url(#kgl)"/>
+          <rect x="4" y="4" width="92" height="52" rx="22" fill="url(#ksh)"/>
+          <text x="50" y="70" text-anchor="middle" fill="white" font-size="62" font-family="Nunito, 'Arial Rounded MT Bold', sans-serif" font-weight="900">K</text>
+        </svg>
+      </div>
+      <div class="abs center-x headline" id="c1" style="top:680px;font-size:150px;letter-spacing:-0.03em">ASSUME O<br>CONTROLO.</div>
+      <div class="abs center-x" id="c2" style="top:1050px;font-size:76px;font-weight:500">Começa grátis <span style="color:var(--lilac)">→</span></div>
+      <div class="abs" id="pill" style="left:50%;top:1290px;transform:translateX(-50%);padding:22px 48px;border-radius:999px;background:var(--violet);font:600 44px 'JetBrains Mono',monospace;box-shadow:0 20px 60px rgba(124,58,237,.6)">klaxo.app</div>
+      <div class="abs center-x mono" id="c3" style="top:1440px;font-size:32px;color:var(--muted)">grátis até 5 subscrições</div>
+    </div>
+  </div>
+</div>
+
+<div id="controls">
+  <button id="play">⏸</button>
+  <button id="restart">↺</button>
+  <input type="range" id="scrub" min="0" max="14000" step="10" value="0">
+  <span id="time">0.00s</span>
+  <button id="sound">🔇 som</button>
+</div>
+
+<script>
+/* Animação determinística: tudo é função de t (segundos). O render chama window.renderFrame(t). */
+const DURATION = 14.0;
+window.DURATION = DURATION;
+
+const $ = id => document.getElementById(id);
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const seg = (t, a, b) => clamp((t - a) / (b - a));
+const lerp = (a, b, p) => a + (b - a) * p;
+const easeOut = p => 1 - Math.pow(1 - p, 3);
+const easeInOut = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+const easeBack = p => { const c = 1.7, c3 = c + 1; return 1 + c3 * Math.pow(p - 1, 3) + c * Math.pow(p - 1, 2); };
+const eur = v => v.toFixed(2).replace('.', ',') + ' €';
+const type = (s, p) => s.slice(0, Math.round(s.length * clamp(p)));
+const sceneAlpha = (t, a, b, f = .35) => Math.min(seg(t, a, a + f), 1 - seg(t, b - f, b));
+
+// Valores de exemplo: o total é sempre a soma exata dos preços mostrados
+const SUBS = [
+  { n: 'Netflix',  i: 'N',   c: '#E50914', p: 13.99 },
+  { n: 'Spotify',  i: 'S',   c: '#1DB954', p: 10.99 },
+  { n: 'NOS',      i: 'NOS', c: '#1F6FEB', p: 24.99 },
+  { n: 'iCloud+',  i: '☁',   c: '#3693F3', p: 2.99 },
+];
+const TOTAL = SUBS.reduce((s, x) => s + x.p, 0);   // 52,96
+const YEAR = TOTAL * 12;                            // 635,52
+
+const H1 = 'Estás a pagar<br>por coisas de<br>que <span style="color:var(--lilac)">já te<br>esqueceste.</span>';
+$('h1').innerHTML = H1;
+
+SUBS.forEach((s, k) => {
+  $('v' + k).innerHTML = `<div class="ico">${s.i === '☁' ? '☁' : s.i}</div><div><div class="nm">${s.n}</div><div class="pr mono">${eur(s.p)}</div></div>`;
+});
+SUBS.forEach((s, k) => {
+  const r = document.createElement('div'); r.className = 'row'; r.id = 'r' + k; r.style.top = (250 + k * 160) + 'px';
+  r.innerHTML = `<div class="badge" style="background:${s.c}">${s.i}</div><div class="nm">${s.n}</div><div class="pr">${eur(s.p)}<small>/mês</small></div>`;
+  $('rows').appendChild(r);
+});
+
+function show(el, alpha, tf = '') {
+  el.style.opacity = alpha;
+  el.style.visibility = alpha <= 0.001 ? 'hidden' : 'visible';
+  if (tf !== null) el.style.transform = tf;
+}
+
+function renderFrame(t) {
+  /* Fundo */
+  $('g1').style.transform = `translate(${-200 + Math.sin(t * .4) * 120}px, ${200 + Math.cos(t * .3) * 160}px)`;
+  $('g2').style.transform = `translate(${500 + Math.cos(t * .35) * 140}px, ${1200 + Math.sin(t * .25) * 120}px)`;
+  $('g3').style.transform = `translate(${300 + Math.sin(t * .5) * 200}px, ${700 + Math.cos(t * .45) * 220}px)`;
+  $('grid').style.transform = `translateY(${(t * 18) % 90}px)`;
+
+  show($('brandTag'), sceneAlpha(t, 3.0, 10.5, .4), `translateY(${lerp(-30, 0, easeOut(seg(t, 3.0, 3.5)))}px)`);
+
+  /* Cena 1 (0 → 3.2): gancho */
+  const a1 = sceneAlpha(t, 0, 3.2, .25);
+  show($('s1'), a1, null);
+  if (a1 > 0) {
+    [['tN', .25, 8, -6], ['tO', .55, 11, 5], ['tS', .85, 13, -4]].forEach(([id, st, amp, rot], i) => {
+      const p = easeBack(seg(t, st, st + .6));
+      const fl = Math.sin(t * 1.8 + i * 2) * amp;
+      show($(id), seg(t, st, st + .25), `translateY(${fl}px) scale(${lerp(.4, 1, p)}) rotate(${rot + Math.sin(t * 1.3 + i) * 3}deg)`);
+    });
+    const ph = easeOut(seg(t, 1.0, 1.7));
+    show($('h1'), ph, `translateY(${lerp(70, 0, ph)}px)`);
+  }
+
+  /* Cena 2 (3.0 → 7.2): o custo */
+  const a2 = sceneAlpha(t, 3.0, 7.2, .3);
+  show($('s2'), a2, null);
+  if (a2 > 0) {
+    [3.3, 3.8, 4.3, 4.8].forEach((st, k) => {
+      const p = easeOut(seg(t, st, st + .4));
+      show($('v' + k), p, `translateY(${lerp(30, 0, p)}px)`);
+    });
+    const count = easeOut(seg(t, 3.4, 6.0));
+    const pn = easeBack(seg(t, 3.3, 3.8));
+    $('totNum').textContent = eur(TOTAL * count);
+    show($('totNum'), seg(t, 3.3, 3.6), `scale(${lerp(.8, 1, pn)})`);
+    show($('totLab'), seg(t, 3.8, 4.1));
+    $('yearLine').textContent = type('= ' + eur(YEAR) + ' por ano', seg(t, 5.6, 6.3));
+    const ph = easeOut(seg(t, 4.6, 5.3));
+    show($('h2'), ph, `translateY(${lerp(40, 0, ph)}px)`);
+  }
+
+  /* Cena 3 (7.0 → 10.7): solução */
+  const a3 = sceneAlpha(t, 7.0, 10.7, .3);
+  show($('s3'), a3, null);
+  if (a3 > 0) {
+    const ph = easeOut(seg(t, 7.0, 7.7));
+    show($('h3'), ph, `translateY(${lerp(50, 0, ph)}px)`);
+    const pp = easeOut(seg(t, 7.2, 8.2));
+    show($('phone'), 1, `translateY(${lerp(700, 0, pp)}px)`);
+    $('phTot').innerHTML = `Total: <span style="color:var(--lilac);font-weight:700">${eur(TOTAL * easeOut(seg(t, 8.0, 8.9)))}</span><span style="color:var(--muted);font-size:44px">/mês</span>`;
+    SUBS.forEach((s, k) => {
+      const st = 8.0 + k * .35, p = easeOut(seg(t, st, st + .4));
+      show($('r' + k), p, `translateX(${lerp(60, 0, p)}px)`);
+    });
+    show($('manage'), seg(t, 9.6, 9.9), 'translateX(-50%)');
+  }
+
+  /* Cena 4 (10.4 → fim): chamada para ação */
+  const a4 = seg(t, 10.4, 10.7);
+  show($('s4'), a4, null);
+  if (a4 > 0) {
+    const pl = easeBack(seg(t, 10.5, 11.1));
+    show($('logoWrap'), seg(t, 10.5, 10.7), `translateY(${Math.sin((t - 10.5) * 2.2) * 8}px) scale(${lerp(.3, 1, pl)}) rotate(${lerp(-12, 0, pl)}deg)`);
+    const p1 = easeOut(seg(t, 10.9, 11.4));
+    show($('c1'), p1, `translateY(${lerp(50, 0, p1)}px)`);
+    const p2 = easeOut(seg(t, 11.5, 12.0));
+    show($('c2'), p2, `translateY(${lerp(40, 0, p2)}px)`);
+    const pp = easeBack(seg(t, 12.1, 12.6));
+    show($('pill'), seg(t, 12.1, 12.3), `translateX(-50%) scale(${lerp(.6, 1, pp)})`);
+    show($('c3'), seg(t, 12.6, 13.0));
+  }
+}
+window.renderFrame = renderFrame;
+
+/* ================= SOM =================
+   Tudo sintetizado aqui (sem samples, sem direitos de terceiros) e determinístico.
+   Estética de anúncios fintech/SaaS: house leve a 120 BPM, plucks limpos, pads quentes
+   e sons de UI (cliques de teclado, whooshes, dings de notificação, chime de sucesso).
+   buildAudio() serve tanto o preview (AudioContext) como o export (OfflineAudioContext). */
+const BPM = 120, BEAT = 60 / BPM, BAR = BEAT * 4;
+const mtof = m => 440 * Math.pow(2, (m - 69) / 12);
+const CHORDS = [ // vi – IV – I – V (Am, F, C, G)
+  { pad: [62, 66, 69], bass: 38 },
+  { pad: [61, 64, 69], bass: 45 },
+  { pad: [59, 62, 66], bass: 47 },
+  { pad: [59, 62, 67], bass: 43 },
+];
+const C_ADD9 = [50, 57, 62, 64, 66, 69];
+
+function mulberry32(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+// instante em que o carrossel muda de cartão (inverte o easeInOut)
+function cardSwitchTimes() {
+  const n = SUBS.length, out = [];
+  for (let j = 1; j < n; j++) {
+    const target = (j - .5) / (n - 1); let lo = 0, hi = 1;
+    for (let k = 0; k < 30; k++) { const m = (lo + hi) / 2; if (easeInOut(m) < target) lo = m; else hi = m; }
+    out.push(3.3 + lo * 3.3);
+  }
+  return out;
+}
+// instantes em que cada carácter aparece num texto "escrito"
+function typeTimes(str, a, b) { const n = str.length, out = []; for (let i = 1; i <= n; i++) out.push(a + (b - a) * (i - .5) / n); return out; }
+
+function buildAudio(ctx, offset = 0, base = 0) {
+  const rnd = mulberry32(7);
+  const sr = ctx.sampleRate;
+  const at = t => base + (t - offset);
+  const live = (t, dur = 0) => t + dur >= offset - 0.001;
+
+  // bus: música + efeitos → reverb → compressor → saída
+  const comp = ctx.createDynamicsCompressor();
+  comp.threshold.value = -16; comp.ratio.value = 4; comp.attack.value = .004; comp.release.value = .2;
+  const MG = 1.9; // ganho de saída (redes sociais ~ -14 LUFS)
+  const master = ctx.createGain(); master.gain.value = MG;
+  if (DURATION > offset) { master.gain.setValueAtTime(MG, Math.max(base, at(DURATION - .5))); master.gain.linearRampToValueAtTime(0, at(DURATION)); }
+  const limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -4; limiter.knee.value = 0; limiter.ratio.value = 20; limiter.attack.value = .001; limiter.release.value = .08;
+  comp.connect(master).connect(limiter).connect(ctx.destination);
+  const music = ctx.createGain(); music.gain.value = .55; music.connect(comp);
+  const sfx = ctx.createGain(); sfx.gain.value = .9; sfx.connect(comp);
+  const verb = ctx.createConvolver();
+  { const len = Math.floor(sr * 2.2), ir = ctx.createBuffer(2, len, sr);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (rnd() * 2 - 1) * Math.pow(1 - i / len, 3); }
+    verb.buffer = ir; }
+  const verbOut = ctx.createGain(); verbOut.gain.value = .35; verb.connect(verbOut).connect(comp);
+
+  const noiseBuf = ctx.createBuffer(1, sr * 2, sr);
+  { const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = rnd() * 2 - 1; }
+
+  function env(g, t, peak, a, d) {
+    g.gain.setValueAtTime(0, at(t));
+    g.gain.linearRampToValueAtTime(peak, at(t + a));
+    g.gain.exponentialRampToValueAtTime(.0001, at(t + a + d));
+  }
+  function out(node, dest, send = 0) { node.connect(dest); if (send) { const s = ctx.createGain(); s.gain.value = send; node.connect(s).connect(verb); } }
+
+  function osc(t, freq, dur, { type = 'sine', gain = .2, a = .005, dest = sfx, send = 0, to = null, cutoff = 0 } = {}) {
+    if (!live(t, dur)) return;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, at(t));
+    if (to) o.frequency.exponentialRampToValueAtTime(to, at(t + dur));
+    env(g, t, gain, a, dur);
+    let n = o.connect(g);
+    if (cutoff) { const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = cutoff; n = g.connect(f); }
+    out(n, dest, send);
+    o.start(at(t)); o.stop(at(t + a + dur + .05));
+  }
+  function noise(t, dur, { type = 'bandpass', f0 = 1000, f1 = null, q = 1, gain = .2, a = .002, dest = sfx, send = 0, swell = false } = {}) {
+    if (!live(t, dur)) return;
+    const src = ctx.createBufferSource(); src.buffer = noiseBuf; src.loop = true;
+    const f = ctx.createBiquadFilter(); f.type = type; f.Q.value = q;
+    f.frequency.setValueAtTime(f0, at(t)); if (f1) f.frequency.exponentialRampToValueAtTime(f1, at(t + dur));
+    const g = ctx.createGain();
+    if (swell) { g.gain.setValueAtTime(.0001, at(t)); g.gain.exponentialRampToValueAtTime(gain, at(t + dur * .85)); g.gain.linearRampToValueAtTime(0, at(t + dur)); }
+    else env(g, t, gain, a, dur);
+    out(src.connect(f).connect(g), dest, send);
+    src.start(at(t), rnd() * 1.5); src.stop(at(t + dur + .05));
+  }
+
+  // instrumentos
+  const kick = (t, g = .9) => { osc(t, 150, .32, { gain: g, to: 42, dest: music }); noise(t, .02, { type: 'highpass', f0: 3000, gain: .08 * g, dest: music }); };
+  const hat = (t, g = .07) => noise(t, .045, { type: 'highpass', f0: 8000, gain: g, dest: music });
+  const clap = t => { for (let i = 0; i < 3; i++) noise(t + i * .012, .09, { f0: 1600, q: .9, gain: .16, dest: music, send: .3 }); };
+  const bass = (t, m, d = .22) => { osc(t, mtof(m), d, { type: 'triangle', gain: .32, dest: music, a: .01 }); osc(t, mtof(m) * 2, d * .7, { gain: .08, dest: music }); };
+  const pluck = (t, m, g = .11, cutoff = 2600) => {
+    osc(t, mtof(m), .28, { type: 'triangle', gain: g, dest: music, send: .45, cutoff });
+    osc(t, mtof(m) * 1.003, .2, { type: 'sawtooth', gain: g * .25, dest: music, cutoff: cutoff * .6 });
+  };
+  const pad = (t, notes, dur, g = .045) => notes.forEach(m => {
+    if (!live(t, dur)) return;
+    [-6, 6].forEach(det => {
+      const o = ctx.createOscillator(), f = ctx.createBiquadFilter(), gn = ctx.createGain();
+      o.type = 'sawtooth'; o.frequency.value = mtof(m); o.detune.value = det;
+      f.type = 'lowpass'; f.frequency.value = 900;
+      gn.gain.setValueAtTime(0, at(t)); gn.gain.linearRampToValueAtTime(g, at(t + .35));
+      gn.gain.setValueAtTime(g, at(t + dur - .3)); gn.gain.linearRampToValueAtTime(0, at(t + dur));
+      out(o.connect(f).connect(gn), music, .4); o.start(at(t)); o.stop(at(t + dur + .05));
+    });
+  });
+  // sino FM — dings de notificação e chime de sucesso
+  const bell = (t, m, g = .16, dur = 1.1) => {
+    if (!live(t, dur)) return;
+    const car = ctx.createOscillator(), mod = ctx.createOscillator(), mg = ctx.createGain(), g2 = ctx.createGain();
+    const f = mtof(m); car.frequency.value = f; mod.frequency.value = f * 3.5;
+    mg.gain.setValueAtTime(f * 2.2, at(t)); mg.gain.exponentialRampToValueAtTime(f * .05, at(t + dur));
+    mod.connect(mg).connect(car.frequency); env(g2, t, g, .003, dur);
+    out(car.connect(g2), sfx, .5);
+    car.start(at(t)); mod.start(at(t)); car.stop(at(t + dur + .05)); mod.stop(at(t + dur + .05));
+  };
+  const click = (t, g = 1) => { noise(t, .014, { f0: 2400 + rnd() * 2200, q: 2, gain: .2 * g }); osc(t, 1900 + rnd() * 400, .012, { gain: .03 * g }); };
+  const whoosh = (t, dur, f0, f1, g = .22) => noise(t, dur, { f0, f1, q: .9, gain: g, swell: true, send: .25 });
+  const pop = (t, g = .25) => osc(t, 520, .07, { gain: g, to: 1250, send: .2 });
+  const tickS = (t, m, g = .04) => osc(t, mtof(m), .035, { gain: g });
+  const impact = (t, g = 1) => {
+    osc(t, 110, .7, { gain: .95 * g, to: 32 });
+    noise(t, .5, { type: 'lowpass', f0: 1800, f1: 200, gain: .35 * g, send: .6 });
+  };
+  const riser = (t0, t1) => { whoosh(t0, t1 - t0, 300, 7000, .26); osc(t0, 220, t1 - t0, { gain: .05, to: 880, a: (t1 - t0) * .9, type: 'triangle' }); };
+
+
+  /* --- MÚSICA (drop às 3.0 s, logo às 10.5 s) --- */
+  for (let b = 0; b < 5; b++) pad(b * BAR, CHORDS[b % 4].pad, BAR + .05, b < 1 ? .03 : .045);
+  pad(10.0, CHORDS[3].pad, .6, .05);
+  pad(10.5, C_ADD9, 3.5, .05);
+  const ARP = [0, 2, 1, 12, 1, 2, 12, 1];
+  for (let t = 0, i = 0; t < 10.0 - .01; t += BEAT / 2, i++) {
+    const ch = CHORDS[Math.floor(t / BAR) % 4].pad;
+    const st = ARP[i % 8], m = (st === 12 ? ch[0] + 12 : ch[st]) + 12;
+    pluck(t, m, t < 3 ? .07 : .1, t < 3 ? 1200 + t * 400 : 2800);
+  }
+  for (let t = 3.0; t < 10.0 - .01; t += BEAT) {
+    kick(t);
+    hat(t + BEAT / 2, .08);
+    if (t >= 7.0) { hat(t + BEAT / 4, .03); hat(t + BEAT * .75, .03); }
+    const beatInBar = Math.round((t % BAR) / BEAT);
+    if (t >= 4.0 && (beatInBar === 1 || beatInBar === 3)) clap(t);
+    bass(t + BEAT / 2, CHORDS[Math.floor(t / BAR) % 4].bass);
+  }
+  kick(2.0, .35); kick(2.5, .45);
+  riser(2.1, 3.0);
+
+  /* --- EFEITOS --- */
+  // cena 1: azulejos e frase
+  [.25, .55, .85].forEach((t, i) => pop(t, .2 + i * .02));
+  whoosh(.95, .35, 600, 3500, .16);
+  // cena 2: custo
+  impact(3.0, .55);
+  [3.3, 3.8, 4.3, 4.8].forEach((t, i) => { pop(t, .16); bell(t + .05, [74, 78, 81, 86][i], .08, .6); });
+  for (let t = 3.45, i = 0; t < 6.0; t += .1, i++) tickS(t, 74 + Math.floor(i / 3), .022);
+  typeTimes('= 635,52 € por ano', 5.6, 6.3).forEach(t => click(t, .6));
+  whoosh(6.6, .45, 4000, 400, .2);
+  // cena 3: solução
+  impact(7.0, .8);
+  whoosh(7.15, .5, 400, 3000, .16);
+  SUBS.forEach((s, k) => { pop(8.0 + k * .35, .14); });
+  [74, 78, 81, 86].forEach((m, i) => bell(8.0 + i * .35, m, .1));
+  bell(9.6, 93, .1, 1.0);
+  // cena 4: ação
+  riser(10.0, 10.5);
+  impact(10.5, 1);
+  C_ADD9.forEach(m => pluck(10.5, m + 12, .09, 3200));
+  [86, 90, 93, 98].forEach((m, i) => bell(10.55 + i * .06, m, .08, 1.4));
+  whoosh(10.9, .3, 800, 3000, .12);
+  pop(12.1, .22); bell(12.15, 93, .09, 1.2);
+}
+
+// export: devolve o som completo em WAV (base64) para juntar ao vídeo
+async function renderAudioWav() {
+  const oc = new OfflineAudioContext(2, Math.ceil(48000 * DURATION), 48000);
+  buildAudio(oc, 0, 0);
+  const buf = await oc.startRendering();
+  const n = buf.length, ch = [buf.getChannelData(0), buf.getChannelData(1)];
+  const ab = new ArrayBuffer(44 + n * 4), v = new DataView(ab);
+  const w = (o, str) => { for (let i = 0; i < str.length; i++) v.setUint8(o + i, str.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 4, true); w(8, 'WAVE'); w(12, 'fmt ');
+  v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 2, true); v.setUint32(24, 48000, true);
+  v.setUint32(28, 48000 * 4, true); v.setUint16(32, 4, true); v.setUint16(34, 16, true); w(36, 'data'); v.setUint32(40, n * 4, true);
+  for (let i = 0, o = 44; i < n; i++) for (let c = 0; c < 2; c++, o += 2) v.setInt16(o, Math.max(-1, Math.min(1, ch[c][i])) * 0x7FFF, true);
+  let bin = ''; const bytes = new Uint8Array(ab);
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+window.renderAudioWav = renderAudioWav;
+
+/* ---------- Escala do palco e playback ---------- */
+const params = new URLSearchParams(location.search);
+const isRender = params.has('render');
+if (isRender) document.body.classList.add('render');
+
+function fit() {
+  if (isRender) { $('stage').style.left = $('stage').style.top = '0'; $('stage').style.transform = 'none'; return; }
+  const vp = $('viewport').getBoundingClientRect();
+  const s = Math.min(vp.width / 1080, vp.height / 1920);
+  $('stage').style.transform = `scale(${s}) translate(-50%, -50%)`;
+}
+addEventListener('resize', fit); fit();
+
+let playing = !isRender, t0 = performance.now(), cur = 0;
+let soundOn = false, actx = null, audioBase = 0, audioOffset = 0;
+function stopAudio() { if (actx) { actx.close(); actx = null; } }
+function startAudio(offset) {
+  stopAudio();
+  actx = new AudioContext({ sampleRate: 48000 });
+  audioOffset = offset; audioBase = actx.currentTime + .08;
+  buildAudio(actx, offset, audioBase);
+}
+function tick(now) {
+  if (playing) {
+    if (actx) {
+      cur = audioOffset + Math.max(0, actx.currentTime - audioBase);
+      if (cur >= DURATION) { cur = 0; startAudio(0); }
+    } else cur = ((now - t0) / 1000) % DURATION;
+    renderFrame(cur);
+    $('scrub').value = Math.round(cur * 1000);
+    $('time').textContent = cur.toFixed(2) + 's';
+  }
+  requestAnimationFrame(tick);
+}
+function setPlaying(p) {
+  playing = p; $('play').textContent = p ? '⏸' : '▶';
+  if (p && soundOn) startAudio(cur); else stopAudio();
+  t0 = performance.now() - cur * 1000;
+}
+if (!isRender) {
+  $('play').onclick = () => setPlaying(!playing);
+  $('sound').onclick = () => { soundOn = !soundOn; $('sound').textContent = soundOn ? '🔊 som' : '🔇 som'; if (playing) setPlaying(true); };
+  $('restart').onclick = () => { cur = 0; setPlaying(true); };
+  $('scrub').oninput = e => { cur = e.target.value / 1000; setPlaying(false); renderFrame(cur); $('time').textContent = cur.toFixed(2) + 's'; };
+  document.fonts.ready.then(() => requestAnimationFrame(tick));
+} else {
+  renderFrame(0);
+}
+</script>
+</body>
+</html>
