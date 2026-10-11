@@ -37,6 +37,34 @@ No Klaxo pões as tuas subscrições numa lista e vês logo o total por mês. An
 É grátis até 5 subscrições: https://klaxo.app
 ```
 
+### Facebook — publicado em 2026-10-11 (página do Klaxo + perfil pessoal) · miniaturas em `miniaturas/`
+
+**Página do Klaxo**
+```
+Quanto pagas por mês em subscrições? Responde de cabeça, sem ir ver ao banco.
+
+A maioria das pessoas falha por bastante. Netflix, Spotify, o ginásio, aquela app que experimentaste em março e nunca cancelaste... aos poucos, vai somando.
+
+No Klaxo pões as tuas subscrições numa lista e vês logo o total por mês. Antes de cada renovação recebes um email, para cancelares a tempo o que já não usas. Não precisas de ligar a conta do banco.
+
+É grátis até 5 subscrições: https://klaxo.app
+
+E tu, quanto achas que gastas? Diz aqui em baixo antes de fazer as contas 👇
+```
+
+**Perfil pessoal**
+```
+Fiz uma app para resolver um problema que também era meu: perder o rasto das subscrições.
+
+Netflix, Spotify, o ginásio, aquela app que experimentei em março e nunca cancelei... no fim do mês, o total surpreendeu-me.
+
+Chama-se Klaxo. Pões as subscrições numa lista, vês logo quanto pagas por mês, e recebes um email antes de cada renovação para cancelares a tempo. Não liga à conta do banco e é grátis até 5 subscrições.
+
+Se quiseres experimentar: https://klaxo.app
+
+E tu, de cabeça, quanto achas que pagas por mês em subscrições? 👇
+```
+
 ---
 
 ## Espanha — anúncio patrocinado (Meta Ads: Instagram + Facebook) · vídeo `klaxo-reel-es.mp4`
